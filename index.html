@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Сайт‑визитка — Warehouse Terminators</title>
-  <meta name="description" content="Сайт‑визитка для бизнеса по ликвидации товаров." />
+  <title>Business Card Website — Warehouse Terminators</title>
+  <meta name="description" content="Business card website for a liquidation goods business." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="bg">
-    <!-- SVG неоновый скайлaйн Торонто с CN Tower -->
+  <!-- SVG neon Toronto skyline with CN Tower -->
     <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice" class="skyline" aria-hidden="true">
       <defs>
         <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
@@ -28,10 +28,10 @@
         </filter>
       </defs>
       <rect width="1440" height="600" fill="#0c0f1a"/>
-      <!-- Упрощённый горизонт Торонто с CN Tower -->
+  <!-- Simplified Toronto skyline with CN Tower -->
       <g fill="url(#g)" filter="url(#glow)" opacity="0.9">
         <rect x="0" y="430" width="1440" height="200" fill="url(#g)" opacity="0.15"/>
-        <!-- здания -->
+  <!-- buildings -->
         <rect x="60" y="280" width="80" height="150" rx="3" />
         <rect x="170" y="340" width="60" height="120" rx="3" />
         <rect x="250" y="310" width="90" height="150" rx="3" />
@@ -51,7 +51,7 @@
         <rect x="1170" y="310" width="75" height="150" rx="3" />
         <rect x="1260" y="340" width="95" height="120" rx="3" />
       </g>
-      <!-- сетка-неон -->
+  <!-- neon grid -->
       <g stroke="url(#g)" stroke-opacity="0.25">
         {% for i in range(12) %}<line x1="0" y1="{{480+i*10}}" x2="1440" y2="{{480+i*10}}"></line>{% endfor %}
       </g>
@@ -59,7 +59,7 @@
   </div>
 
   <header class="container">
-    <img src="assets/logo.png" alt="Логотип" class="logo"/>
+    <img src="assets/logo.png" alt="Logo" class="logo"/>
     <nav class="top-contacts">
       <a href="tel:+14373333316">+1 (437) 333‑3316</a>
       <a href="https://www.facebook.com/marketplace/profile/61551543384217/" target="_blank" rel="noopener">Facebook</a>
@@ -69,49 +69,49 @@
 
   <main class="container hero">
     <h1>Warehouse Terminators</h1>
-    <p class="subtitle">Ликвидация товаров • Лучшие цены по Торонто</p>
+    <p class="subtitle">Liquidation goods • Best prices in Toronto</p>
     <div class="cta-row">
-      <a class="btn primary" href="tel:+14373333316">Позвонить</a>
-      <a class="btn ghost" href="#contacts">Как добраться</a>
+  <a class="btn primary" href="tel:+14373333316">Call us now</a>
+      <a class="btn ghost" href="#contacts">Get directions</a>
     </div>
     <ul class="highlights">
-      <li>📦 Склад: 126A Oakdale Rd, North York, ON M3N 1V9</li>
-      <li>🕒 Часы: Пн–Сб 12:00–19:00</li>
-      <li>⭐ Google‑оценка: <span id="rating">4.9/5</span> (заглушка)</li>
+      <li>📦 Warehouse: 126A Oakdale Rd, North York, ON M3N 1V9</li>
+      <li>🕒 Hours: Mon–Sat 12:00–19:00</li>
+      <li>⭐ Google rating: <span id="rating">4.9/5</span> (placeholder)</li>
     </ul>
   </main>
 
   <section class="container section" id="about">
-    <h2>О нас</h2>
-    <p>Покупаем и продаём ликвидационные товары, возвраты и уценку. Проверяем и описываем состояние, чтобы вы получали лучшее за свои деньги.</p>
+    <h2>About Us</h2>
+    <p>We buy and sell liquidation goods, returns and discounted items. We inspect and describe the condition so you get the best value for your money.</p>
     <div class="cards">
       <div class="card">
-        <h3>Ассортимент</h3>
-        <p>Электроника, техника для дома, инструменты, игры и многое другое.</p>
+        <h3>Selection</h3>
+        <p>Electronics, home appliances, tools, games and much more.</p>
       </div>
       <div class="card">
-        <h3>Доставка</h3>
-        <p>Самовывоз со склада и доставка по GTA по договорённости.</p>
+        <h3>Delivery</h3>
+        <p>Pickup at the warehouse and delivery across the GTA by arrangement.</p>
       </div>
       <div class="card">
-        <h3>Гарантии</h3>
-        <p>Проверяем перед выдачей. Возможна демонстрация на месте.</p>
+        <h3>Guarantees</h3>
+        <p>Inspected before handover. On-site demonstration available.</p>
       </div>
     </div>
   </section>
 
   <section class="container section" id="contacts">
-    <h2>Контакты</h2>
+    <h2>Contact</h2>
     <div class="contact-grid">
       <div>
-        <p><strong>Телефон:</strong> <a href="tel:+14373333316">+1 (437) 333‑3316</a></p>
-        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/marketplace/profile/61551543384217/" target="_blank" rel="noopener">Профиль</a></p>
-        <p><strong>Kijiji:</strong> <a href="https://www.kijiji.ca/m-profile/listings/1" target="_blank" rel="noopener">Объявления</a></p>
-        <p><strong>Адрес:</strong> 126A Oakdale Rd, North York, ON M3N 1V9</p>
-        <p><strong>Часы:</strong> Пн–Сб, 12:00–19:00</p>
+        <p><strong>Phone:</strong> <a href="tel:+14373333316">+1 (437) 333‑3316</a></p>
+        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/marketplace/profile/61551543384217/" target="_blank" rel="noopener">Profile</a></p>
+        <p><strong>Kijiji:</strong> <a href="https://www.kijiji.ca/m-profile/listings/1" target="_blank" rel="noopener">Listings</a></p>
+        <p><strong>Address:</strong> 126A Oakdale Rd, North York, ON M3N 1V9</p>
+        <p><strong>Hours:</strong> Mon–Sat, 12:00–19:00</p>
       </div>
       <iframe
-        title="Карта"
+        title="Map"
         style="border:0; width:100%; height:300px;"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
@@ -121,7 +121,7 @@
   </section>
 
   <footer class="container footer">
-    <small>© <span id="year"></span> Warehouse Terminators. Все права защищены.</small>
+  <small>© <span id="year"></span> Warehouse Terminators. All rights reserved.</small>
   </footer>
 
   <script src="script.js"></script>

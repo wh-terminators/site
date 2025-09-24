@@ -11,53 +11,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="bg">
-  <!-- SVG neon Toronto skyline with CN Tower -->
-    <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice" class="skyline" aria-hidden="true">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#0ff" />
-          <stop offset="100%" stop-color="#a0f" />
-        </linearGradient>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-      <rect width="1440" height="600" fill="#0c0f1a"/>
-  <!-- Simplified Toronto skyline with CN Tower -->
-      <g fill="url(#g)" filter="url(#glow)" opacity="0.9">
-        <rect x="0" y="430" width="1440" height="200" fill="url(#g)" opacity="0.15"/>
-  <!-- buildings -->
-        <rect x="60" y="280" width="80" height="150" rx="3" />
-        <rect x="170" y="340" width="60" height="120" rx="3" />
-        <rect x="250" y="310" width="90" height="150" rx="3" />
-        <rect x="370" y="260" width="70" height="200" rx="3" />
-        <!-- CN Tower -->
-        <g transform="translate(520,80)">
-          <rect x="65" y="120" width="10" height="260" />
-          <circle cx="70" cy="115" r="28" fill="none" stroke="url(#g)" stroke-width="6"/>
-          <rect x="67" y="55" width="6" height="65" />
-          <polygon points="70,30 76,55 64,55" />
-        </g>
-        <rect x="640" y="320" width="120" height="140" rx="3" />
-        <rect x="790" y="300" width="80" height="160" rx="3" />
-        <rect x="890" y="350" width="70" height="110" rx="3" />
-        <rect x="980" y="250" width="90" height="210" rx="3" />
-        <rect x="1090" y="330" width="60" height="130" rx="3" />
-        <rect x="1170" y="310" width="75" height="150" rx="3" />
-        <rect x="1260" y="340" width="95" height="120" rx="3" />
-      </g>
-  <!-- neon grid -->
-      <g stroke="url(#g)" stroke-opacity="0.25">
-        {% for i in range(12) %}<line x1="0" y1="{{480+i*10}}" x2="1440" y2="{{480+i*10}}"></line>{% endfor %}
-      </g>
-    </svg>
-  </div>
-
   <header class="container">
     <img src="assets/logo.png" alt="Logo" class="logo"/>
     <nav class="top-contacts">

@@ -1,4 +1,4 @@
-/* Стили: темный неон + аккуратная типографика */
+
 :root {
   --bg: #0a0d16;
   --panel: #0f1424;
@@ -39,11 +39,20 @@ header {
 }
 
 .logo {
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   border: 2px solid rgba(122, 92, 255, .6);
-  box-shadow: 0 0 20px rgba(122, 92, 255, .4)
+  box-shadow: 0 0 20px rgba(122, 92, 255, .4);
+  mask-image: radial-gradient(circle at center, black 55%, transparent 55%);
+  -webkit-mask-image: radial-gradient(circle at center, black 55%, transparent 55%);
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.9;
 }
 
 .top-contacts a {

@@ -140,6 +140,7 @@ header {
 footer.footer {
   padding: 20px 20px 40px 20px;
   align-items: center;
+  text-align: center;
   color: var(--muted)
 }
 

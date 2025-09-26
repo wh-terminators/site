@@ -1,13 +1,4 @@
-:root {
-  /* ...existing variables... */
-}
-
-/* Add vertical spacing between nav-items in toggler/collapsed mode */
-@media (max-width: 991.98px) {
-  .navbar-collapsed .nav-item {
-    margin-block: 1vh;
-  }
-}
+@charset "UTF-8";
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -3812,8 +3803,6 @@ textarea.form-control-lg {
   flex-basis: 100%;
   flex-grow: 1;
   align-items: center;
-  justify-items: end;
-
 }
 
 .navbar-toggler {
@@ -10847,15 +10836,89 @@ textarea.form-control-lg {
   justify-content: center;
 }
 
+.truckWrapper {
+  width: 200px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: hidden;
+}
+/* truck upper body */
+.truckBody {
+  width: 130px;
+  height: fit-content;
+  margin-bottom: 6px;
+  animation: motion 1s linear infinite;
+}
+/* truck suspension animation*/
+@keyframes motion {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+/* truck's tires */
+.truckTires {
+  width: 130px;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 10px 0px 15px;
+  position: absolute;
+  bottom: 0;
+}
+.truckTires svg {
+  width: 24px;
+}
+
+.road {
+  width: 100%;
+  height: 1.5px;
+  background-color: #282828;
+  position: relative;
+  bottom: 0;
+  align-self: flex-end;
+  border-radius: 3px;
+}
+.road::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  background-color: #282828;
+  right: -50%;
+  border-radius: 3px;
+  animation: roadAnimation 1.4s linear infinite;
+  border-left: 10px solid white;
+}
+.road::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  background-color: #282828;
+  right: -65%;
+  border-radius: 3px;
+  animation: roadAnimation 1.4s linear infinite;
+  border-left: 4px solid white;
+}
+
 .map {
   height: 30rem;
 }
 .map iframe {
   pointer-events: none;
-  padding: 0 2vw;
   height: 100%;
   width: 100%;
-  padding: 0 2vw;
   border: 0;
 }
 
@@ -10863,12 +10926,4 @@ textarea.form-control-lg {
   .map {
     height: 75%;
   }
-}
-
-.elfsight-app-4eefdd1b-3e17-481e-95f0-3433135f7afc {
-  width: 100%;
-  height: 100%;
-  max-width: 90vw;
-  padding: 0 12vw;
-
 }

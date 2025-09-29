@@ -10909,3 +10909,5 @@ textarea.form-control-lg {
 #social a {
   text-decoration: none;
 }
+
+footer { background-color: linear-gradient(180deg, #000 55%, rgba(0, 0, 0, 0.8) 75%, #000 95%);}

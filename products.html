@@ -1,309 +1,50 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Terminator Deals — Hot Deals</title>
-<link rel="icon" href="favicon.ico" />
-<style>
-  :root{
-    --bg:#0b0f14; --fg:#e7eef7; --muted:#9bb0c6; --card:#111826; --badge:#1f2b3d;
-    --accent:#19c37d; --accent-2:#2970ff; --danger:#ff4d4d; --shadow:0 6px 24px rgba(0,0,0,.25);
-  }
-  [data-theme="light"]{
-    --bg:#f6f8fb; --fg:#0f1725; --muted:#4b5871; --card:#ffffff; --badge:#e9eef6;
-    --accent:#15b36f; --accent-2:#1d60ef; --danger:#e23b3b; --shadow:0 6px 24px rgba(10,20,40,.10);
-  }
-  html,body{background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-  .wrap{max-width:1200px; margin:24px auto; padding:0 16px;}
-  header{display:flex; gap:10px; align-items:center; margin-bottom:10px}
-  .logo{display:inline-grid; place-items:center; width:36px; height:36px; border-radius:10px; background:var(--badge); font-weight:800}
-  h1{font-size:1.125rem; margin:0}
-  .badge{margin-left:10px; font-size:.75rem; padding:2px 8px; border-radius:999px; background:var(--badge); color:var(--muted);}
-  .badge.ok{background:rgba(25,195,125,.15); color:#19c37d}
-  .controls{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 18px}
-  .controls input[type="search"]{flex:1 1 320px; min-width:220px; padding:10px 12px; border-radius:10px; background:var(--card); border:1px solid #223044; color:var(--fg)}
-  .controls select, .controls label.switch{padding:10px 12px; border-radius:10px; background:var(--card); border:1px solid #223044; color:var(--fg)}
-  .controls .right{margin-left:auto; display:flex; gap:8px}
-  .switch{display:flex; align-items:center; gap:8px}
-
-  /* GRID: 1 на мобайле, 4 на десктопе */
-  #grid{display:grid; gap:14px}
-  @media (min-width:740px){ #grid{grid-template-columns:repeat(2,1fr);} }
-  @media (min-width:1024px){ #grid{grid-template-columns:repeat(4,1fr);} }
-
-  /* --- ровные карточки --- */
-  .card{
-    display:flex; flex-direction:column; height:100%;
-    background:var(--card); border:1px solid #1d2838; border-radius:16px; padding:12px; box-shadow:var(--shadow);
-  }
-  .thumb{
-    width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; background:#0a101a;
-  }
-  .body{display:flex; flex-direction:column; gap:6px; flex:1 1 auto; min-height:160px; margin-top:10px}
-  .badgeCat{display:inline-block; font-size:.7rem; color:var(--muted); background:var(--badge); padding:2px 8px; border-radius:999px; margin-bottom:6px}
-
-  .title{
-    font-weight:800; line-height:1.15;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.6em;
-  }
-  .meta{
-    color:var(--muted); font-size:.95rem;
-    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; min-height:3.9em;
-  }
-  .meta.expanded{-webkit-line-clamp:unset; min-height:auto}
-  .prices{display:flex; align-items:center; gap:10px; margin:4px 0 6px}
-  .now{color:#19c37d; font-weight:800}
-  .old{text-decoration:line-through; color:var(--muted)}
-  .stock{font-size:.8rem; color:#19c37d}
-  .stock.no{color:var(--danger)}
-  .actions{margin-top:auto; display:flex; gap:8px; flex-wrap:wrap}
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 14px; border-radius:10px; border:1px solid #223044; background:#0e1523; color:var(--fg); text-decoration:none; font-weight:700}
-  .btn.green{background:var(--accent); border-color:transparent; color:#03140a}
-  .btn.blue{background:var(--accent-2); border-color:transparent; color:#fff}
-  .btn.outline{background:transparent}
-  .like{margin-top:6px; font-size:.8rem; color:var(--muted); cursor:pointer; user-select:none}
-  .like.active{color:#19c37d}
-  .hidden{display:none}
-  .errorBox{background:#2a0f12; color:#ff9a9a; border:1px solid #642; padding:10px 12px; border-radius:12px}
-</style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <div class="logo">WT</div>
-      <h1>Terminator Deals — Hot Deals</h1>
-      <span id="status" class="badge">Live from Google Sheets → WhatsApp</span>
-      <span id="statusLoaded" class="badge ok hidden">loaded</span>
-    </header>
-
-    <div class="controls">
-      <input id="q" type="search" placeholder="Search by title, details, category..." />
-      <select id="cat"></select>
-      <select id="cond"></select>
-      <label class="switch"><input id="instock" type="checkbox" checked /> In stock only</label>
-      <div class="right">
-        <select id="theme">
-          <option value="dark">Theme: Dark</option>
-          <option value="light">Theme: Light</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="error" class="errorBox hidden"></div>
-    <section id="grid"></section>
-    <div id="empty" class="hidden">Nothing found.</div>
-  </div>
-
-<script>
-/* ===== CONFIG ===== */
-const SHEET_ID  = "1KzTz3QsWVZeVuxteE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk"; // твой лист
-const SHEET_NAME = "Sheet1";                                    // имя листа
-const WHATSAPP  = "13653784497";                                // твой номер (без +)
-const STATUS    = document.getElementById('status');
-const STATUS_OK = document.getElementById('statusLoaded');
-const ERRORBOX  = document.getElementById('error');
-
-/* ===== helpers ===== */
-const money = n => `$${Number(n||0).toLocaleString()}`;
-const slug  = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-
-/* CSV fetch (без кэша) */
-async function loadCSV(){
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-  const res = await fetch(url + '&t=' + Date.now(), { cache:'no-store' });
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.text();
+/* --- ровные карточки --- */
+.card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
 }
 
-/* CSV parser устойчивый к запятым в ячейке */
-function parseCSV(text){
-  const rows = [];
-  let i=0, cur="", row=[], inQ=false;
-  const pushCell=()=>{row.push(cur); cur="";};
-  const pushRow=()=>{rows.push(row); row=[];};
-  while(i<text.length){
-    const ch=text[i], nx=text[i+1];
-    if(ch==='\"'){
-      if(inQ && nx==='\"'){cur+='\"'; i+=2; continue;}
-      inQ=!inQ; i++; continue;
-    }
-    if(!inQ && (ch==='\n' || ch==='\r')){
-      pushCell(); if(row.length) pushRow();
-      while(text[i+1]==='\n' || text[i+1]==='\r') i++;
-      i++; continue;
-    }
-    if(!inQ && ch===','){ pushCell(); i++; continue; }
-    cur+=ch; i++;
-  }
-  if(cur.length || row.length){ pushCell(); pushRow(); }
-  const head = rows.shift().map(h=>h.trim());
-  return rows.filter(r=>r.length===head.length).map(r=>{
-    const obj={}; head.forEach((h,idx)=>obj[h]=r[idx]); return obj;
-  });
+.card .thumb{
+  width:100%;
+  aspect-ratio: 4/3;         /* одинаковая высота превью */
+  object-fit: cover;
+  border-radius:12px;
 }
 
-/* UI state */
-const FILTER = { q:"", cat:"All categories", cond:"All conditions", instock:true };
-
-/* populate filters */
-function populateFilters(items){
-  // categories
-  const cats = ["All categories", ...Array.from(new Set(items.map(x=>x.category).filter(Boolean)))];
-  const catSel = document.getElementById('cat');
-  catSel.innerHTML = cats.map(c=>`<option>${c}</option>`).join('');
-  catSel.value = FILTER.cat;
-
-  // conditions
-  const conds = ["All conditions", ...Array.from(new Set(items.map(x=>x.condition).filter(Boolean)))];
-  const condSel = document.getElementById('cond');
-  condSel.innerHTML = conds.map(c=>`<option>${c}</option>`).join('');
-  condSel.value = FILTER.cond;
+.card .body{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex:1 1 auto;             /* тянется, чтобы кнопки ушли вниз */
+  min-height:150px;
 }
 
-/* render */
-function render(items){
-  // filters
-  let list = items.slice();
-  if(FILTER.q){
-    const q = FILTER.q.toLowerCase();
-    list = list.filter(x =>
-      (x.title||'').toLowerCase().includes(q) ||
-      (x.details||'').toLowerCase().includes(q) ||
-      (x.category||'').toLowerCase().includes(q)
-    );
-  }
-  if(FILTER.cat && FILTER.cat!=="All categories"){
-    list = list.filter(x => x.category === FILTER.cat);
-  }
-  if(FILTER.cond && FILTER.cond!=="All conditions"){
-    list = list.filter(x => (x.condition||'').toLowerCase() === FILTER.cond.toLowerCase());
-  }
-  if(FILTER.instock){
-    list = list.filter(x => String(x.in_stock||'yes').toLowerCase()==='yes');
-  }
-
-  document.getElementById('empty').classList.toggle('hidden', list.length!==0);
-
-  const html = list.map(item=>{
-    const id = slug(item.title);
-    const selfLink = `${location.pathname}#${id}`; // якорь на текущей странице
-    const msg = `Hi! I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${location.origin}${selfLink}`;
-    const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
-
-    const amazon = item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="nofollow noopener noreferrer">Compare price</a>` : '';
-
-    const stockYes = String(item.in_stock||'yes').toLowerCase()==='yes';
-    const stockBadge = `<span class="stock ${stockYes?'':'no'}">${stockYes?'in stock':'out of stock'}</span>`;
-
-    return `
-<article class="card" id="${id}">
-  <img class="thumb" src="${item.image}" alt="${item.title}">
-  <div class="body">
-    <span class="badgeCat">${item.category||'Item'}</span>
-    <div class="title">${item.title||''}</div>
-    <div class="prices">
-      <div class="now">${money(item.price_now)}</div>
-      ${item.price_old ? `<div class="old">${money(item.price_old)}</div>` : ``}
-    </div>
-    <div class="meta" data-full="${(item.details||'').replace(/"/g,'&quot;')}">
-      ${(item.details||'').slice(0,220)}
-    </div>
-    <div style="display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.85rem">
-      ${stockBadge}
-      ${item.condition ? `<span>• ${item.condition}</span>` : ``}
-      <a href="#" class="readmore" data-id="${id}">Read more</a>
-    </div>
-    <div class="actions">
-      <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-      ${amazon}
-    </div>
-    <div class="like" data-id="${id}">★ Like</div>
-  </div>
-</article>`;
-  }).join('');
-
-  document.getElementById('grid').innerHTML = html;
-
-  // like memory
-  document.querySelectorAll('.like').forEach(el=>{
-    const id = el.dataset.id;
-    if(localStorage.getItem('like:'+id)==='1') el.classList.add('active');
-    el.onclick = e=>{
-      e.preventDefault();
-      const k='like:'+id, v = localStorage.getItem(k)==='1' ? '0' : '1';
-      localStorage.setItem(k, v);
-      el.classList.toggle('active', v==='1');
-    };
-  });
-
-  // read more toggler (не ломает сетку)
-  document.querySelectorAll('.readmore').forEach(a=>{
-    a.onclick = e=>{
-      e.preventDefault();
-      const id = a.dataset.id;
-      const meta = document.querySelector(`#${CSS.escape(id)} .meta`);
-      meta.classList.toggle('expanded');
-      a.textContent = meta.classList.contains('expanded') ? 'Read less' : 'Read more';
-      if(meta.classList.contains('expanded')){
-        meta.textContent = meta.getAttribute('data-full');
-      }else{
-        const full = meta.getAttribute('data-full')||'';
-        meta.textContent = full.slice(0,220);
-      }
-    };
-  });
+/* заголовок: максимум 2 строки, одинаковая высота блока */
+.card .title{
+  font-weight:700;
+  line-height:1.15;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:2.6em;
 }
 
-/* theme */
-(function initTheme(){
-  const sel = document.getElementById('theme');
-  const saved = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  sel.value = saved;
-  sel.onchange = e=>{
-    const v = e.target.value;
-    localStorage.setItem('theme', v);
-    document.documentElement.setAttribute('data-theme', v);
-  };
-})();
+/* описание: максимум 3 строки, одинаковая высота блока */
+.card .meta{
+  color:var(--muted);
+  font-size:.95rem;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:3.9em;
+}
 
-/* filters wired */
-document.getElementById('q').oninput   = e=>{ FILTER.q = e.target.value; render(window.__items||[]); };
-document.getElementById('cat').onchange = e=>{ FILTER.cat = e.target.value; render(window.__items||[]); };
-document.getElementById('cond').onchange= e=>{ FILTER.cond= e.target.value; render(window.__items||[]); };
-document.getElementById('instock').onchange = e=>{ FILTER.instock = e.target.checked; render(window.__items||[]); };
-
-/* bootstrap */
-(async function init(){
-  try{
-    const csv = await loadCSV();
-    const raw = parseCSV(csv);
-
-    // ожидаемые поля
-    const items = raw.map(r=>({
-      title:      r.title,
-      price_now:  r.price_now,
-      price_old:  r.price_old,
-      category:   r.category,
-      image:      r.image,
-      details:    r.details,
-      amazon_url: r.amazon_url,
-      in_stock:   r.in_stock,     // yes/no
-      condition:  r.condition     // New, Used like new, Used good...
-    }));
-
-    window.__items = items;
-    populateFilters(items);
-    render(items);
-
-    STATUS.classList.add('hidden');
-    STATUS_OK.classList.remove('hidden');
-  }catch(err){
-    ERRORBOX.classList.remove('hidden');
-    ERRORBOX.textContent = `Failed to load Google Sheet. Details: ${err.message||err}`;
-  }
-})();
-</script>
-</body>
-</html>
+/* кнопки всегда у нижнего края карточки */
+.card .actions{
+  margin-top:auto;
+  display:flex;
+  gap:8px;
+}

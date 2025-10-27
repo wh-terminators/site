@@ -36,10 +36,14 @@ header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 </div>
 
 <script>
-const SHEET_ID="1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
-const SHEET_NAME="Sheet1";
-const GID="0";
-const WHATSAPP="13653784497";
+/* ====== CONFIG ====== */
+const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+const GID = "0";
+const SHEET_NAME = "Catalog";  // Имя листа как внизу таблицы
+const WHATSAPP = "13653784497"; // Твой номер
+const STATUS = document.getElementById('status');
+const ERRBOX = document.getElementById('error');
+
 
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t)};
 (()=>{applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));document.getElementById('theme').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')})();

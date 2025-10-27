@@ -1,277 +1,334 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Warehouse Terminator Deals — Hot Deals</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0b0c10; --card:#1a1a1d; --text:#e9eef5; --muted:#a8b3c7; --accent:#00ff88;
-    --btn:#223246; --btn2:#1877f2; --btn3:#232f3e; --border:#273042;
-  }
-  [data-theme="light"]{
-    --bg:#f7f9fc; --card:#ffffff; --text:#0b0c10; --muted:#42536a; --accent:#0fbf6b;
-    --btn:#e6eef8; --btn2:#1877f2; --btn3:#232f3e; --border:#e6eef8;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand h1{font-size:18px;margin:0;color:var(--accent);font-weight:800}
-  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .switch,select,input{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-  input[type="search"]{min-width:220px}
-  .switch{cursor:pointer}
-  .wrap{max-width:1200px;margin:0 auto;padding:16px}
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media (max-width:520px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-  .media{position:relative;background:#0b1117}
-  .media img{width:100%;height:220px;object-fit:cover;display:block}
-  .navbtn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:6px 8px;cursor:pointer}
-  .prev{left:8px}.next{right:8px}
-  .fav{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 9px;cursor:pointer}
-  .fav.active{background:#ff2e63;border-color:#ff2e63}
-  .badge{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 8px;border-radius:999px;font-size:12px}
-  .body{padding:14px}
-  .title{margin:0 0 6px;font-size:16px;font-weight:800}
-  .meta{font-size:13px;color:var(--muted)}
-  .price{margin:10px 0;font-size:18px;color:var(--accent);font-weight:800}
-  .old{color:var(--muted);text-decoration:line-through;margin-left:8px;font-weight:600}
-  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid transparent;white-space:nowrap}
-  .btn-wa{background:#25D366;color:#042410}
-  .btn-fb{background:var(--btn2);color:#fff}
-  .btn-amz{background:var(--btn3);color:#fff}
-  .muted{opacity:.75}
-  .empty{padding:20px;text-align:center;color:var(--muted)}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Terminator Deals — Hot Deals</title>
+  <link rel="icon" href="favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1217;--card:#151a21;--muted:#9aa4b2;--text:#e6edf3;
+      --green:#16a34a;--green-2:#22c55e;--blue:#2563eb;--blue-2:#3b82f6;
+      --shadow:0 10px 30px rgba(0,0,0,.35);--radius:16px;
+      --img-h:210px; --fs:16px; --pad:14px; --gap:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1150px;margin:28px auto;padding:0 16px}
+    .header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .logo{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#10b981;font-weight:800;color:#0b1220}
+    h1{font-size:22px;margin:0}
+    .live{margin-left:8px;font-size:12px;color:#67e8f9;background:#0b2940;border:1px solid #0ea5e9;padding:4px 8px;border-radius:999px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 14px}
+    .control{background:#0c1118;border:1px solid #223042;color:var(--text);border-radius:12px;padding:10px 12px;min-height:42px}
+    .control select,.control input{background:transparent;border:none;outline:none;color:inherit;font:inherit}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:8px}
+    @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:520px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid #1e2632;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{position:relative;background:#0b0f15}
+    .thumb img{width:100%;height:var(--img-h);object-fit:cover;display:block}
+    .badge{position:absolute;left:10px;top:10px;background:rgba(15,23,42,.9);color:#7dd3fc;border:1px solid #164e63;font-size:12px;padding:4px 8px;border-radius:999px}
+    .body{padding:var(--pad) var(--pad) 8px}
+    .title{font-weight:700;line-height:1.25;margin:0 0 6px;font-size:var(--fs);min-height:calc(var(--fs)*2.5)}
+    .desc{color:var(--muted);font-size:calc(var(--fs)*0.85);line-height:1.4}
+    .price{display:flex;align-items:center;gap:10px;margin:10px 0 0}
+    .now{color:#4ade80;font-weight:800}
+    .old{color:#93a1b1;text-decoration:line-through}
+    .actions{display:flex;gap:10px;padding:12px var(--pad) 16px}
+    .btn{flex:1;text-align:center;padding:12px 10px;border-radius:12px;font-weight:700;border:1px solid transparent;transition:.15s}
+    .btn.whatsapp{background:linear-gradient(180deg,var(--green-2),var(--green));color:#05270f}
+    .btn.whatsapp:hover{filter:brightness(1.07)}
+    .btn.amazon{background:linear-gradient(180deg,var(--blue-2),var(--blue));color:white}
+    .btn.amazon:hover{filter:brightness(1.07)}
+    .btn.share{background:#1f2a3a;color:#e2e8f0;border:1px solid #334155}
+    .empty{opacity:.6;text-align:center;padding:40px 0}
+    .size-cozy   { --img-h:190px; --fs:15px; --pad:12px; --gap:14px; }
+    .size-compact{ --img-h:160px; --fs:14px; --pad:10px; --gap:12px; }
+    .pager{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 0}
+    .pager button,.pager select{background:#0c1118;border:1px solid #223042;color:var(--text);border-radius:10px;padding:8px 12px;min-height:38px;cursor:pointer}
+    .pager .muted{color:#9aa4b2}
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <h1>Warehouse Terminator Deals</h1>
-    <span class="muted">Live from Google Sheets → WhatsApp</span>
-  </div>
-  <div class="tools">
-    <button id="theme" class="switch" title="Toggle theme">🌙 / ☀️</button>
-  </div>
-</header>
+  <div class="container" id="root">
+    <div class="header">
+      <div class="logo">WT</div>
+      <h1>Terminator Deals — Hot Deals</h1>
+      <span class="live">Live from Google Sheets → WhatsApp</span>
+    </div>
 
-<div class="wrap">
-  <div class="filters">
-    <input id="q" type="search" placeholder="Search by title, details, category…" />
-    <select id="cat"><option value="">All categories</option></select>
-    <select id="stock">
-      <option value="">All items</option>
-      <option value="yes">In stock</option>
-      <option value="no">Out of stock</option>
-    </select>
-    <select id="sort">
-      <option value="">Sort: Default</option>
-      <option value="price-asc">Price ↑</option>
-      <option value="price-desc">Price ↓</option>
-      <option value="title-asc">Title A→Z</option>
-      <option value="title-desc">Title Z→A</option>
-      <option value="fav">Favourites</option>
-    </select>
-  </div>
+    <div class="controls">
+      <div class="control" style="flex:1 1 260px;">
+        <input id="q" type="search" placeholder="Search by title, details, category…" />
+      </div>
+      <div class="control">
+        <select id="cat"><option value="">All categories</option></select>
+      </div>
+      <div class="control">
+        <select id="stock">
+          <option value="all">All items</option>
+          <option value="in">In stock</option>
+          <option value="out">Out of stock</option>
+        </select>
+      </div>
+      <div class="control">
+        <select id="sort">
+          <option value="default">Sort: Default</option>
+          <option value="price_asc">Price: Low → High</option>
+          <option value="price_desc">Price: High → Low</option>
+        </select>
+      </div>
+      <div class="control">
+        <select id="size">
+          <option value="comfortable">Size: Comfortable</option>
+          <option value="cozy">Size: Cozy</option>
+          <option value="compact">Size: Compact</option>
+        </select>
+      </div>
+      <div class="control">
+        <select id="ppg">
+          <option value="8">8 per page</option>
+          <option value="12" selected>12 per page</option>
+          <option value="16">16 per page</option>
+          <option value="24">24 per page</option>
+        </select>
+      </div>
+    </div>
 
-  <div id="grid" class="grid"></div>
-  <p id="empty" class="empty" style="display:none">Nothing found.</p>
-</div>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">Nothing found.</div>
+
+    <div class="pager" id="pager" style="display:none;">
+      <button id="prev">← Prev</button>
+      <span class="muted" id="pageInfo"></span>
+      <button id="next">Next →</button>
+    </div>
+  </div>
 
 <script>
-/* === CONFIG === */
-const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // твой ID — менять не нужно
-const SHEET_NAME = 'Products';
-const GVIZ = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
-const WHATSAPP = '13653784497'; // твой номер без плюса
+/** CONFIG **/
+const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
+const SHEET_NAME = 'Sheet1';
+const WHATSAPP   = '+13653784497';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-/* === STATE === */
-let ITEMS = [];
-let FAVS = new Set(JSON.parse(localStorage.getItem('wt_favs')||'[]'));
-
-/* === THEME === */
-const root = document.documentElement;
-const themeBtn = document.getElementById('theme');
-(function initTheme(){
-  const t = localStorage.getItem('wt_theme') || 'dark';
-  root.setAttribute('data-theme', t);
-})();
-themeBtn.addEventListener('click', ()=>{
-  const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  root.setAttribute('data-theme', t);
-  localStorage.setItem('wt_theme', t);
-});
-
-/* === HELPERS === */
-const $ = s => document.querySelector(s);
-function money(v){
-  if(v==null || v==='') return '';
+/** UTILS **/
+const $  = s => document.querySelector(s);
+const root = $('#root');
+const slug = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const money = v => {
   const n = Number(v);
-  return isFinite(n) ? `$${n.toFixed(n%1?2:0)}` : `$${v}`;
-}
-function normRow(r){
-  const o = {};
-  for(const k in r) o[k.trim().toLowerCase()] = r[k];
-  return {
-    title: o.title || '',
-    price_now: o.price_now || '',
-    price_old: o.price_old || '',
-    category: o.category || '',
-    image: o.image || '',
-    details: o.details || '',
-    fb_url: o.fb_url || '',
-    in_stock: (o.in_stock||'yes').toString().toLowerCase()
-  };
-}
-function buildWA(item){
-  const msg = `Hi! I'm interested in "${item.title}" for ${money(item.price_now)}${item.fb_url?` — ${item.fb_url}`:''}`;
-  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
-}
-function parseGviz(text){
-  const json = text.replace(/^[\s\S]*setResponse\(/,'').replace(/\);?\s*$/,'');
-  return JSON.parse(json);
-}
-
-/* === LOAD === */
-async function load(){
-  try{
-    const res = await fetch(GVIZ, {cache:'no-store'});
-    const text = await res.text();
-    const g = parseGviz(text);
-    const cols = g.table.cols.map(c=>c.label||c.id);
-    const rows = g.table.rows.map(r=>{
-      const obj = {};
-      r.c.forEach((cell,i)=>obj[cols[i]] = cell ? cell.v : '');
-      return obj;
-    });
-    ITEMS = rows.map(normRow);
-    fillCategories();
-    render();
-  }catch(e){
-    console.error(e);
-    $('#empty').style.display='';
-    $('#empty').textContent='Failed to load products.';
-  }
-}
-
-/* === RENDER === */
-function imagesOf(item){
-  // несколько ссылок через запятую → массив
-  return String(item.image||'').split(',').map(s=>s.trim()).filter(Boolean);
-}
-function card(item, idx){
-  const imgs = imagesOf(item);
-  const hasGallery = imgs.length > 1;
-  // price_old: ссылка → кнопка Amazon, иначе зачёркнутая цена
-  let old = '';
-  if(item.price_old){
-    const val = String(item.price_old).trim();
-    if(val.startsWith('http')){
-      old = `<a href="${val}" target="_blank" rel="noopener nofollow" class="btn btn-amz">🔍 Compare on Amazon</a>`;
-    }else{
-      old = `<span class="old">${money(val)}</span>`;
+  if (Number.isFinite(n)) return `$${n.toLocaleString('en-CA',{maximumFractionDigits:0})}`;
+  const m = String(v||'').match(/[\d.,]+/);
+  return m ? `$${m[0].replace(/,/g,'')}` : '';
+};
+const csvToRows = (csv) => {
+  const lines = csv.split(/\r?\n/).filter(Boolean);
+  const head = lines.shift().split(',').map(h => h.replace(/^"|"$/g,'').trim());
+  return lines.map(line=>{
+    const cells=[]; let cur='', q=false;
+    for (let i=0;i<line.length;i++){
+      const ch=line[i];
+      if (ch==='"' && line[i+1]==='"'){ cur+='"'; i++; continue; }
+      if (ch==='\"'){ q=!q; continue; }
+      if (ch===',' && !q){ cells.push(cur); cur=''; continue; }
+      cur+=ch;
     }
-  }
-  const id = `card-${idx}`;
-  const favActive = FAVS.has(item.title) ? 'active' : '';
-  const badge = item.category ? `<span class="badge">${item.category}</span>` : '';
+    cells.push(cur);
+    const obj={};
+    head.forEach((h,idx)=> obj[h]= (cells[idx]||'').replace(/^"|"$/g,'').trim());
+    return obj;
+  });
+};
+
+/** RENDER **/
+const grid = $('#grid'), empty = $('#empty');
+const pager = $('#pager'), pageInfo = $('#pageInfo');
+const prevBtn = $('#prev'), nextBtn = $('#next');
+
+let ALL=[], FILTERED=[];
+let PAGE=1, PPG=12;
+
+function productUrl(id){ return `${location.origin}/product.html?id=${encodeURIComponent(id)}`; }
+
+function buildCard(item){
+  const id = slug(item.title);
+  const cat = item.category || 'Other';
+  const img = (item.image||'').split(',')[0]?.trim() || '';
+  const now = money(item.price_now);
+  const old = money(item.price_old);
+  const details = item.details || '';
+  const amazon = (item.amazon_url||'').trim();
+
+  const text = `Hi! I'm interested in "${item.title}" (${cat}). Link: ${productUrl(id)}`;
+  const wa = `https://wa.me/${WHATSAPP.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`;
+
   return `
-    <article class="card" data-title="${item.title.toLowerCase()}" data-cat="${item.category}" data-stock="${item.in_stock}">
-      <div class="media" data-idx="${idx}" data-i="0">
-        ${badge}
-        <button class="fav ${favActive}" title="Add to favourites" onclick="toggleFav('${encodeURIComponent(item.title)}', this)">❤</button>
-        <img loading="lazy" src="${imgs[0]||''}" alt="${item.title}">
-        ${hasGallery?`<button class="navbtn prev" onclick="navImg(${idx},-1)">◀</button>
-                      <button class="navbtn next" onclick="navImg(${idx},1)">▶</button>`:''}
+  <article class="card" data-cat="${slug(cat)}" data-id="${id}">
+    <a class="thumb" href="${productUrl(id)}" aria-label="View details">
+      <img loading="lazy" src="${img}" alt="${item.title}"
+           onerror="this.src='https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop'">
+      <span class="badge">${cat}</span>
+    </a>
+    <div class="body">
+      <a class="title" style="display:block" href="${productUrl(id)}">${item.title}</a>
+      <p class="desc">${details}</p>
+      <div class="price">
+        ${now? `<span class="now">${now}</span>`:''}
+        ${old? `<span class="old">${old}</span>`:''}
       </div>
-      <div class="body">
-        <h3 class="title">${item.title}</h3>
-        <div class="meta">${item.details||''}</div>
-        <div class="price">${money(item.price_now)} ${old}</div>
-        <div class="row">
-          <a class="btn btn-wa" href="${buildWA(item)}" target="_blank" rel="noopener">Message on WhatsApp</a>
-          ${item.fb_url?`<a class="btn btn-fb" href="${item.fb_url}" target="_blank" rel="noopener">View on Facebook</a>`:''}
-        </div>
-      </div>
-    </article>
-  `;
+    </div>
+    <div class="actions">
+      <a class="btn share" href="#" data-share="${productUrl(id)}">Share</a>
+      <a class="btn whatsapp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+      ${amazon ? `<a class="btn amazon" href="${amazon}" target="_blank" rel="noopener nofollow">Compare on Amazon</a>` : ''}
+    </div>
+  </article>`;
 }
-function render(){
-  const q = $('#q').value.toLowerCase().trim();
-  const cat = $('#cat').value;
-  const stock = $('#stock').value;
-  const sort = $('#sort').value;
 
-  let list = ITEMS.slice();
+function paginate(list){
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total/PPG));
+  PAGE = Math.min(Math.max(1,PAGE), pages);
 
-  // Filter
-  list = list.filter(x=>{
-    if (stock && x.in_stock!==stock) return false;
-    if (cat && x.category !== cat) return false;
-    if (q && !(x.title.toLowerCase().includes(q) || (x.details||'').toLowerCase().includes(q) || (x.category||'').toLowerCase().includes(q))) return false;
-    if (sort==='fav' && !FAVS.has(x.title)) return false;
+  const start = (PAGE-1)*PPG;
+  const slice = list.slice(start, start+PPG);
+
+  grid.innerHTML = slice.map(buildCard).join('');
+  empty.style.display = slice.length? 'none':'block';
+
+  if (pages>1){
+    pager.style.display='';
+    pageInfo.textContent = `Page ${PAGE} of ${pages} • ${total} items`;
+    prevBtn.disabled = PAGE===1;
+    nextBtn.disabled = PAGE===pages;
+  }else{
+    pager.style.display='none';
+  }
+}
+
+function applyFilters(){
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const cat = document.getElementById('cat').value;
+  const stock = document.getElementById('stock').value;
+  const sort = document.getElementById('sort').value;
+
+  const base = ALL.filter(x=>{
+    if (stock==='in'  && String(x.in_stock||'yes').toLowerCase()!=='yes') return false;
+    if (stock==='out' && String(x.in_stock||'yes').toLowerCase()==='yes') return false;
+    if (cat && slug(x.category)!==cat) return false;
+    if (q){
+      const hay = `${x.title} ${x.details} ${x.category}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
     return true;
   });
 
-  // Sort
-  if (sort==='price-asc') list.sort((a,b)=>(Number(a.price_now)||1e15)-(Number(b.price_now)||1e15));
-  if (sort==='price-desc') list.sort((a,b)=>(Number(b.price_now)||-1e15)-(Number(a.price_now)||-1e15));
-  if (sort==='title-asc') list.sort((a,b)=>String(a.title).localeCompare(String(b.title)));
-  if (sort==='title-desc') list.sort((a,b)=>String(b.title).localeCompare(String(a.title)));
+  if (sort==='price_asc')  base.sort((a,b)=> (parseFloat(a.price_now)||1e12) - (parseFloat(b.price_now)||1e12));
+  if (sort==='price_desc') base.sort((a,b)=> (parseFloat(b.price_now)||-1e12) - (parseFloat(a.price_now)||-1e12));
 
-  const grid = $('#grid');
-  grid.innerHTML = list
-    .filter(x=>x.in_stock!=='no') // по умолчанию скрываем sold; покажем, если нужно, через фильтр "Out of stock"
-    .map((item,i)=>card(item,i))
-    .join('');
-
-  $('#empty').style.display = list.length ? 'none' : '';
+  FILTERED = base;
+  PAGE = 1; // при фильтрации возвращаемся на первую страницу
+  paginate(FILTERED);
 }
 
-/* === GALLERY NAV === */
-function navImg(idx, dir){
-  const card = document.querySelector(`.media[data-idx="${idx}"]`);
-  if(!card) return;
-  const i = Number(card.getAttribute('data-i')||0);
-  const imgs = imagesOf(ITEMS[idx]);
-  const next = (i + dir + imgs.length) % imgs.length;
-  card.setAttribute('data-i', String(next));
-  const img = card.querySelector('img');
-  img.src = imgs[next] || '';
-}
-
-/* === FAVOURITES === */
-function toggleFav(titleEncoded, btn){
-  const title = decodeURIComponent(titleEncoded);
-  if(FAVS.has(title)) { FAVS.delete(title); btn.classList.remove('active'); }
-  else { FAVS.add(title); btn.classList.add('active'); }
-  localStorage.setItem('wt_favs', JSON.stringify([...FAVS]));
-}
-
-/* === CATEGORIES === */
 function fillCategories(){
-  const set = new Set(ITEMS.map(i=>i.category).filter(Boolean));
-  const sel = $('#cat');
-  const now = sel.value;
-  sel.innerHTML = `<option value="">All categories</option>` + [...set].sort().map(c=>`<option>${c}</option>`).join('');
-  if ([...set].includes(now)) sel.value = now;
+  const set = new Set(ALL.map(x=> slug(x.category||'Other')));
+  const names = {};
+  ALL.forEach(x=> names[slug(x.category||'Other')] = x.category||'Other');
+  const sel = document.getElementById('cat');
+  sel.innerHTML = `<option value="">All categories</option>` +
+    [...set].sort().map(v=>`<option value="${v}">${names[v]}</option>`).join('');
 }
 
-/* === EVENTS === */
-$('#q').addEventListener('input', render);
-$('#cat').addEventListener('change', render);
-$('#stock').addEventListener('change', render);
-$('#sort').addEventListener('change', render);
+/** LOAD **/
+(async function(){
+  try{
+    const res = await fetch(CSV_URL,{cache:'no-store'});
+    const csv = await res.text();
+    const rows = csvToRows(csv);
 
-/* === START === */
-load();
+    const key = s => (s||'').toString().trim().toLowerCase();
+    ALL = rows.map(r=>{
+      const obj={}; for (const k in r){ obj[key(k)] = r[k]; }
+      return {
+        title:       obj.title || '',
+        price_now:   obj.price_now || '',
+        price_old:   obj.price_old || '',
+        category:    obj.category || 'Other',
+        image:       obj.image || '',
+        details:     obj.details || '',
+        amazon_url:  obj.amazon_url || '',
+        in_stock:    obj.in_stock || 'yes'
+      };
+    });
+
+    const savedSize = localStorage.getItem('cardSize') || 'comfortable';
+    document.getElementById('size').value = savedSize;
+    applySize(savedSize);
+
+    const savedPPG = Number(localStorage.getItem('ppg')||12);
+    document.getElementById('ppg').value = String(savedPPG);
+    PPG = savedPPG;
+
+    fillCategories();
+    applyFilters();
+
+  }catch(e){
+    console.error(e);
+    grid.innerHTML = '<div class="empty">Failed to load catalog.</div>';
+  }
+})();
+
+/** EVENTS **/
+document.getElementById('q').addEventListener('input', applyFilters);
+document.getElementById('cat').addEventListener('change', applyFilters);
+document.getElementById('stock').addEventListener('change', applyFilters);
+document.getElementById('sort').addEventListener('change', applyFilters);
+
+// размер карточек
+document.getElementById('size').addEventListener('change', (e)=>{
+  const v = e.target.value;
+  applySize(v);
+  localStorage.setItem('cardSize', v);
+});
+function applySize(v){
+  root.classList.remove('size-cozy','size-compact');
+  if (v==='cozy') root.classList.add('size-cozy');
+  if (v==='compact') root.classList.add('size-compact');
+}
+
+// пагинация
+document.getElementById('ppg').addEventListener('change', (e)=>{
+  PPG = Number(e.target.value)||12;
+  localStorage.setItem('ppg', String(PPG));
+  PAGE = 1;
+  paginate(FILTERED);
+});
+document.getElementById('prev').addEventListener('click', ()=>{ PAGE--; paginate(FILTERED); });
+document.getElementById('next').addEventListener('click', ()=>{ PAGE++; paginate(FILTERED); });
+
+// Share (копировать ссылку)
+grid.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('a.btn.share');
+  if (!btn) return;
+  e.preventDefault();
+  const url = btn.dataset.share;
+  try{
+    await navigator.clipboard.writeText(url);
+    btn.textContent = 'Copied!';
+    setTimeout(()=> btn.textContent='Share', 1000);
+  }catch(_){
+    btn.textContent = 'Failed';
+    setTimeout(()=> btn.textContent='Share', 1000);
+  }
+});
 </script>
 </body>
 </html>
+

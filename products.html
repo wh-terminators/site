@@ -1,191 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Terminator Deals — Hot Deals</title>
-<link rel="icon" href="/favicon.ico">
-<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="favicon.ico">
 <style>
-  /* Базовые стили (оставил твой тёмный стиль) */
-  body{background:#0e1015;color:#e9eef6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-  .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
-  .title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;margin-bottom:10px}
-  .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#123}
-  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
-  .toolbar input,.toolbar select{background:#151a22;border:1px solid #232a36;color:#dfe7f3;border-radius:10px;padding:10px 12px}
+  :root { --cols: 4; --gap:20px; --card-bg:#10141b; --card-bd:rgba(255,255,255,.08); --muted:#9fb0c3; }
 
-  /* Сетка карточек. По умолчанию auto-fit с минимальной шириной 260px */
-  .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  body{margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#e9eef6; background:#0b1118;}
+  .wrap{max-width:1200px; margin:24px auto; padding:0 16px;}
+  header{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  header .badge{background:#0ea5e9; color:#00131f; padding:4px 8px; border-radius:999px; font-weight:700;}
+  header small{opacity:.7}
 
-  /* Принудительное число колонок (1/2/3/4) — с безопасным minmax,
-     чтобы на совсем узких экранах колонок стало меньше, а не микрокарточки */
-  body.cols-1 .grid{grid-template-columns:repeat(1,minmax(260px,1fr))}
-  body.cols-2 .grid{grid-template-columns:repeat(2,minmax(260px,1fr))}
-  body.cols-3 .grid{grid-template-columns:repeat(3,minmax(260px,1fr))}
-  body.cols-4 .grid{grid-template-columns:repeat(4,minmax(260px,1fr))}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 18px;}
+  .toolbar input, .toolbar select{
+    padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+    background:#0f1621; color:#e9eef6; outline:none; min-height:42px;
+  }
+  .toolbar input{flex:1 1 260px; min-width:200px;}
+  .toolbar select{flex:0 0 190px;}
+  .right{margin-left:auto; display:flex; gap:10px; flex-wrap:wrap;}
 
-  .card{background:#131821;border:1px solid #202531;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #0005}
-  .thumb{width:100%;height:200px;object-fit:cover;display:block}
-  .cat{position:absolute;left:10px;top:10px;background:#123;border:1px solid #245;color:#9fe;font-size:12px;padding:3px 8px;border-radius:999px}
-  .ph{position:relative}
-  .body{padding:12px}
-  .t{font-weight:700;margin:2px 0 6px}
-  .d{font-size:13px;opacity:.8;min-height:36px}
-  .price{display:flex;align-items:center;gap:8px;margin-top:8px}
-  .now{color:#22d47b;font-weight:800}
-  .old{text-decoration:line-through;opacity:.6}
-  .btns{display:flex;gap:8px;margin:12px 0 8px}
-  .btn{flex:1;text-align:center;background:#0b5;border:0;color:#001;font-weight:700;padding:10px 12px;border-radius:12px;cursor:pointer}
-  .btn.sec{background:#18314f;color:#cfe}
-  .btn.ghost{background:#161b25;color:#cfe;border:1px solid #2a3241}
-  .like{display:inline-flex;align-items:center;gap:6px;font-size:13px;opacity:.8;cursor:pointer}
-  .like.liked{color:#ffb703;opacity:1}
-  .foot{display:flex;justify-content:space-between;align-items:center;padding:0 12px 12px}
-  .hidden{display:none!important}
+  .grid{display:grid; grid-template-columns:repeat(var(--cols), minmax(0,1fr)); gap:var(--gap);}
+  @media (max-width: 768px){ :root{ --cols:2; } }
+
+  .card{
+    background:linear-gradient(180deg,#0f1621 0%, #0c121b 100%);
+    border:1px solid var(--card-bd); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .thumb{aspect-ratio:4/3; background:#0a0f16; display:block; width:100%; object-fit:cover;}
+  .cat{position:absolute; top:10px; left:10px; background:rgba(255,255,255,.08); padding:4px 8px; border-radius:999px; font-size:12px}
+  .body{padding:12px 14px; display:flex; flex-direction:column; gap:6px}
+  .title{font-weight:700; line-height:1.25}
+  .meta{color:var(--muted); font-size:13px; line-height:1.35}
+  .prices{display:flex; align-items:baseline; gap:10px; margin-top:4px}
+  .now{color:#22c55e; font-weight:800}
+  .old{color:#94a3b8; text-decoration:line-through}
+
+  .btns{display:flex; gap:10px; margin-top:10px}
+  .btn{
+    flex:1 1 auto; text-align:center; text-decoration:none; font-weight:700; padding:10px 12px; border-radius:999px;
+    border:1px solid rgba(255,255,255,.12); background:#0f1621; color:#e9eef6;
+  }
+  .btn.whatsapp{background:#16a34a; color:#001a0b; border-color:#16a34a;}
+  .btn.compare{background:#0ea5e9; color:#00131f; border-color:#0ea5e9;}
+  .btn:disabled, .btn[aria-disabled="true"]{opacity:.45; pointer-events:none}
+
+  .foot{display:flex; justify-content:space-between; padding:10px 14px 14px; color:#8aa0b8; font-size:12px; opacity:.8}
+  .hidden{display:none !important}
+
+  /* всплывашка детали */
+  .details{display:none; margin-top:6px; color:#b6c3d3; font-size:14px}
+  .more{cursor:pointer; color:#7dd3fc; font-size:13px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="title">
-    <img src="/assets/logo.png" alt="" width="28" height="28" style="border-radius:8px">
-    <span>Terminator Deals — Hot Deals</span>
-    <span class="badge">Live from Google Sheets → WhatsApp</span>
-  </div>
+  <div class="wrap">
+    <header>
+      <span class="badge">WT</span>
+      <h1 style="margin:0;font-size:22px">Terminator Deals — Hot Deals</h1>
+      <small>Live from Google Sheets → WhatsApp</small>
+    </header>
 
-  <div class="toolbar">
-    <input id="q" type="search" placeholder="Search by title, details, category">
-    <select id="cat"><option value="">All categories</option></select>
-    <!-- Новый селектор количества колонок -->
-    <select id="cols">
-      <option value="1">1 per row</option>
-      <option value="2">2 per row</option>
-      <option value="3">3 per row</option>
-      <option value="4">4 per row</option>
-    </select>
-  </div>
+    <div class="toolbar">
+      <input id="q" placeholder="Search by title, details, category…" />
+      <select id="cat"></select>
+      <select id="stock">
+        <option value="in">In stock only</option>
+        <option value="all">All items</option>
+      </select>
+      <div class="right">
+        <select id="cols">
+          <option value="auto" selected>Auto (2 mobile / 4 desktop)</option>
+          <option value="1">1 per row</option>
+          <option value="2">2 per row</option>
+          <option value="3">3 per row</option>
+          <option value="4">4 per row</option>
+        </select>
+      </div>
+    </div>
 
-  <div id="grid" class="grid"></div>
-  <div id="empty" class="hidden" style="opacity:.8;margin:18px 6px">Nothing found.</div>
-</div>
+    <div id="grid" class="grid"></div>
+    <p id="empty" class="hidden" style="opacity:.7;margin-top:18px">Nothing found.</p>
+  </div>
 
 <script>
-/* === НАСТРОЙКИ === */
-const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
-const PHONE = '13653784497';
+/** ===== CONFIG ===== **/
+const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+const GID      = "0";
+const WA_NUMBER = "13653784497"; // ✅ твой реальный WhatsApp
+const SITE_ROOT = location.origin;
 
-/* === УТИЛИТЫ === */
-const money = v => '$' + Number(v||0).toLocaleString('en-CA',{maximumFractionDigits:0});
-const slug  = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-const imgSrc = u => (!u)?'/assets/products/placeholder.webp':(/^https?:\/\//i.test(u)?u:(u.startsWith('/')?u:`/${u}`));
-function likeKey(id){ return 'wt_like_'+id; }
-function isLiked(id){ return localStorage.getItem(likeKey(id))==='1'; }
-function toggleLike(id){
-  const on = !isLiked(id);
-  localStorage.setItem(likeKey(id), on?'1':'0');
-  const el = document.querySelector(`[data-like="${id}"]`);
-  if(el){ el.classList.toggle('liked', on); el.querySelector('span').textContent = on?'Liked':'Like'; }
-}
+/** ===== HELPERS ===== **/
+const qs = s => document.querySelector(s);
+const money = n => n ? `$${Number(n).toLocaleString()}` : "";
+const slug  = s => String(s||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
-/* === ЗАГРУЗКА ИЗ GOOGLE SHEETS (CSV) === */
+/** ===== LOAD CSV FROM GOOGLE SHEETS ===== **/
 async function loadItems(){
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-  const csv = await (await fetch(url,{cache:'no-store'})).text();
-  return parseCSV(csv).map(r=>({
-    title:r.title||'',price_now:+r.price_now||0,price_old:r.price_old||'',
-    category:r.category||'',image:r.image||'',details:r.details||'',
-    a_url:r.a_url||'',in_stock:(r.in_stock||'yes').toLowerCase().startsWith('y')?'yes':'no',
-    id: slug(r.title)
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+  const txt = await (await fetch(url, {cache:'no-store'})).text();
+
+  const rows = [];
+  let i=0, cell="", inQ=false, row=[];
+  while(i<=txt.length){
+    const c = txt[i++] || "\n";
+    if(inQ){
+      if(c === '"' && txt[i] === '"'){ cell+='"'; i++; }
+      else if(c === '"'){ inQ=false; }
+      else { cell+=c; }
+    }else{
+      if(c === '"'){ inQ=true; }
+      else if(c === ","){ row.push(cell); cell=""; }
+      else if(c === "\n" || c === "\r"){ if(cell!=="" || row.length){ row.push(cell); rows.push(row); row=[]; cell=""; } }
+      else { cell+=c; }
+    }
+  }
+  const header = rows.shift().map(h => h.trim().toLowerCase());
+  const idx = k => header.indexOf(k);
+
+  return rows.filter(r => r.length).map(r => ({
+    title     : r[idx("title")]      || "",
+    price_now : r[idx("price_now")]  || "",
+    price_old : r[idx("price_old")]  || "",
+    category  : r[idx("category")]   || "",
+    image     : r[idx("image")]      || "",
+    details   : r[idx("details")]    || "",
+    url       : r[idx("url")]        || "",
+    in_stock  : (r[idx("in_stock")]  || "").toLowerCase().startsWith("y")
   }));
 }
-function parseCSV(txt){
-  const rows=[],r=[];let cell='',q=false;
-  for(let i=0;i<txt.length;i++){
-    const c=txt[i],n=txt[i+1];
-    if(c==='\"'){ if(q&&n==='\"'){ cell+='\"'; i++; } else q=!q; }
-    else if(c===','&&!q){ r.push(cell); cell=''; }
-    else if((c==='\n'||c==='\r')&&!q){ if(cell!==''||r.length){ r.push(cell); rows.push(r.slice()); r.length=0; cell=''; } }
-    else cell+=c;
-  }
-  if(cell!==''||r.length){ r.push(cell); rows.push(r); }
-  const head=rows.shift().map(h=>h.trim());
-  return rows.map(row=>{const o={};head.forEach((h,i)=>o[h]=row[i]??'');return o;});
+
+/** ===== RENDER ===== **/
+const STATE = { q:"", cat:"", stock:"in", cols:"auto", items:[], view:[] };
+
+function buildCategories(items){
+  const set = new Set(items.map(x => x.category).filter(Boolean));
+  const cat = qs("#cat");
+  const options = ['<option value="">All categories</option>', ...[...set].sort().map(c => `<option value="${c}">${c}</option>`)];
+  cat.innerHTML = options.join("");
 }
 
-/* === РЕНДЕР === */
-let ITEMS=[],FILTER={q:'',cat:''};
-async function init(){
-  ITEMS = await loadItems();
-  // категории только из in_stock
-  const cats=[...new Set(ITEMS.filter(x=>x.in_stock==='yes').map(x=>x.category))].sort();
-  const sel=document.getElementById('cat');
-  cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
-  render();
+function filterItems(){
+  const q = STATE.q.trim().toLowerCase();
+  const inStockOnly = STATE.stock === "in";
+  const cat = STATE.cat;
+
+  STATE.view = STATE.items.filter(it => {
+    if(inStockOnly && !it.in_stock) return false;
+    if(cat && it.category !== cat) return false;
+    if(q){
+      const hay = `${it.title} ${it.details} ${it.category}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
 }
+
+function cardTemplate(it){
+  const id = slug(it.title);
+  const productLink = `${SITE_ROOT}/product.html?id=${encodeURIComponent(id)}`;
+  const waMsg = encodeURIComponent(`Hi! I'm interested in "${it.title}" for ${money(it.price_now)}. Details: ${productLink}`);
+  const wa = `https://wa.me/${WA_NUMBER}?text=${waMsg}`;
+
+  const compareBtn = it.url ? `<a class="btn compare" href="${it.url}" target="_blank" rel="noopener">Compare price</a>` : `<a class="btn compare" aria-disabled="true">Compare price</a>`;
+
+  return `
+  <article class="card">
+    <div style="position:relative">
+      <img class="thumb" src="${it.image}" alt="${it.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/800x600?text=No+Image'">
+      ${it.category ? `<span class="cat">${it.category}</span>` : ``}
+    </div>
+    <div class="body">
+      <div class="title">${it.title}</div>
+      <div class="prices">
+        <div class="now">${money(it.price_now)}</div>
+        ${it.price_old ? `<div class="old">${money(it.price_old)}</div>` : ``}
+      </div>
+      ${it.details ? `<div class="meta">
+          <span class="short">${it.details.slice(0, 95)}${it.details.length>95?'…':''}</span>
+          ${it.details.length>95?`<span class="more" data-id="${id}">More</span>`:''}
+          <div class="details" id="det-${id}">${it.details}</div>
+        </div>` : ``}
+      <div class="btns">
+        <a class="btn whatsapp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+        ${compareBtn}
+      </div>
+    </div>
+    <div class="foot">
+      <span>${it.in_stock ? "In stock" : "Out of stock"}</span>
+      <a href="${productLink}" style="color:#7dd3fc" target="_blank" rel="noopener">Open page</a>
+    </div>
+  </article>`;
+}
+
 function render(){
-  const grid=document.getElementById('grid'),q=FILTER.q.toLowerCase(),cat=FILTER.cat;
-  let list=ITEMS.filter(x=>x.in_stock==='yes');        // по умолчанию нет out-of-stock
-  if(cat) list=list.filter(x=>x.category===cat);
-  if(q) list=list.filter(x=>
-    x.title.toLowerCase().includes(q) ||
-    x.details.toLowerCase().includes(q) ||
-    x.category.toLowerCase().includes(q)
-  );
+  filterItems();
+  const grid = qs("#grid");
+  grid.innerHTML = STATE.view.map(cardTemplate).join("");
 
-  grid.innerHTML=list.map(x=>{
-    const wa=`https://wa.me/${PHONE}?text=${encodeURIComponent(
-      `Hi! I'm interested in "${x.title}" (${money(x.price_now)}). Link: ${location.origin}/product.html?id=${x.id}`
-    )}`;
-    const compare=x.a_url?`<a class="btn sec" href="${x.a_url}" target="_blank" rel="noopener">Compare price</a>`:'';
-    return `<article class="card">
-      <div class="ph">
-        <a href="/product.html?id=${x.id}"><img class="thumb" src="${imgSrc(x.image)}" alt=""></a>
-        <span class="cat">${x.category||'Item'}</span>
-      </div>
-      <div class="body">
-        <div class="t">${x.title}</div>
-        <div class="d">${x.details.slice(0,100)}</div>
-        <div class="price">
-          <span class="now">${money(x.price_now)}</span>
-          ${x.price_old?`<span class="old">${money(x.price_old)}</span>`:''}
-        </div>
-        <div class="btns">
-          <a class="btn" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-          ${compare}
-        </div>
-      </div>
-      <div class="foot">
-        <div class="like ${isLiked(x.id)?'liked':''}" data-like="${x.id}" onclick="toggleLike('${x.id}')">★ <span>${isLiked(x.id)?'Liked':'Like'}</span></div>
-      </div>
-    </article>`;
-  }).join('');
+  grid.querySelectorAll(".more").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const id = el.getAttribute("data-id");
+      const box = qs(`#det-${CSS.escape(id)}`);
+      if(!box) return;
+      const isShown = box.style.display === "block";
+      box.style.display = isShown ? "none" : "block";
+      el.textContent = isShown ? "More" : "Less";
+    });
+  });
 
-  document.getElementById('empty').classList.toggle('hidden', list.length>0);
+  qs("#empty").classList.toggle("hidden", STATE.view.length);
 }
 
-/* === ФИЛЬТРЫ === */
-document.getElementById('q').oninput = e => { FILTER.q=e.target.value; render(); };
-document.getElementById('cat').onchange = e => { FILTER.cat=e.target.value; render(); };
-
-/* === СЕЛЕКТОР КОЛОНОК (1/2/3/4) === */
-const colsSelect = document.getElementById('cols');
-function applyCols(n){
-  document.body.classList.remove('cols-1','cols-2','cols-3','cols-4');
-  document.body.classList.add('cols-'+n);
-  localStorage.setItem('gridCols', String(n));
-}
-(function initCols(){
-  // дефолт: 2 на телефоне, 3 на десктопе
-  const isNarrow = window.matchMedia('(max-width: 600px)').matches;
-  const def = isNarrow ? 2 : 3;
-  const saved = Number(localStorage.getItem('gridCols')||def);
-  applyCols(saved);
-  colsSelect.value = String(saved);
-  colsSelect.addEventListener('change', e => applyCols(Number(e.target.value)));
+/** ===== COLS CONTROL ===== **/
+(function setupCols(){
+  const select = qs("#cols");
+  const KEY = "colsPref";
+  function apply(mode){
+    if(mode === "auto"){ document.documentElement.style.removeProperty("--cols"); }
+    else {
+      const n = Math.max(1, Math.min(6, parseInt(mode,10)||4));
+      document.documentElement.style.setProperty("--cols", String(n));
+    }
+  }
+  const saved = localStorage.getItem(KEY);
+  if(saved){ select.value=saved; apply(saved); }
+  select.addEventListener("change", e=>{
+    const v = e.target.value;
+    localStorage.setItem(KEY, v);
+    apply(v);
+  });
+  window.addEventListener("resize", ()=>{ if(select.value==="auto"){ document.documentElement.style.removeProperty("--cols"); }});
 })();
 
-/* === GO === */
-init();
+/** ===== FILTER UI ===== **/
+qs("#q").addEventListener("input", e=>{ STATE.q = e.target.value; render(); });
+qs("#cat").addEventListener("change", e=>{ STATE.cat = e.target.value; render(); });
+qs("#stock").addEventListener("change", e=>{ STATE.stock = e.target.value; render(); });
+
+/** ===== INIT ===== **/
+(async function init(){
+  try{
+    STATE.items = await loadItems();
+    buildCategories(STATE.items);
+    STATE.stock = "in";
+    render();
+  }catch(err){
+    console.error(err);
+    qs("#empty").classList.remove("hidden");
+    qs("#empty").textContent = "Failed to load items. Check sheet ID / permissions.";
+  }
+})();
 </script>
 </body>
 </html>

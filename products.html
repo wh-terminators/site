@@ -1,122 +1,89 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Terminator Deals — Hot Deals</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f1220;--card:#171a2b;--muted:#8ea0b5;--text:#eaf0ff;--brand:#22c55e;--brand-2:#2563eb;--chip:#1e293b;--error:#ef4444;
-      --ring: rgba(37,99,235,.35);
-    }
-    [data-theme="light"]{
-      --bg:#f6f7fb;--card:#ffffff;--muted:#5a6472;--text:#0f1420;--brand:#16a34a;--brand-2:#1d4ed8;--chip:#e8edf4;--ring: rgba(29,78,216,.25);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg); color:var(--text);
-    }
-    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
-    .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:linear-gradient(180deg,#2a3348,transparent);border:1px solid #263148;color:#a7b6cb}
-    .title{display:flex;align-items:center;gap:10px;font-weight:800}
-    .title .dot{width:36px;height:36px;border-radius:50%;background:#22c55e22;display:grid;place-items:center;border:1px solid #233146}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .input, select{
-      height:40px;border:1px solid #233146;background:var(--card);color:var(--text);
-      border-radius:10px;padding:0 12px;outline:none;box-shadow:none;transition:.2s border,.2s box-shadow;width:100%;
-    }
-    .input:focus, select:focus{border-color:#2b4a95; box-shadow:0 0 0 4px var(--ring)}
-    .controls > *{flex:1 1 220px}
-    .toggle{display:flex;align-items:center;gap:8px}
-    .toggle input{width:18px;height:18px}
-    .rightControls{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Terminator Deals — Hot Deals</title>
+<link rel="icon" href="favicon.ico" />
+<style>
+  :root{
+    --bg:#0b0f14; --fg:#e7eef7; --muted:#9bb0c6; --card:#111826; --badge:#1f2b3d;
+    --accent:#19c37d; --accent-2:#2970ff; --danger:#ff4d4d; --shadow:0 6px 24px rgba(0,0,0,.25);
+  }
+  [data-theme="light"]{
+    --bg:#f6f8fb; --fg:#0f1725; --muted:#4b5871; --card:#ffffff; --badge:#e9eef6;
+    --accent:#15b36f; --accent-2:#1d60ef; --danger:#e23b3b; --shadow:0 6px 24px rgba(10,20,40,.10);
+  }
+  html,body{background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
+  .wrap{max-width:1200px; margin:24px auto; padding:0 16px;}
+  header{display:flex; gap:10px; align-items:center; margin-bottom:10px}
+  .logo{display:inline-grid; place-items:center; width:36px; height:36px; border-radius:10px; background:var(--badge); font-weight:800}
+  h1{font-size:1.125rem; margin:0}
+  .badge{margin-left:10px; font-size:.75rem; padding:2px 8px; border-radius:999px; background:var(--badge); color:var(--muted);}
+  .badge.ok{background:rgba(25,195,125,.15); color:#19c37d}
+  .controls{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 18px}
+  .controls input[type="search"]{flex:1 1 320px; min-width:220px; padding:10px 12px; border-radius:10px; background:var(--card); border:1px solid #223044; color:var(--fg)}
+  .controls select, .controls label.switch{padding:10px 12px; border-radius:10px; background:var(--card); border:1px solid #223044; color:var(--fg)}
+  .controls .right{margin-left:auto; display:flex; gap:8px}
+  .switch{display:flex; align-items:center; gap:8px}
 
-    /* grid: 1 col mobile, 4 cols desktop */
-    #grid{
-      display:grid; gap:16px; margin-top:16px;
-      grid-template-columns:1fr;
-    }
-    @media (min-width:1024px){
-      #grid{ grid-template-columns:repeat(4, 1fr); }
-    }
+  /* GRID: 1 на мобайле, 4 на десктопе */
+  #grid{display:grid; gap:14px}
+  @media (min-width:740px){ #grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1024px){ #grid{grid-template-columns:repeat(4,1fr);} }
 
-    .card{
-      background:var(--card); border:1px solid #233146; border-radius:16px; overflow:hidden; position:relative;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .card:hover{
-      transform:translateY(-4px) scale(1.02);
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
-      border-color:#2b4a95;
-    }
-    .thumb{position:relative;aspect-ratio:4/3;background:#0b0f1a;overflow:hidden}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition: transform .25s ease}
-    .card:hover .thumb img{transform:scale(1.03)}
-    .chip{position:absolute;top:8px;left:8px;background:var(--chip);color:#a9b6ca;border:1px solid #243145;border-radius:999px;font-size:12px;padding:3px 8px}
-    .fav{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);border:1px solid #263148;border-radius:999px;padding:6px;cursor:pointer}
-    .fav svg{width:18px;height:18px;fill:#ffffff60}
-    .fav.active svg{fill:#ef4444}
+  /* --- ровные карточки --- */
+  .card{
+    display:flex; flex-direction:column; height:100%;
+    background:var(--card); border:1px solid #1d2838; border-radius:16px; padding:12px; box-shadow:var(--shadow);
+  }
+  .thumb{
+    width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; background:#0a101a;
+  }
+  .body{display:flex; flex-direction:column; gap:6px; flex:1 1 auto; min-height:160px; margin-top:10px}
+  .badgeCat{display:inline-block; font-size:.7rem; color:var(--muted); background:var(--badge); padding:2px 8px; border-radius:999px; margin-bottom:6px}
 
-    .body{padding:12px 12px 14px}
-    .name{font-weight:700;line-height:1.25;margin:0 0 4px}
-    .priceRow{display:flex;align-items:baseline;gap:8px;font-weight:700}
-    .old{color:#8ea0b5;text-decoration:line-through;font-weight:600}
-    .meta{display:flex;align-items:center;gap:8px;margin:8px 0;color:#9fb0c7;font-size:12px}
-    .meta .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
-    .details{color:#c7d5ea;font-size:13px;line-height:1.35;margin:8px 0 12px}
-    .details.collapsed{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .more{background:transparent;border:none;color:#9ec5ff;cursor:pointer;padding:0;font-size:13px}
-
-    .btns{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      flex:1 1 130px; display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      height:40px;border-radius:12px;border:1px solid #233146;background:linear-gradient(180deg,#1b2334,transparent);
-      color:var(--text); font-weight:700; text-decoration:none; transition:.18s transform,.18s box-shadow,.18s border;
-    }
-    .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.25); border-color:#2b4a95}
-    .btn.green{background:linear-gradient(180deg,#1f8a55,#10723f); border-color:#137845}
-    .btn.blue{background:linear-gradient(180deg,#2356c9,#1f46a3); border-color:#244aa6}
-
-    .errorBox{background:rgba(239,68,68,.1); color:#fecaca; border:1px solid rgba(239,68,68,.35); padding:12px;border-radius:12px}
-    .hidden{display:none}
-
-    .foot{color:#7890ac;font-size:12px;margin:14px 0}
-    .ok{color:#7dd3fc}
-  </style>
+  .title{
+    font-weight:800; line-height:1.15;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.6em;
+  }
+  .meta{
+    color:var(--muted); font-size:.95rem;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; min-height:3.9em;
+  }
+  .meta.expanded{-webkit-line-clamp:unset; min-height:auto}
+  .prices{display:flex; align-items:center; gap:10px; margin:4px 0 6px}
+  .now{color:#19c37d; font-weight:800}
+  .old{text-decoration:line-through; color:var(--muted)}
+  .stock{font-size:.8rem; color:#19c37d}
+  .stock.no{color:var(--danger)}
+  .actions{margin-top:auto; display:flex; gap:8px; flex-wrap:wrap}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 14px; border-radius:10px; border:1px solid #223044; background:#0e1523; color:var(--fg); text-decoration:none; font-weight:700}
+  .btn.green{background:var(--accent); border-color:transparent; color:#03140a}
+  .btn.blue{background:var(--accent-2); border-color:transparent; color:#fff}
+  .btn.outline{background:transparent}
+  .like{margin-top:6px; font-size:.8rem; color:var(--muted); cursor:pointer; user-select:none}
+  .like.active{color:#19c37d}
+  .hidden{display:none}
+  .errorBox{background:#2a0f12; color:#ff9a9a; border:1px solid #642; padding:10px 12px; border-radius:12px}
+</style>
 </head>
 <body>
   <div class="wrap">
-    <div class="bar">
-      <div class="title">
-        <span class="dot">WT</span>
-        <div>Terminator Deals — <span style="opacity:.85">Hot Deals</span></div>
-      </div>
+    <header>
+      <div class="logo">WT</div>
+      <h1>Terminator Deals — Hot Deals</h1>
       <span id="status" class="badge">Live from Google Sheets → WhatsApp</span>
-      <span id="loadmark" class="badge hidden ok">loaded</span>
-    </div>
+      <span id="statusLoaded" class="badge ok hidden">loaded</span>
+    </header>
 
     <div class="controls">
-      <input id="q" class="input" placeholder="Search by title, details, category…" />
-      <select id="cat">
-        <option value="*">All categories</option>
-      </select>
-      <select id="cond">
-        <option value="*">All conditions</option>
-        <option value="New">New</option>
-        <option value="Like new">Like new</option>
-        <option value="Used good">Used good</option>
-      </select>
-      <div class="toggle">
-        <input id="stock" type="checkbox" checked>
-        <label for="stock">In stock only</label>
-      </div>
-      <div class="rightControls">
-        <select id="themeSel">
+      <input id="q" type="search" placeholder="Search by title, details, category..." />
+      <select id="cat"></select>
+      <select id="cond"></select>
+      <label class="switch"><input id="instock" type="checkbox" checked /> In stock only</label>
+      <div class="right">
+        <select id="theme">
           <option value="dark">Theme: Dark</option>
           <option value="light">Theme: Light</option>
         </select>
@@ -124,212 +91,219 @@
     </div>
 
     <div id="error" class="errorBox hidden"></div>
-
     <section id="grid"></section>
-    <div id="empty" class="foot hidden">Nothing found.</div>
+    <div id="empty" class="hidden">Nothing found.</div>
   </div>
 
 <script>
-/* ====== CONFIG (уже с твоими данными) ====== */
-const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
-const SHEET_NAME = 'Sheet1';
-const WHATSAPP   = '+13653784497';
-const SELF_URL   = 'https://terminatordeals.ca/products.html'; // для ссылки в WA
-const STATUS = document.getElementById('status');
-const ERRBOX = document.getElementById('error');
-const LOADED = document.getElementById('loadmark');
+/* ===== CONFIG ===== */
+const SHEET_ID  = "1KzTz3QsWVZeVuxteE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk"; // твой лист
+const SHEET_NAME = "Sheet1";                                    // имя листа
+const WHATSAPP  = "13653784497";                                // твой номер (без +)
+const STATUS    = document.getElementById('status');
+const STATUS_OK = document.getElementById('statusLoaded');
+const ERRORBOX  = document.getElementById('error');
 
-/* ====== HELPERS ====== */
+/* ===== helpers ===== */
 const money = n => `$${Number(n||0).toLocaleString()}`;
-const slug  = s => String(s||'').toLowerCase().trim()
-  .replace(/[^\p{L}\p{N}]+/ug,'-').replace(/^-+|-+$/g,'').slice(0,80);
+const slug  = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 
-function csvToObjects(text){
-  // простой безопасный CSV-парсер (поддерживает запятые в кавычках)
+/* CSV fetch (без кэша) */
+async function loadCSV(){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+  const res = await fetch(url + '&t=' + Date.now(), { cache:'no-store' });
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.text();
+}
+
+/* CSV parser устойчивый к запятым в ячейке */
+function parseCSV(text){
   const rows = [];
-  let i=0, cur='', row=[], inQ=false;
+  let i=0, cur="", row=[], inQ=false;
+  const pushCell=()=>{row.push(cur); cur="";};
+  const pushRow=()=>{rows.push(row); row=[];};
   while(i<text.length){
-    const c = text[i];
-    if(c === '"'){
-      if(inQ && text[i+1] === '"'){ cur+='"'; i++; }
-      else inQ = !inQ;
-    } else if(c === ',' && !inQ){ row.push(cur); cur=''; }
-    else if((c === '\n' || c === '\r') && !inQ){
-      if(cur!=='' || row.length){ row.push(cur); rows.push(row); row=[]; cur=''; }
-    } else cur += c;
-    i++;
-  }
-  if(cur!=='' || row.length) row.push(cur), rows.push(row);
-
-  const head = rows.shift().map(h=>h.trim());
-  return rows.filter(r=>r.some(x=>x!=='')).map(r=>{
-    const obj={};
-    head.forEach((h,idx)=> obj[h] = (r[idx]||'').trim() );
-    return obj;
-  });
-}
-
-/* ====== STATE ====== */
-let ITEMS = [];
-const FILTER = {
-  q: localStorage.getItem('f_q') || '',
-  cat: localStorage.getItem('f_cat') || '*',
-  cond: localStorage.getItem('f_cond') || '*',
-  stock: (localStorage.getItem('f_stock') ?? '1') === '1',
-};
-const FAVS = new Set( JSON.parse(localStorage.getItem('favs')||'[]') );
-
-/* ====== UI refs ====== */
-const grid = document.getElementById('grid');
-const qIn   = document.getElementById('q');
-const catIn = document.getElementById('cat');
-const condIn= document.getElementById('cond');
-const stockIn = document.getElementById('stock');
-const themeSel = document.getElementById('themeSel');
-
-/* ====== THEME ====== */
-(function initTheme(){
-  const saved = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  themeSel.value = saved;
-  themeSel.addEventListener('change', e=>{
-    const val = e.target.value;
-    document.documentElement.setAttribute('data-theme', val);
-    localStorage.setItem('theme', val);
-    themeSel.options[0].textContent = `Theme: ${val[0].toUpperCase()+val.slice(1)}`;
-  });
-})();
-
-/* ====== FETCH ====== */
-async function loadSheet(){
-  try{
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    const rows = csvToObjects(text);
-
-    // ожидаемые колонки: title, price_now, price_old, category, image, details, amazon_url, in_stock, condition
-    ITEMS = rows.map(r=>{
-      const id = slug(r.title || Math.random().toString(36).slice(2));
-      return {
-        id,
-        title: r.title || 'Untitled',
-        price_now: r.price_now || '',
-        price_old: r.price_old || '',
-        category: r.category || 'Other',
-        image: r.image || '',
-        details: r.details || '',
-        amazon_url: r.amazon_url || '',
-        in_stock: String(r.in_stock||'yes').toLowerCase().startsWith('y'),
-        condition: r.condition || ''
-      };
-    });
-
-    // заполнить категории
-    const cats = Array.from(new Set(ITEMS.map(x=>x.category).filter(Boolean))).sort();
-    catIn.innerHTML = `<option value="*">All categories</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-    catIn.value = FILTER.cat;
-
-    LOADED.classList.remove('hidden');
-    render();
-  }catch(err){
-    ERRBOX.classList.remove('hidden');
-    ERRBOX.textContent = `Failed to load Google Sheet. Details: ${err.message}`;
-    console.error(err);
-  }
-}
-
-/* ====== RENDER ====== */
-function cardHTML(item){
-  const fav = FAVS.has(item.id) ? 'active' : '';
-  const price = `
-    <div class="priceRow">
-      <span>${money(item.price_now)}</span>
-      ${item.price_old ? `<span class="old">${money(item.price_old)}</span>` : ''}
-    </div>
-  `;
-  const stockDot = item.in_stock ? `<span class="dot"></span> In stock` : `<span class="dot" style="background:#ef4444"></span> Out of stock`;
-  const cond = item.condition ? ` • ${item.condition}` : '';
-
-  const wamsg = encodeURIComponent(
-    `Hi! I'm interested in "${item.title}" for ${money(item.price_now)} (${item.category}${cond}).\n\nLink: ${SELF_URL}?item=${item.id}`
-  );
-  const wa = `https://wa.me/${WHATSAPP.replace(/\D/g,'')}?text=${wamsg}`;
-
-  const detailsSafe = (item.details||'').replace(/\s+/g,' ').trim();
-
-  return `
-  <article class="card" data-id="${item.id}">
-    <div class="thumb">
-      <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/640x480?text=No+image'">
-      <span class="chip">${item.category||'Item'}</span>
-      <button class="fav ${fav}" title="Add to favorites" onclick="toggleFav('${item.id}', this)" aria-label="favorite">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.716-4.117-9.428-7.07C.667 11.91.5 9.27 2.05 7.69 3.6 6.11 6.05 6 7.8 7.42 9.55 6 12 6.11 13.55 7.69c1.55 1.58 1.383 4.22-.522 6.24C18.716 16.883 12 21 12 21Z"/></svg>
-      </button>
-    </div>
-    <div class="body">
-      <h3 class="name">${item.title}</h3>
-      ${price}
-      <div class="meta">${stockDot}${cond ? `<span>${cond}</span>`:''}</div>
-      <div class="details collapsed" id="d-${item.id}">${detailsSafe}</div>
-      ${detailsSafe ? `<button class="more" onclick="toggleDetails('${item.id}', this)">Read more</button>`:''}
-      <div class="btns">
-        <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-        ${ item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : '' }
-      </div>
-    </div>
-  </article>`;
-}
-
-function toggleDetails(id, btn){
-  const el = document.getElementById('d-'+id);
-  if(!el) return;
-  const collapsed = el.classList.toggle('collapsed');
-  btn.textContent = collapsed ? 'Read more' : 'Show less';
-}
-window.toggleDetails = toggleDetails;
-
-function toggleFav(id, btn){
-  if(FAVS.has(id)){ FAVS.delete(id); btn.classList.remove('active'); }
-  else{ FAVS.add(id); btn.classList.add('active'); }
-  localStorage.setItem('favs', JSON.stringify([...FAVS]));
-}
-window.toggleFav = toggleFav;
-
-function render(){
-  const q = FILTER.q.toLowerCase();
-  const list = ITEMS.filter(it=>{
-    if(FILTER.stock && !it.in_stock) return false;
-    if(FILTER.cat !== '*' && it.category !== FILTER.cat) return false;
-    if(FILTER.cond !== '*' && (it.condition||'') !== FILTER.cond) return false;
-    if(q){
-      const hay = `${it.title} ${it.details} ${it.category}`.toLowerCase();
-      if(!hay.includes(q)) return false;
+    const ch=text[i], nx=text[i+1];
+    if(ch==='\"'){
+      if(inQ && nx==='\"'){cur+='\"'; i+=2; continue;}
+      inQ=!inQ; i++; continue;
     }
-    return true;
+    if(!inQ && (ch==='\n' || ch==='\r')){
+      pushCell(); if(row.length) pushRow();
+      while(text[i+1]==='\n' || text[i+1]==='\r') i++;
+      i++; continue;
+    }
+    if(!inQ && ch===','){ pushCell(); i++; continue; }
+    cur+=ch; i++;
+  }
+  if(cur.length || row.length){ pushCell(); pushRow(); }
+  const head = rows.shift().map(h=>h.trim());
+  return rows.filter(r=>r.length===head.length).map(r=>{
+    const obj={}; head.forEach((h,idx)=>obj[h]=r[idx]); return obj;
   });
+}
 
-  grid.innerHTML = list.map(cardHTML).join('');
+/* UI state */
+const FILTER = { q:"", cat:"All categories", cond:"All conditions", instock:true };
+
+/* populate filters */
+function populateFilters(items){
+  // categories
+  const cats = ["All categories", ...Array.from(new Set(items.map(x=>x.category).filter(Boolean)))];
+  const catSel = document.getElementById('cat');
+  catSel.innerHTML = cats.map(c=>`<option>${c}</option>`).join('');
+  catSel.value = FILTER.cat;
+
+  // conditions
+  const conds = ["All conditions", ...Array.from(new Set(items.map(x=>x.condition).filter(Boolean)))];
+  const condSel = document.getElementById('cond');
+  condSel.innerHTML = conds.map(c=>`<option>${c}</option>`).join('');
+  condSel.value = FILTER.cond;
+}
+
+/* render */
+function render(items){
+  // filters
+  let list = items.slice();
+  if(FILTER.q){
+    const q = FILTER.q.toLowerCase();
+    list = list.filter(x =>
+      (x.title||'').toLowerCase().includes(q) ||
+      (x.details||'').toLowerCase().includes(q) ||
+      (x.category||'').toLowerCase().includes(q)
+    );
+  }
+  if(FILTER.cat && FILTER.cat!=="All categories"){
+    list = list.filter(x => x.category === FILTER.cat);
+  }
+  if(FILTER.cond && FILTER.cond!=="All conditions"){
+    list = list.filter(x => (x.condition||'').toLowerCase() === FILTER.cond.toLowerCase());
+  }
+  if(FILTER.instock){
+    list = list.filter(x => String(x.in_stock||'yes').toLowerCase()==='yes');
+  }
+
   document.getElementById('empty').classList.toggle('hidden', list.length!==0);
 
-  // статус
-  STATUS.textContent = 'Live from Google Sheets → WhatsApp';
+  const html = list.map(item=>{
+    const id = slug(item.title);
+    const selfLink = `${location.pathname}#${id}`; // якорь на текущей странице
+    const msg = `Hi! I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${location.origin}${selfLink}`;
+    const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+
+    const amazon = item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="nofollow noopener noreferrer">Compare price</a>` : '';
+
+    const stockYes = String(item.in_stock||'yes').toLowerCase()==='yes';
+    const stockBadge = `<span class="stock ${stockYes?'':'no'}">${stockYes?'in stock':'out of stock'}</span>`;
+
+    return `
+<article class="card" id="${id}">
+  <img class="thumb" src="${item.image}" alt="${item.title}">
+  <div class="body">
+    <span class="badgeCat">${item.category||'Item'}</span>
+    <div class="title">${item.title||''}</div>
+    <div class="prices">
+      <div class="now">${money(item.price_now)}</div>
+      ${item.price_old ? `<div class="old">${money(item.price_old)}</div>` : ``}
+    </div>
+    <div class="meta" data-full="${(item.details||'').replace(/"/g,'&quot;')}">
+      ${(item.details||'').slice(0,220)}
+    </div>
+    <div style="display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.85rem">
+      ${stockBadge}
+      ${item.condition ? `<span>• ${item.condition}</span>` : ``}
+      <a href="#" class="readmore" data-id="${id}">Read more</a>
+    </div>
+    <div class="actions">
+      <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+      ${amazon}
+    </div>
+    <div class="like" data-id="${id}">★ Like</div>
+  </div>
+</article>`;
+  }).join('');
+
+  document.getElementById('grid').innerHTML = html;
+
+  // like memory
+  document.querySelectorAll('.like').forEach(el=>{
+    const id = el.dataset.id;
+    if(localStorage.getItem('like:'+id)==='1') el.classList.add('active');
+    el.onclick = e=>{
+      e.preventDefault();
+      const k='like:'+id, v = localStorage.getItem(k)==='1' ? '0' : '1';
+      localStorage.setItem(k, v);
+      el.classList.toggle('active', v==='1');
+    };
+  });
+
+  // read more toggler (не ломает сетку)
+  document.querySelectorAll('.readmore').forEach(a=>{
+    a.onclick = e=>{
+      e.preventDefault();
+      const id = a.dataset.id;
+      const meta = document.querySelector(`#${CSS.escape(id)} .meta`);
+      meta.classList.toggle('expanded');
+      a.textContent = meta.classList.contains('expanded') ? 'Read less' : 'Read more';
+      if(meta.classList.contains('expanded')){
+        meta.textContent = meta.getAttribute('data-full');
+      }else{
+        const full = meta.getAttribute('data-full')||'';
+        meta.textContent = full.slice(0,220);
+      }
+    };
+  });
 }
 
-/* ====== FILTERS events + persistence ====== */
-qIn.value = FILTER.q;
-catIn.value = FILTER.cat;
-condIn.value = FILTER.cond;
-stockIn.checked = FILTER.stock;
+/* theme */
+(function initTheme(){
+  const sel = document.getElementById('theme');
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  sel.value = saved;
+  sel.onchange = e=>{
+    const v = e.target.value;
+    localStorage.setItem('theme', v);
+    document.documentElement.setAttribute('data-theme', v);
+  };
+})();
 
-qIn.oninput = e=>{ FILTER.q = e.target.value; localStorage.setItem('f_q',FILTER.q); render(); };
-catIn.onchange = e=>{ FILTER.cat = e.target.value; localStorage.setItem('f_cat',FILTER.cat); render(); };
-condIn.onchange = e=>{ FILTER.cond = e.target.value; localStorage.setItem('f_cond',FILTER.cond); render(); };
-stockIn.onchange = e=>{ FILTER.stock = e.target.checked; localStorage.setItem('f_stock', FILTER.stock?'1':'0'); render(); };
+/* filters wired */
+document.getElementById('q').oninput   = e=>{ FILTER.q = e.target.value; render(window.__items||[]); };
+document.getElementById('cat').onchange = e=>{ FILTER.cat = e.target.value; render(window.__items||[]); };
+document.getElementById('cond').onchange= e=>{ FILTER.cond= e.target.value; render(window.__items||[]); };
+document.getElementById('instock').onchange = e=>{ FILTER.instock = e.target.checked; render(window.__items||[]); };
 
-/* ====== INIT ====== */
-loadSheet();
+/* bootstrap */
+(async function init(){
+  try{
+    const csv = await loadCSV();
+    const raw = parseCSV(csv);
+
+    // ожидаемые поля
+    const items = raw.map(r=>({
+      title:      r.title,
+      price_now:  r.price_now,
+      price_old:  r.price_old,
+      category:   r.category,
+      image:      r.image,
+      details:    r.details,
+      amazon_url: r.amazon_url,
+      in_stock:   r.in_stock,     // yes/no
+      condition:  r.condition     // New, Used like new, Used good...
+    }));
+
+    window.__items = items;
+    populateFilters(items);
+    render(items);
+
+    STATUS.classList.add('hidden');
+    STATUS_OK.classList.remove('hidden');
+  }catch(err){
+    ERRORBOX.classList.remove('hidden');
+    ERRORBOX.textContent = `Failed to load Google Sheet. Details: ${err.message||err}`;
+  }
+})();
 </script>
 </body>
 </html>

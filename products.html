@@ -4,41 +4,38 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Terminator Deals — Catalog</title>
-  <meta name="description" content="Browse Terminator Deals catalog and message us on WhatsApp."/>
+  <meta name="description" content="Live Facebook Marketplace catalog with direct WhatsApp contact."/>
   <style>
-    :root{
-      --bg:#0f1115; --card:#151822; --muted:#8b93a7; --text:#eef2ff;
-      --brand:#10b981; --radius:18px; --shadow:0 6px 28px rgba(0,0,0,.25);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1100px;margin:28px auto 60px;padding:0 16px}
+    body {margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:#0f1115;color:#eef2ff}
+    .wrap{max-width:1100px;margin:30px auto;padding:0 16px}
     header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#22c55e);display:grid;place-items:center;font-weight:800;color:#001510}
+    .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#10b981,#22c55e);display:grid;place-items:center;font-weight:800;color:#001510}
     h1{font-size:26px;margin:0}
-    .sub{color:var(--muted);font-size:14px;margin-top:4px}
-
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
-    .search{flex:1 1 260px;min-width:220px}
-    .search input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #23283a;background:#0c0f17;color:var(--text);outline:none}
-    .chips{display:flex;gap:10px;flex-wrap:wrap}
-    .chip{border:1px solid #223;padding:10px 12px;border-radius:12px;background:#0c0f17;color:var(--muted);cursor:pointer;user-select:none}
-    .chip.active{background:var(--brand);color:#001510;border-color:transparent;font-weight:700}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .thumb{position:relative;aspect-ratio:4/3;overflow:hidden;background:#111826}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-    .badge{position:absolute;top:10px;left:10px;padding:6px 10px;border-radius:999px;background:#111827;color:#fff;font-size:12px}
+    .sub{color:#8b93a7;font-size:14px;margin-top:4px}
+    .search{margin-top:10px}
+    .search input{
+      width:100%;
+      max-width:420px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #23283a;
+      background:#0c0f17;
+      color:#eef2ff;
+      outline:none;
+    }
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
+    .card{background:#151822;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 28px rgba(0,0,0,.25)}
+    .thumb{position:relative;aspect-ratio:4/3;background:#111826}
+    .thumb img{width:100%;height:100%;object-fit:cover}
     .body{padding:14px;display:flex;flex-direction:column;gap:6px}
     .title{font-size:16px;font-weight:700}
-    .price{font-size:18px;color:var(--brand);font-weight:800}
-    .meta{color:var(--muted);font-size:13px}
+    .price{font-size:18px;color:#10b981;font-weight:800}
+    .meta{color:#8b93a7;font-size:13px}
     .cta{padding:14px;margin-top:auto}
-    .btn{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#22c55e);color:#001510;font-weight:800}
-
-    .empty{ text-align:center;padding:40px 16px;border:1px dashed #2b3344;border-radius:16px;background:#121623; }
+    .btn{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,#10b981,#22c55e);color:#001510;font-weight:800;text-decoration:none}
+    .chipbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{border:1px solid #223;padding:8px 12px;border-radius:12px;background:#0c0f17;color:#8b93a7;cursor:pointer}
+    .chip.active{background:#10b981;color:#001510;font-weight:700}
   </style>
 </head>
 <body>
@@ -47,131 +44,82 @@
       <div class="logo">WT</div>
       <div>
         <h1>Terminator Deals — Hot Deals</h1>
-        <div class="sub">Filter by category and message us directly on WhatsApp 🔥</div>
+        <div class="sub">Live sync with Facebook Marketplace. Click “Message” to contact us on WhatsApp 🔥</div>
       </div>
     </header>
 
-    <div class="toolbar">
-      <div class="search"><input id="q" type="search" placeholder="Search: heater, blower, monitor..." /></div>
-      <div id="catbar" class="chips"></div>
+    <div class="search">
+      <input id="q" type="search" placeholder="Search by title…" />
     </div>
 
+    <div id="catbar" class="chipbar"></div>
     <div id="grid" class="grid"></div>
   </div>
 
-  <script>
-    // --- SETTINGS ---
-    const WHATSAPP = "13653784497";  // твой номер без + и пробелов
-    const ITEMS_URL = "items.json";   // товары в отдельном файле
+<script>
+const WHATSAPP = "13653784497";
+const API_URL = "https://api.apify.com/v2/datasets/KkctyzcZDf0TyIgXb/items?format=json&clean=true";
 
-    // --- HELPERS ---
-    const grid = document.getElementById('grid');
-    const q = document.getElementById('q');
-    const catbar = document.getElementById('catbar');
+const grid = document.getElementById('grid');
+const catbar = document.getElementById('catbar');
+const q = document.getElementById('q');
 
-    function slug(s){
-      return String(s).toLowerCase().trim()
-        .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-    }
-    function money(n){ return `$${n}`; }
+function normalize(raw){
+  const title = raw.marketplace_listing_title || raw.custom_title || "Untitled";
+  const price = raw.listing_price?.amount || "";
+  const city = raw.location?.city?.display_name || "";
+  const img = raw.primary_listing_photo?.image?.uri || "";
+  const url = raw.listing_url || "";
+  const cat = raw.marketplace_listing_category_id || "Marketplace";
+  return {title, price, city, img, url, cat};
+}
 
-    // Плейсхолдер, если нет фото
-    const PLACEHOLDER = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480'>
-         <rect fill='#151822' width='100%' height='100'/>
-         <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
-               fill='#8b93a7' font-size='24' font-family='system-ui'>No image</text>
-       </svg>`);
+function waLink(item){
+  const msg = `Hi! I'm interested in "${item.title}" listed for $${item.price}. Location: ${item.city}. Link: ${item.url}`;
+  return `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
+}
 
-    const imgSrc = (item) => (item.image && item.image.trim() ? item.image : PLACEHOLDER);
+function card(item){
+  return `
+  <article class="card">
+    <div class="thumb"><img src="${item.img}" alt="${item.title}"/></div>
+    <div class="body">
+      <div class="title">${item.title}</div>
+      <div class="price">${item.price ? `$${item.price}` : "Ask price"}</div>
+      <div class="meta">${item.city}</div>
+      <a href="${item.url}" target="_blank" class="meta">View on Facebook</a>
+    </div>
+    <div class="cta">
+      <a class="btn" href="${waLink(item)}" target="_blank">Message on WhatsApp</a>
+    </div>
+  </article>`;
+}
 
-    function waLinkFor(item){
-      const id = slug(item.title);
-      const selfLink = `https://terminatordeals.ca/products.html#${id}`;
-      const msg = `I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${selfLink}`;
-      return `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
-    }
+let items = [], activeCat = 'all';
+function render(){
+  const term = (q?.value || '').toLowerCase().trim();
 
-    function cardTemplate(item){
-      const id = slug(item.title);
-      return `
-        <article class="card" id="${id}">
-          <div class="thumb">
-            <img src="${imgSrc(item)}" alt="${item.title}"/>
-            <span class="badge">${item.category || ''}</span>
-          </div>
-          <div class="body">
-            <div class="title"><a href="#${id}">${item.title}</a></div>
-            <div class="price">${money(item.price_now)}</div>
-            <div class="meta">${item.details || ''}</div>
-          </div>
-          <div class="cta">
-            <a class="btn" href="${waLinkFor(item)}" target="_blank" rel="noopener">Message on WhatsApp</a>
-          </div>
-        </article>
-      `;
-    }
+  const byCat = i => activeCat==='all' ? true : i.cat === activeCat;
+  const byTitle = i => !term ? true : i.title.toLowerCase().includes(term);
 
-    // -------- State & rendering --------
-    let allItems = [];
-    let activeCat = 'all';
+  const filtered = items.filter(byCat).filter(byTitle);
+  grid.innerHTML = filtered.map(card).join('') || `<p>No items found.</p>`;
+}
 
-    function renderCatbar(items){
-      const cats = Array.from(new Set(items.map(i => i.category).filter(Boolean))).sort();
-      const html = ['All'].concat(cats).map(name => {
-        const val = name === 'All' ? 'all' : name;
-        const active = val === activeCat ? ' active' : '';
-        return `<div class="chip${active}" data-cat="${val}">${name}</div>`;
-      }).join('');
-      catbar.innerHTML = html;
-      Array.from(catbar.querySelectorAll('.chip')).forEach(ch => {
-        ch.addEventListener('click', () => {
-          Array.from(catbar.querySelectorAll('.chip')).forEach(c => c.classList.remove('active'));
-          ch.classList.add('active');
-          activeCat = ch.dataset.cat;
-          renderGrid();
-        });
-      });
-    }
+function renderCats(){
+  const cats = ['all', ...new Set(items.map(i=>i.cat))];
+  catbar.innerHTML = cats.map(c=>`<div class="chip${c===activeCat?' active':''}" data-cat="${c}">${c==='all'?'All':c}</div>`).join('');
+  catbar.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{activeCat=ch.dataset.cat;renderCats();render();});
+}
 
-    function renderGrid(){
-      const term = (q.value || '').toLowerCase();
-      const byCat = i => activeCat === 'all' ? true : (i.category === activeCat);
-      const byQuery = i => !term ? true : (i.title + ' ' + (i.details||'') + ' ' + (i.category||'')).toLowerCase().includes(term);
-      const items = allItems.filter(byCat).filter(byQuery);
-
-      if (!items.length){
-        const waEmpty = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent("Hi! I want to ask about stock and new arrivals.")}`;
-        grid.innerHTML = `
-          <div class="empty">
-            <h2 style="margin:0 0 8px;">No items found</h2>
-            <p style="color:#8b93a7;margin:0 0 18px;">Try another category/search, or WhatsApp us about current stock.</p>
-            <a href="${waEmpty}" target="_blank" rel="noopener"
-               style="display:inline-block;background:#10b981;color:#001510;font-weight:700;padding:12px 20px;border-radius:10px;text-decoration:none;">
-              Message on WhatsApp
-            </a>
-          </div>`;
-      } else {
-        grid.innerHTML = items.map(cardTemplate).join('');
-      }
-    }
-
-    q.addEventListener('input', renderGrid);
-
-    // -------- Init: load items.json --------
-    async function init(){
-      try{
-        const res = await fetch(ITEMS_URL, {cache:'no-store'});
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        allItems = await res.json();
-      }catch(e){
-        console.warn('Cannot load items.json:', e);
-        allItems = [];
-      }
-      renderCatbar(allItems);
-      renderGrid();
-    }
-    init();
-  </script>
+(async()=>{
+  const res = await fetch(API_URL);
+  const data = await res.json();
+  items = data.map(normalize);
+  renderCats();
+  render();
+  q?.addEventListener('input', render);
+})();
+</script>
 </body>
 </html>

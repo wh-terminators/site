@@ -1,196 +1,277 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Terminator Deals — Hot Deals</title>
-<link rel="icon" href="favicon.ico" />
+<title>Warehouse Terminator Deals — Hot Deals</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  body{background:#0f141b;color:#e9eef5;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-  .wrap{max-width:1200px;margin:32px auto;padding:0 16px}
-  .top{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-  h1{font-size:28px;margin:0}
-  .pill{background:#14324a;border:1px solid #214a6b;color:#a6e3ff;padding:6px 10px;border-radius:999px;font-size:12px}
-  .controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-  .controls input,.controls select{background:#0b1117;border:1px solid #243447;border-radius:10px;color:#e9eef5;padding:10px 12px;font-size:14px;outline:none}
+  :root{
+    --bg:#0b0c10; --card:#1a1a1d; --text:#e9eef5; --muted:#a8b3c7; --accent:#00ff88;
+    --btn:#223246; --btn2:#1877f2; --btn3:#232f3e; --border:#273042;
+  }
+  [data-theme="light"]{
+    --bg:#f7f9fc; --card:#ffffff; --text:#0b0c10; --muted:#42536a; --accent:#0fbf6b;
+    --btn:#e6eef8; --btn2:#1877f2; --btn3:#232f3e; --border:#e6eef8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand h1{font-size:18px;margin:0;color:var(--accent);font-weight:800}
+  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .switch,select,input{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  input[type="search"]{min-width:220px}
+  .switch{cursor:pointer}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
   .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
   @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media (max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:520px){.grid{grid-template-columns:1fr}}
-  .card{background:#121923;border:1px solid #1f2a37;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{aspect-ratio:4/3;object-fit:cover;width:100%;background:#0b1117}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+  .media{position:relative;background:#0b1117}
+  .media img{width:100%;height:220px;object-fit:cover;display:block}
+  .navbtn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:6px 8px;cursor:pointer}
+  .prev{left:8px}.next{right:8px}
+  .fav{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 9px;cursor:pointer}
+  .fav.active{background:#ff2e63;border-color:#ff2e63}
+  .badge{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 8px;border-radius:999px;font-size:12px}
   .body{padding:14px}
-  .title{font-size:16px;font-weight:700;margin:0 0 6px}
-  .price{font-weight:800;color:#16d26e}
-  .old{color:#90a4b8;text-decoration:line-through;margin-left:8px;font-weight:500}
-  .meta{opacity:.75;font-size:12px;margin-top:6px}
-  .row{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
-  .btn{display:inline-flex;justify-content:center;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid transparent;font-weight:700;text-decoration:none}
-  .btn-wa{background:#24d366;color:#042410}
-  .btn-fb{background:#0b1117;border-color:#223246;color:#9ec3ff}
-  .badge{position:absolute;left:10px;top:10px;background:#0b1117cc;border:1px solid #223246;color:#bcd2e8;padding:4px 8px;border-radius:999px;font-size:12px}
-  .card-top{position:relative}
-  .empty{opacity:.7;margin:32px 0}
+  .title{margin:0 0 6px;font-size:16px;font-weight:800}
+  .meta{font-size:13px;color:var(--muted)}
+  .price{margin:10px 0;font-size:18px;color:var(--accent);font-weight:800}
+  .old{color:var(--muted);text-decoration:line-through;margin-left:8px;font-weight:600}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid transparent;white-space:nowrap}
+  .btn-wa{background:#25D366;color:#042410}
+  .btn-fb{background:var(--btn2);color:#fff}
+  .btn-amz{background:var(--btn3);color:#fff}
+  .muted{opacity:.75}
+  .empty{padding:20px;text-align:center;color:var(--muted)}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <h1>Terminator Deals — Hot Deals</h1>
-      <span class="pill">Live from Google Sheets → WhatsApp</span>
-    </div>
+<header>
+  <div class="brand">
+    <h1>Warehouse Terminator Deals</h1>
+    <span class="muted">Live from Google Sheets → WhatsApp</span>
+  </div>
+  <div class="tools">
+    <button id="theme" class="switch" title="Toggle theme">🌙 / ☀️</button>
+  </div>
+</header>
 
-    <div class="controls">
-      <input id="search" type="search" placeholder="Search by title…" />
-      <select id="cat"><option value="">All categories</option></select>
-      <select id="stock">
-        <option value="">All items</option>
-        <option value="yes">In stock</option>
-        <option value="no">Sold / hidden</option>
-      </select>
-    </div>
-
-    <div id="grid" class="grid"></div>
-    <p id="empty" class="empty" style="display:none">Nothing found.</p>
+<div class="wrap">
+  <div class="filters">
+    <input id="q" type="search" placeholder="Search by title, details, category…" />
+    <select id="cat"><option value="">All categories</option></select>
+    <select id="stock">
+      <option value="">All items</option>
+      <option value="yes">In stock</option>
+      <option value="no">Out of stock</option>
+    </select>
+    <select id="sort">
+      <option value="">Sort: Default</option>
+      <option value="price-asc">Price ↑</option>
+      <option value="price-desc">Price ↓</option>
+      <option value="title-asc">Title A→Z</option>
+      <option value="title-desc">Title Z→A</option>
+      <option value="fav">Favourites</option>
+    </select>
   </div>
 
+  <div id="grid" class="grid"></div>
+  <p id="empty" class="empty" style="display:none">Nothing found.</p>
+</div>
+
 <script>
-  // === SETTINGS ===
-  const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // <-- твой ID
-  const SHEET_NAME = 'Products';                               // <-- имя листа
-  const WHATSAPP   = '13653784497';                            // <-- номер без плюса
+/* === CONFIG === */
+const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // твой ID — менять не нужно
+const SHEET_NAME = 'Products';
+const GVIZ = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const WHATSAPP = '13653784497'; // твой номер без плюса
 
-  // gviz JSON endpoint:
-  const GVIZ = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+/* === STATE === */
+let ITEMS = [];
+let FAVS = new Set(JSON.parse(localStorage.getItem('wt_favs')||'[]'));
 
-  const grid  = document.getElementById('grid');
-  const empty = document.getElementById('empty');
-  const catSel = document.getElementById('cat');
-  const stockSel = document.getElementById('stock');
-  const searchInput = document.getElementById('search');
+/* === THEME === */
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme');
+(function initTheme(){
+  const t = localStorage.getItem('wt_theme') || 'dark';
+  root.setAttribute('data-theme', t);
+})();
+themeBtn.addEventListener('click', ()=>{
+  const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', t);
+  localStorage.setItem('wt_theme', t);
+});
 
-  let ITEMS = [];
+/* === HELPERS === */
+const $ = s => document.querySelector(s);
+function money(v){
+  if(v==null || v==='') return '';
+  const n = Number(v);
+  return isFinite(n) ? `$${n.toFixed(n%1?2:0)}` : `$${v}`;
+}
+function normRow(r){
+  const o = {};
+  for(const k in r) o[k.trim().toLowerCase()] = r[k];
+  return {
+    title: o.title || '',
+    price_now: o.price_now || '',
+    price_old: o.price_old || '',
+    category: o.category || '',
+    image: o.image || '',
+    details: o.details || '',
+    fb_url: o.fb_url || '',
+    in_stock: (o.in_stock||'yes').toString().toLowerCase()
+  };
+}
+function buildWA(item){
+  const msg = `Hi! I'm interested in "${item.title}" for ${money(item.price_now)}${item.fb_url?` — ${item.fb_url}`:''}`;
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+}
+function parseGviz(text){
+  const json = text.replace(/^[\s\S]*setResponse\(/,'').replace(/\);?\s*$/,'');
+  return JSON.parse(json);
+}
 
-  function slug(s){return String(s||'').toLowerCase().trim();}
-
-  function money(n){
-    if(n==null||n==='') return '';
-    const v = Number(n);
-    return isFinite(v) ? `$${v.toFixed(v%1?2:0)}` : String(n);
-  }
-
-  function parseGviz(text){
-    const json = text.replace(/^[\s\S]*setResponse\(/,'').replace(/\);?\s*$/,'');
-    return JSON.parse(json);
-  }
-
-  function gvizToRows(gviz){
-    const cols = gviz.table.cols.map(c=>c.label || c.id);
-    return gviz.table.rows.map(r=>{
-      const row = {};
-      r.c.forEach((cell, i)=>{
-        row[cols[i]] = cell ? cell.v : '';
-      });
-      return row;
+/* === LOAD === */
+async function load(){
+  try{
+    const res = await fetch(GVIZ, {cache:'no-store'});
+    const text = await res.text();
+    const g = parseGviz(text);
+    const cols = g.table.cols.map(c=>c.label||c.id);
+    const rows = g.table.rows.map(r=>{
+      const obj = {};
+      r.c.forEach((cell,i)=>obj[cols[i]] = cell ? cell.v : '');
+      return obj;
     });
-  }
-
-  function buildWA(item){
-    const msg = `Hi! I'm interested in "${item.title}" for ${money(item.price_now)} (category: ${item.category}).`;
-    return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}${item.fb_url?'%0A'+encodeURIComponent(item.fb_url):''}`;
-  }
-
-  function card(item){
-    const fbBtn = item.fb_url ? `<a class="btn btn-fb" href="${item.fb_url}" target="_blank" rel="noopener">View on Facebook</a>` : '';
-    let old = '';
-if (item.price_old) {
-  if (String(item.price_old).startsWith('http')) {
-    old = `<a href="${item.price_old}" target="_blank" rel="noopener" class="btn btn-fb" style="margin-left:8px;">Compare on Amazon</a>`;
-  } else {
-    old = `<span class="old">${money(item.price_old)}</span>`;
+    ITEMS = rows.map(normRow);
+    fillCategories();
+    render();
+  }catch(e){
+    console.error(e);
+    $('#empty').style.display='';
+    $('#empty').textContent='Failed to load products.';
   }
 }
 
-    const badge = item.category ? `<span class="badge">${item.category}</span>` : '';
-    return `
-      <article class="card">
-        <div class="card-top">
-          <img class="thumb" src="${item.image || ''}" alt="${item.title || ''}" loading="lazy" />
-          ${badge}
-        </div>
-        <div class="body">
-          <h3 class="title">${item.title || ''}</h3>
-          <div class="price">${money(item.price_now)}${old}</div>
-          <div class="meta">${item.details || ''}</div>
-          <div class="row">
-            <a class="btn btn-wa" href="${buildWA(item)}" target="_blank" rel="noopener">Message on WhatsApp</a>
-            ${fbBtn}
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function render(){
-    const q = slug(searchInput.value);
-    const cat = catSel.value;
-    const st  = stockSel.value;
-
-    const filtered = ITEMS.filter(x=>{
-      if (st && slug(x.in_stock) !== st) return false;
-      if (cat && x.category !== cat) return false;
-      if (q && !slug(x.title).includes(q)) return false;
-      return true;
-    });
-
-    grid.innerHTML = filtered.map(card).join('');
-    empty.style.display = filtered.length ? 'none' : '';
-  }
-
-  function fillCategories(){
-    const set = new Set(ITEMS.map(i=>i.category).filter(Boolean));
-    const now = catSel.value;
-    catSel.innerHTML = `<option value="">All categories</option>` +
-      [...set].sort().map(c=>`<option>${c}</option>`).join('');
-    if ([...set].includes(now)) catSel.value = now;
-  }
-
-  async function load(){
-    try{
-      const res = await fetch(GVIZ, { cache:'no-store' });
-      const text = await res.text();
-      const g = parseGviz(text);
-      const rows = gvizToRows(g);
-
-      ITEMS = rows.map(r=>{
-        const obj = {};
-        for (const k in r) obj[k.trim().toLowerCase()] = r[k];
-        return {
-          title:     obj.title || '',
-          price_now: obj.price_now || '',
-          price_old: obj.price_old || '',
-          category:  obj.category || '',
-          image:     obj.image || '',
-          details:   obj.details || '',
-          fb_url:    obj.fb_url || '',
-          in_stock:  (obj.in_stock || 'yes').toString().toLowerCase()
-        };
-      }).filter(x=>x.in_stock!=='no');
-
-      fillCategories();
-      render();
-    }catch(e){
-      console.error(e);
-      empty.style.display='';
-      empty.textContent = 'Failed to load products.';
+/* === RENDER === */
+function imagesOf(item){
+  // несколько ссылок через запятую → массив
+  return String(item.image||'').split(',').map(s=>s.trim()).filter(Boolean);
+}
+function card(item, idx){
+  const imgs = imagesOf(item);
+  const hasGallery = imgs.length > 1;
+  // price_old: ссылка → кнопка Amazon, иначе зачёркнутая цена
+  let old = '';
+  if(item.price_old){
+    const val = String(item.price_old).trim();
+    if(val.startsWith('http')){
+      old = `<a href="${val}" target="_blank" rel="noopener nofollow" class="btn btn-amz">🔍 Compare on Amazon</a>`;
+    }else{
+      old = `<span class="old">${money(val)}</span>`;
     }
   }
+  const id = `card-${idx}`;
+  const favActive = FAVS.has(item.title) ? 'active' : '';
+  const badge = item.category ? `<span class="badge">${item.category}</span>` : '';
+  return `
+    <article class="card" data-title="${item.title.toLowerCase()}" data-cat="${item.category}" data-stock="${item.in_stock}">
+      <div class="media" data-idx="${idx}" data-i="0">
+        ${badge}
+        <button class="fav ${favActive}" title="Add to favourites" onclick="toggleFav('${encodeURIComponent(item.title)}', this)">❤</button>
+        <img loading="lazy" src="${imgs[0]||''}" alt="${item.title}">
+        ${hasGallery?`<button class="navbtn prev" onclick="navImg(${idx},-1)">◀</button>
+                      <button class="navbtn next" onclick="navImg(${idx},1)">▶</button>`:''}
+      </div>
+      <div class="body">
+        <h3 class="title">${item.title}</h3>
+        <div class="meta">${item.details||''}</div>
+        <div class="price">${money(item.price_now)} ${old}</div>
+        <div class="row">
+          <a class="btn btn-wa" href="${buildWA(item)}" target="_blank" rel="noopener">Message on WhatsApp</a>
+          ${item.fb_url?`<a class="btn btn-fb" href="${item.fb_url}" target="_blank" rel="noopener">View on Facebook</a>`:''}
+        </div>
+      </div>
+    </article>
+  `;
+}
+function render(){
+  const q = $('#q').value.toLowerCase().trim();
+  const cat = $('#cat').value;
+  const stock = $('#stock').value;
+  const sort = $('#sort').value;
 
-  searchInput.addEventListener('input', render);
-  catSel.addEventListener('change', render);
-  stockSel.addEventListener('change', render);
+  let list = ITEMS.slice();
 
-  load();
+  // Filter
+  list = list.filter(x=>{
+    if (stock && x.in_stock!==stock) return false;
+    if (cat && x.category !== cat) return false;
+    if (q && !(x.title.toLowerCase().includes(q) || (x.details||'').toLowerCase().includes(q) || (x.category||'').toLowerCase().includes(q))) return false;
+    if (sort==='fav' && !FAVS.has(x.title)) return false;
+    return true;
+  });
+
+  // Sort
+  if (sort==='price-asc') list.sort((a,b)=>(Number(a.price_now)||1e15)-(Number(b.price_now)||1e15));
+  if (sort==='price-desc') list.sort((a,b)=>(Number(b.price_now)||-1e15)-(Number(a.price_now)||-1e15));
+  if (sort==='title-asc') list.sort((a,b)=>String(a.title).localeCompare(String(b.title)));
+  if (sort==='title-desc') list.sort((a,b)=>String(b.title).localeCompare(String(a.title)));
+
+  const grid = $('#grid');
+  grid.innerHTML = list
+    .filter(x=>x.in_stock!=='no') // по умолчанию скрываем sold; покажем, если нужно, через фильтр "Out of stock"
+    .map((item,i)=>card(item,i))
+    .join('');
+
+  $('#empty').style.display = list.length ? 'none' : '';
+}
+
+/* === GALLERY NAV === */
+function navImg(idx, dir){
+  const card = document.querySelector(`.media[data-idx="${idx}"]`);
+  if(!card) return;
+  const i = Number(card.getAttribute('data-i')||0);
+  const imgs = imagesOf(ITEMS[idx]);
+  const next = (i + dir + imgs.length) % imgs.length;
+  card.setAttribute('data-i', String(next));
+  const img = card.querySelector('img');
+  img.src = imgs[next] || '';
+}
+
+/* === FAVOURITES === */
+function toggleFav(titleEncoded, btn){
+  const title = decodeURIComponent(titleEncoded);
+  if(FAVS.has(title)) { FAVS.delete(title); btn.classList.remove('active'); }
+  else { FAVS.add(title); btn.classList.add('active'); }
+  localStorage.setItem('wt_favs', JSON.stringify([...FAVS]));
+}
+
+/* === CATEGORIES === */
+function fillCategories(){
+  const set = new Set(ITEMS.map(i=>i.category).filter(Boolean));
+  const sel = $('#cat');
+  const now = sel.value;
+  sel.innerHTML = `<option value="">All categories</option>` + [...set].sort().map(c=>`<option>${c}</option>`).join('');
+  if ([...set].includes(now)) sel.value = now;
+}
+
+/* === EVENTS === */
+$('#q').addEventListener('input', render);
+$('#cat').addEventListener('change', render);
+$('#stock').addEventListener('change', render);
+$('#sort').addEventListener('change', render);
+
+/* === START === */
+load();
 </script>
 </body>
 </html>

@@ -1,334 +1,204 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Terminator Deals — Hot Deals</title>
-  <link rel="icon" href="favicon.ico"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f1217;--card:#151a21;--muted:#9aa4b2;--text:#e6edf3;
-      --green:#16a34a;--green-2:#22c55e;--blue:#2563eb;--blue-2:#3b82f6;
-      --shadow:0 10px 30px rgba(0,0,0,.35);--radius:16px;
-      --img-h:210px; --fs:16px; --pad:14px; --gap:18px;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1150px;margin:28px auto;padding:0 16px}
-    .header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .logo{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#10b981;font-weight:800;color:#0b1220}
-    h1{font-size:22px;margin:0}
-    .live{margin-left:8px;font-size:12px;color:#67e8f9;background:#0b2940;border:1px solid #0ea5e9;padding:4px 8px;border-radius:999px}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 14px}
-    .control{background:#0c1118;border:1px solid #223042;color:var(--text);border-radius:12px;padding:10px 12px;min-height:42px}
-    .control select,.control input{background:transparent;border:none;outline:none;color:inherit;font:inherit}
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:8px}
-    @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-    @media (max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:520px){.grid{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid #1e2632;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .thumb{position:relative;background:#0b0f15}
-    .thumb img{width:100%;height:var(--img-h);object-fit:cover;display:block}
-    .badge{position:absolute;left:10px;top:10px;background:rgba(15,23,42,.9);color:#7dd3fc;border:1px solid #164e63;font-size:12px;padding:4px 8px;border-radius:999px}
-    .body{padding:var(--pad) var(--pad) 8px}
-    .title{font-weight:700;line-height:1.25;margin:0 0 6px;font-size:var(--fs);min-height:calc(var(--fs)*2.5)}
-    .desc{color:var(--muted);font-size:calc(var(--fs)*0.85);line-height:1.4}
-    .price{display:flex;align-items:center;gap:10px;margin:10px 0 0}
-    .now{color:#4ade80;font-weight:800}
-    .old{color:#93a1b1;text-decoration:line-through}
-    .actions{display:flex;gap:10px;padding:12px var(--pad) 16px}
-    .btn{flex:1;text-align:center;padding:12px 10px;border-radius:12px;font-weight:700;border:1px solid transparent;transition:.15s}
-    .btn.whatsapp{background:linear-gradient(180deg,var(--green-2),var(--green));color:#05270f}
-    .btn.whatsapp:hover{filter:brightness(1.07)}
-    .btn.amazon{background:linear-gradient(180deg,var(--blue-2),var(--blue));color:white}
-    .btn.amazon:hover{filter:brightness(1.07)}
-    .btn.share{background:#1f2a3a;color:#e2e8f0;border:1px solid #334155}
-    .empty{opacity:.6;text-align:center;padding:40px 0}
-    .size-cozy   { --img-h:190px; --fs:15px; --pad:12px; --gap:14px; }
-    .size-compact{ --img-h:160px; --fs:14px; --pad:10px; --gap:12px; }
-    .pager{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 0}
-    .pager button,.pager select{background:#0c1118;border:1px solid #223042;color:var(--text);border-radius:10px;padding:8px 12px;min-height:38px;cursor:pointer}
-    .pager .muted{color:#9aa4b2}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terminator Deals — Hot Deals</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/css/styles.css">
+<style>
+  body{background:#0e1015;color:#e9eef6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
+  .title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;margin-bottom:10px}
+  .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#123;padding-inline:10px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
+  .toolbar input,.toolbar select{background:#151a22;border:1px solid #232a36;color:#dfe7f3;border-radius:10px;padding:10px 12px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.grid{grid-template-columns:1fr}}
+  .card{background:#131821;border:1px solid #202531;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #0005}
+  .thumb{width:100%;height:200px;object-fit:cover;display:block}
+  .cat{position:absolute;left:10px;top:10px;background:#123;border:1px solid #245; color:#9fe; font-size:12px;padding:3px 8px;border-radius:999px}
+  .ph{position:relative}
+  .body{padding:12px}
+  .t{font-weight:700;margin:2px 0 6px}
+  .d{font-size:13px;opacity:.8;min-height:36px}
+  .price{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .now{color:#22d47b;font-weight:800}
+  .old{text-decoration:line-through;opacity:.6}
+  .btns{display:flex;gap:8px;margin:12px 0 8px}
+  .btn{flex:1;text-align:center;background:#0b5;border:0;color:#001; font-weight:700; padding:10px 12px;border-radius:12px;cursor:pointer}
+  .btn.sec{background:#18314f;color:#cfe}
+  .btn.ghost{background:#161b25;color:#cfe;border:1px solid #2a3241}
+  .like{display:inline-flex;align-items:center;gap:6px;font-size:13px;opacity:.8;cursor:pointer}
+  .like.liked{color:#ffb703;opacity:1}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:0 12px 12px}
+  .hidden{display:none!important}
+</style>
 </head>
 <body>
-  <div class="container" id="root">
-    <div class="header">
-      <div class="logo">WT</div>
-      <h1>Terminator Deals — Hot Deals</h1>
-      <span class="live">Live from Google Sheets → WhatsApp</span>
-    </div>
-
-    <div class="controls">
-      <div class="control" style="flex:1 1 260px;">
-        <input id="q" type="search" placeholder="Search by title, details, category…" />
-      </div>
-      <div class="control">
-        <select id="cat"><option value="">All categories</option></select>
-      </div>
-      <div class="control">
-        <select id="stock">
-          <option value="all">All items</option>
-          <option value="in">In stock</option>
-          <option value="out">Out of stock</option>
-        </select>
-      </div>
-      <div class="control">
-        <select id="sort">
-          <option value="default">Sort: Default</option>
-          <option value="price_asc">Price: Low → High</option>
-          <option value="price_desc">Price: High → Low</option>
-        </select>
-      </div>
-      <div class="control">
-        <select id="size">
-          <option value="comfortable">Size: Comfortable</option>
-          <option value="cozy">Size: Cozy</option>
-          <option value="compact">Size: Compact</option>
-        </select>
-      </div>
-      <div class="control">
-        <select id="ppg">
-          <option value="8">8 per page</option>
-          <option value="12" selected>12 per page</option>
-          <option value="16">16 per page</option>
-          <option value="24">24 per page</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">Nothing found.</div>
-
-    <div class="pager" id="pager" style="display:none;">
-      <button id="prev">← Prev</button>
-      <span class="muted" id="pageInfo"></span>
-      <button id="next">Next →</button>
-    </div>
+<div class="wrap">
+  <div class="title">
+    <img src="/assets/logo.png" alt="" width="28" height="28" style="border-radius:8px">
+    <span>Terminator Deals — Hot Deals</span>
+    <span class="badge">Live from Google Sheets → WhatsApp</span>
   </div>
 
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Search by title, details, category">
+    <select id="cat"><option value="">All categories</option></select>
+    <select id="size">
+      <option value="comfortable">Size: Comfortable</option>
+      <option value="compact">Size: Compact</option>
+    </select>
+    <select id="perPage">
+      <option value="12">12 per page</option>
+      <option value="24">24 per page</option>
+      <option value="48">48 per page</option>
+    </select>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="hidden" style="opacity:.8;margin:18px 6px">Nothing found.</div>
+</div>
+
 <script>
-/** CONFIG **/
-const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
-const SHEET_NAME = 'Sheet1';
-const WHATSAPP   = '+13653784497';
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // ваш ID таблицы
+const PHONE = '13653784497'; // без плюсика для wa.me
+// ---- helpers
+const money = v => '$' + Number(v||0).toLocaleString('en-CA', {maximumFractionDigits:0});
+const slug  = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const imgSrc = u => (!u) ? '/assets/products/placeholder.webp'
+  : /^https?:\/\//i.test(u) ? u : (u.startsWith('/') ? u : `/${u}`);
 
-/** UTILS **/
-const $  = s => document.querySelector(s);
-const root = $('#root');
-const slug = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-const money = v => {
-  const n = Number(v);
-  if (Number.isFinite(n)) return `$${n.toLocaleString('en-CA',{maximumFractionDigits:0})}`;
-  const m = String(v||'').match(/[\d.,]+/);
-  return m ? `$${m[0].replace(/,/g,'')}` : '';
-};
-const csvToRows = (csv) => {
-  const lines = csv.split(/\r?\n/).filter(Boolean);
-  const head = lines.shift().split(',').map(h => h.replace(/^"|"$/g,'').trim());
-  return lines.map(line=>{
-    const cells=[]; let cur='', q=false;
-    for (let i=0;i<line.length;i++){
-      const ch=line[i];
-      if (ch==='"' && line[i+1]==='"'){ cur+='"'; i++; continue; }
-      if (ch==='\"'){ q=!q; continue; }
-      if (ch===',' && !q){ cells.push(cur); cur=''; continue; }
-      cur+=ch;
-    }
-    cells.push(cur);
-    const obj={};
-    head.forEach((h,idx)=> obj[h]= (cells[idx]||'').replace(/^"|"$/g,'').trim());
-    return obj;
+function likeKey(id){ return 'wt_like_'+id; }
+function isLiked(id){ return localStorage.getItem(likeKey(id))==='1'; }
+function toggleLike(id){
+  const k = likeKey(id);
+  const on = !isLiked(id);
+  localStorage.setItem(k, on?'1':'0');
+  const el = document.querySelector(`[data-like="${id}"]`);
+  if(el){ el.classList.toggle('liked', on); el.querySelector('span').textContent = on?'Liked':'Like'; }
+}
+
+// ---- fetch data from Google Sheets (CSV)
+async function loadItems(){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+  const csv = await (await fetch(url,{cache:'no-store'})).text();
+  return parseCSV(csv).map(r=>({
+    title: r.title || '',
+    price_now: Number(r.price_now||0),
+    price_old: r.price_old || '',
+    category: r.category || '',
+    image: r.image || '',
+    details: r.details || '',
+    a_url: r.a_url || r.url || '',       // поддержим старый столбец url
+    in_stock: (r.in_stock||'yes').toString().toLowerCase().startsWith('y') ? 'yes' : 'no',
+    id: slug(r.title)
+  }));
+}
+
+// простенький CSV → objects
+function parseCSV(txt){
+  const rows = [];
+  let r=[], cell='', quote=false;
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i], n=txt[i+1];
+    if(c==='\"'){ if(quote && n==='\"'){cell+='\"'; i++;} else quote=!quote; }
+    else if(c===',' && !quote){ r.push(cell); cell=''; }
+    else if((c==='\n'||c==='\r') && !quote){ if(cell!==''||r.length){ r.push(cell); rows.push(r); r=[]; cell=''; } }
+    else cell+=c;
+  }
+  if(cell!==''||r.length){ r.push(cell); rows.push(r); }
+  const header = rows.shift().map(h=>h.trim());
+  return rows.filter(x=>x.length).map(row=>{
+    const o={}; header.forEach((h,i)=>o[h]=row[i]??''); return o;
   });
-};
+}
 
-/** RENDER **/
-const grid = $('#grid'), empty = $('#empty');
-const pager = $('#pager'), pageInfo = $('#pageInfo');
-const prevBtn = $('#prev'), nextBtn = $('#next');
+// ---- rendering
+let ITEMS=[], FILTER={q:'', cat:'', size:'comfortable', per:12};
 
-let ALL=[], FILTERED=[];
-let PAGE=1, PPG=12;
+function render(){
+  const grid = document.getElementById('grid');
+  const q = FILTER.q.trim().toLowerCase();
+  let list = ITEMS.filter(x=>x.in_stock==='yes');                   // по умолчанию только In stock
+  if(FILTER.cat) list = list.filter(x=>x.category===FILTER.cat);
+  if(q){
+    list = list.filter(x =>
+      x.title.toLowerCase().includes(q) ||
+      (x.details||'').toLowerCase().includes(q) ||
+      (x.category||'').toLowerCase().includes(q)
+    );
+  }
 
-function productUrl(id){ return `${location.origin}/product.html?id=${encodeURIComponent(id)}`; }
+  document.getElementById('empty').classList.toggle('hidden', list.length>0);
+  grid.classList.toggle('compact', FILTER.size==='compact');
+  grid.style.gap = FILTER.size==='compact' ? '12px':'16px';
 
-function buildCard(item){
-  const id = slug(item.title);
-  const cat = item.category || 'Other';
-  const img = (item.image||'').split(',')[0]?.trim() || '';
-  const now = money(item.price_now);
-  const old = money(item.price_old);
-  const details = item.details || '';
-  const amazon = (item.amazon_url||'').trim();
+  const take = Number(FILTER.per||12);
+  list = list.slice(0,take);
 
-  const text = `Hi! I'm interested in "${item.title}" (${cat}). Link: ${productUrl(id)}`;
-  const wa = `https://wa.me/${WHATSAPP.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`;
+  grid.innerHTML = list.map(cardHTML).join('');
+  // проставим лайки из localStorage
+  list.forEach(x=>{
+    const el = document.querySelector(`[data-like="${x.id}"]`);
+    if(el) el.classList.toggle('liked', isLiked(x.id));
+  });
+}
+
+function cardHTML(item){
+  const self = `/product.html?id=${encodeURIComponent(item.id)}`;
+  const msg = `Hi! I'm interested in "${item.title}" (${money(item.price_now)}). Link: ${location.origin}${self}`;
+  const wa  = `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
+
+  const compareBtn = item.a_url ? `<a class="btn sec" href="${item.a_url}" target="_blank" rel="noopener">Compare price</a>` : '';
 
   return `
-  <article class="card" data-cat="${slug(cat)}" data-id="${id}">
-    <a class="thumb" href="${productUrl(id)}" aria-label="View details">
-      <img loading="lazy" src="${img}" alt="${item.title}"
-           onerror="this.src='https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop'">
-      <span class="badge">${cat}</span>
-    </a>
+  <article class="card">
+    <div class="ph">
+      <a href="${self}"><img class="thumb" src="${imgSrc(item.image)}" alt="${item.title}"></a>
+      <span class="cat">${item.category||'Item'}</span>
+    </div>
     <div class="body">
-      <a class="title" style="display:block" href="${productUrl(id)}">${item.title}</a>
-      <p class="desc">${details}</p>
+      <div class="t">${item.title}</div>
+      <div class="d">${(item.details||'').slice(0,110)}</div>
       <div class="price">
-        ${now? `<span class="now">${now}</span>`:''}
-        ${old? `<span class="old">${old}</span>`:''}
+        <div class="now">${money(item.price_now)}</div>
+        ${item.price_old ? `<div class="old">${money(item.price_old)}</div>`:''}
+      </div>
+      <div class="btns">
+        <a class="btn" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+        ${compareBtn}
       </div>
     </div>
-    <div class="actions">
-      <a class="btn share" href="#" data-share="${productUrl(id)}">Share</a>
-      <a class="btn whatsapp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-      ${amazon ? `<a class="btn amazon" href="${amazon}" target="_blank" rel="noopener nofollow">Compare on Amazon</a>` : ''}
+    <div class="foot">
+      <a class="btn ghost" style="flex:0 0 auto" href="${self}">Open</a>
+      <div class="like ${isLiked(item.id)?'liked':''}" data-like="${item.id}" onclick="toggleLike('${item.id}')">★ <span>${isLiked(item.id)?'Liked':'Like'}</span></div>
     </div>
   </article>`;
 }
 
-function paginate(list){
-  const total = list.length;
-  const pages = Math.max(1, Math.ceil(total/PPG));
-  PAGE = Math.min(Math.max(1,PAGE), pages);
+// ---- init & UI wiring
+(async function(){
+  ITEMS = await loadItems();
 
-  const start = (PAGE-1)*PPG;
-  const slice = list.slice(start, start+PPG);
-
-  grid.innerHTML = slice.map(buildCard).join('');
-  empty.style.display = slice.length? 'none':'block';
-
-  if (pages>1){
-    pager.style.display='';
-    pageInfo.textContent = `Page ${PAGE} of ${pages} • ${total} items`;
-    prevBtn.disabled = PAGE===1;
-    nextBtn.disabled = PAGE===pages;
-  }else{
-    pager.style.display='none';
-  }
-}
-
-function applyFilters(){
-  const q = document.getElementById('q').value.toLowerCase().trim();
-  const cat = document.getElementById('cat').value;
-  const stock = document.getElementById('stock').value;
-  const sort = document.getElementById('sort').value;
-
-  const base = ALL.filter(x=>{
-    if (stock==='in'  && String(x.in_stock||'yes').toLowerCase()!=='yes') return false;
-    if (stock==='out' && String(x.in_stock||'yes').toLowerCase()==='yes') return false;
-    if (cat && slug(x.category)!==cat) return false;
-    if (q){
-      const hay = `${x.title} ${x.details} ${x.category}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
+  // заполним категории
+  const cats = Array.from(new Set(ITEMS.filter(x=>x.in_stock==='yes').map(x=>x.category).filter(Boolean))).sort();
+  const sel = document.getElementById('cat');
+  cats.forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o);
   });
 
-  if (sort==='price_asc')  base.sort((a,b)=> (parseFloat(a.price_now)||1e12) - (parseFloat(b.price_now)||1e12));
-  if (sort==='price_desc') base.sort((a,b)=> (parseFloat(b.price_now)||-1e12) - (parseFloat(a.price_now)||-1e12));
+  // input events
+  document.getElementById('q').addEventListener('input', e=>{ FILTER.q=e.target.value; render(); });
+  document.getElementById('cat').addEventListener('change', e=>{ FILTER.cat=e.target.value; render(); });
+  document.getElementById('size').addEventListener('change', e=>{ FILTER.size=e.target.value; render(); });
+  document.getElementById('perPage').addEventListener('change', e=>{ FILTER.per=e.target.value; render(); });
 
-  FILTERED = base;
-  PAGE = 1; // при фильтрации возвращаемся на первую страницу
-  paginate(FILTERED);
-}
-
-function fillCategories(){
-  const set = new Set(ALL.map(x=> slug(x.category||'Other')));
-  const names = {};
-  ALL.forEach(x=> names[slug(x.category||'Other')] = x.category||'Other');
-  const sel = document.getElementById('cat');
-  sel.innerHTML = `<option value="">All categories</option>` +
-    [...set].sort().map(v=>`<option value="${v}">${names[v]}</option>`).join('');
-}
-
-/** LOAD **/
-(async function(){
-  try{
-    const res = await fetch(CSV_URL,{cache:'no-store'});
-    const csv = await res.text();
-    const rows = csvToRows(csv);
-
-    const key = s => (s||'').toString().trim().toLowerCase();
-    ALL = rows.map(r=>{
-      const obj={}; for (const k in r){ obj[key(k)] = r[k]; }
-      return {
-        title:       obj.title || '',
-        price_now:   obj.price_now || '',
-        price_old:   obj.price_old || '',
-        category:    obj.category || 'Other',
-        image:       obj.image || '',
-        details:     obj.details || '',
-        amazon_url:  obj.amazon_url || '',
-        in_stock:    obj.in_stock || 'yes'
-      };
-    });
-
-    const savedSize = localStorage.getItem('cardSize') || 'comfortable';
-    document.getElementById('size').value = savedSize;
-    applySize(savedSize);
-
-    const savedPPG = Number(localStorage.getItem('ppg')||12);
-    document.getElementById('ppg').value = String(savedPPG);
-    PPG = savedPPG;
-
-    fillCategories();
-    applyFilters();
-
-  }catch(e){
-    console.error(e);
-    grid.innerHTML = '<div class="empty">Failed to load catalog.</div>';
-  }
+  render();
 })();
-
-/** EVENTS **/
-document.getElementById('q').addEventListener('input', applyFilters);
-document.getElementById('cat').addEventListener('change', applyFilters);
-document.getElementById('stock').addEventListener('change', applyFilters);
-document.getElementById('sort').addEventListener('change', applyFilters);
-
-// размер карточек
-document.getElementById('size').addEventListener('change', (e)=>{
-  const v = e.target.value;
-  applySize(v);
-  localStorage.setItem('cardSize', v);
-});
-function applySize(v){
-  root.classList.remove('size-cozy','size-compact');
-  if (v==='cozy') root.classList.add('size-cozy');
-  if (v==='compact') root.classList.add('size-compact');
-}
-
-// пагинация
-document.getElementById('ppg').addEventListener('change', (e)=>{
-  PPG = Number(e.target.value)||12;
-  localStorage.setItem('ppg', String(PPG));
-  PAGE = 1;
-  paginate(FILTERED);
-});
-document.getElementById('prev').addEventListener('click', ()=>{ PAGE--; paginate(FILTERED); });
-document.getElementById('next').addEventListener('click', ()=>{ PAGE++; paginate(FILTERED); });
-
-// Share (копировать ссылку)
-grid.addEventListener('click', async (e)=>{
-  const btn = e.target.closest('a.btn.share');
-  if (!btn) return;
-  e.preventDefault();
-  const url = btn.dataset.share;
-  try{
-    await navigator.clipboard.writeText(url);
-    btn.textContent = 'Copied!';
-    setTimeout(()=> btn.textContent='Share', 1000);
-  }catch(_){
-    btn.textContent = 'Failed';
-    setTimeout(()=> btn.textContent='Share', 1000);
-  }
-});
 </script>
 </body>
 </html>
-

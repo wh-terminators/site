@@ -74,8 +74,10 @@
     function cardTemplate(item){
       const id = slug(item.title);
       const selfLink = `https://terminatordeals.ca/products.html#${id}`;
-      const msg = `Hi! I'm interested in ${item.title} for ${money(item.price_now)} (category: ${item.category}).\\n${selfLink}`;
-      const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+    const id = slug(item.title);
+const selfLink = `https://terminatordeals.ca/products.html#${id}`;
+const msg = `I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${selfLink}`;
+const wa = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
       return `<article class='card' id='${id}'>
         <div class='thumb'><img src='${item.image}' alt='${item.title}'/><span class='badge'>${item.category}</span></div>
         <div class='body'>

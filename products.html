@@ -71,13 +71,30 @@
 
     function money(n){return `$${n}`;}
 
-    function cardTemplate(item){
-      const id = slug(item.title);
-      const selfLink = `https://terminatordeals.ca/products.html#${id}`;
-    const id = slug(item.title);
-const selfLink = `https://terminatordeals.ca/products.html#${id}`;
-const msg = `I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${selfLink}`;
-const wa = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
+   function cardTemplate(item){
+  const id = slug(item.title);
+  const selfLink = `https://terminatordeals.ca/products.html#${id}`;
+  const msg = `I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${selfLink}`;
+  const wa = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
+
+  return `
+    <article class="card" id="${id}">
+      <div class="thumb">
+        <img src="${item.image}" alt="${item.title}"/>
+        <span class="badge">${item.category}</span>
+      </div>
+      <div class="body">
+        <div class="title"><a href="#${id}">${item.title}</a></div>
+        <div class="price">${money(item.price_now)}</div>
+        <div class="meta">${item.details || ''}</div>
+      </div>
+      <div class="cta">
+        <a class="btn" href="${wa}" target="_blank" rel="noopener">Message on WhatsApp</a>
+      </div>
+    </article>
+  `;
+}
+
       return `<article class='card' id='${id}'>
         <div class='thumb'><img src='${item.image}' alt='${item.title}'/><span class='badge'>${item.category}</span></div>
         <div class='body'>

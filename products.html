@@ -1,124 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Terminator Deals — Hot Deals</title>
-<link rel="stylesheet" href="css/styles.css">
+
+<!-- Minimal modern reset -->
 <style>
-body {
-  background:#0b0d10; color:#fff; font-family:Inter,Arial,sans-serif;
-  margin:0; padding:0; display:flex; flex-direction:column; align-items:center;
-}
-header {width:100%; max-width:1200px; padding:1rem;}
-h1 {margin:0; font-size:1.4rem;}
-#grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
-  width:100%;
-  max-width:1200px;
-  padding:1rem;
-}
-.card {
-  background:#14171c; border-radius:14px; overflow:hidden;
-  box-shadow:0 6px 16px rgba(0,0,0,0.25);
-  opacity:0; transform:translateY(16px) scale(0.98);
-  transition:opacity .38s ease, transform .38s ease, box-shadow .24s ease;
-}
-.card.is-visible {opacity:1; transform:translateY(0) scale(1);}
-.card:hover {box-shadow:0 14px 40px rgba(0,0,0,0.4); transform:translateY(-4px) scale(1.01);}
-.card .thumb {height:200px; overflow:hidden;}
-.card img {width:100%; height:100%; object-fit:cover; transition:transform .4s ease;}
-.card:hover img {transform:scale(1.06);}
-.card .info {padding:1rem;}
-.card h2 {font-size:1rem; margin:0 0 .4rem;}
-.card p {margin:0 0 .6rem; color:#ccc; font-size:.9rem;}
-.price {display:flex; gap:.6rem; align-items:baseline;}
-.price_now {color:#00ff90; font-weight:600;}
-.price_old {color:#777; text-decoration:line-through;}
-.btns {display:flex; gap:.5rem; margin-top:.8rem;}
-.btn {
-  flex:1; border:none; border-radius:8px; padding:.6rem 0;
-  cursor:pointer; font-weight:600; color:#fff; font-size:.9rem;
-}
-.whatsapp {background:#00a884;}
-.compare {background:#1d72f2;}
-.errorBox {color:#f55; margin:1rem;}
+  :root{
+    --bg: #0b0f14; --card:#121823; --text:#e9eef5; --muted:#9fb0c3; --accent:#1dd75b; --badge:#1e2a3a; --chip:#1a2230; --border:#243044;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f8fb; --card:#ffffff; --text:#0b1220; --muted:#4b5b71; --accent:#13b04b; --badge:#e9eef5; --chip:#eef3fa; --border:#dbe4f0; }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .badge{font-weight:600;padding:6px 10px;border-radius:999px;background:var(--badge);display:inline-block}
+  .hint{font-size:12px;color:var(--muted);margin-left:auto}
+  .toolbar{display:grid;grid-template-columns:1fr 170px 140px; gap:10px; margin:12px 0 18px}
+  @media (max-width:680px){ .toolbar{grid-template-columns:1fr 1fr; } .cat{grid-column:2 / span 1} .stock{grid-column:1 / span 2}}
+  .input,select{
+    background:var(--card);color:var(--text);border:1px solid var(--border);
+    border-radius:10px;padding:10px 12px;outline:none;
+  }
+  .input::placeholder{color:var(--muted)}
+  .switch{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:14px}
+
+  /* GRID: 1 на мобиле, 4 на ноутбуке */
+  .grid{display:grid;gap:16px}
+  .grid{grid-template-columns:repeat(1,minmax(0,1fr))}
+  @media (min-width:700px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (min-width:1024px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+  }
+  .thumb{position:relative;padding-top:62%;background:#0e141d}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .chip{position:absolute;left:10px;top:10px;background:var(--chip);color:var(--muted);font-size:12px;border-radius:999px;padding:4px 8px}
+  .body{padding:12px 14px 6px}
+  .title{font-weight:700;margin:2px 0 6px}
+  .desc{color:var(--muted);font-size:13px;height:38px;overflow:hidden}
+  .prices{display:flex;align-items:center;gap:10px;margin:10px 0 8px}
+  .now{font-weight:800}
+  .old{color:var(--muted);text-decoration:line-through}
+  .actions{display:flex;gap:10px;padding:10px 14px 14px}
+  .btn{
+    flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--border);text-align:center;font-weight:700;cursor:pointer;
+    transition:.15s transform ease, .15s opacity ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .wa{background:var(--accent);color:#00190a;border:none}
+  .cmp{background:transparent}
+  .empty,.error{margin:30px 0;padding:16px;border-radius:10px}
+  .empty{background:var(--card);color:var(--muted);border:1px dashed var(--border)}
+  .error{background:#2b1214;color:#ffb4b4;border:1px solid #5e2026}
+  small.muted{color:var(--muted)}
 </style>
 </head>
-
 <body>
-<header>
-  <h1>Terminator Deals — Hot Deals</h1>
-  <div id="error" class="errorBox hidden"></div>
-</header>
+  <div class="wrap">
+    <header>
+      <div class="badge">WT</div>
+      <h1 style="margin:0;font-size:20px">Terminator Deals — Hot Deals</h1>
+      <span class="hint">Live from Google Sheets → WhatsApp</span>
+    </header>
 
-<section id="grid"></section>
+    <div id="err" class="error" style="display:none"></div>
+
+    <div class="toolbar">
+      <input id="q" class="input" placeholder="Search by title, details, category…">
+      <select id="cat" class="cat input"><option value="">All categories</option></select>
+      <label class="stock switch">
+        <input id="instock" type="checkbox" checked>
+        <span>In stock only</span>
+      </label>
+    </div>
+
+    <section id="grid" class="grid"></section>
+    <div id="empty" class="empty" style="display:none">Nothing found.</div>
+    <p style="margin-top:18px"><small class="muted">Tip: put image URLs (any public CDN or Facebook image URL), and Amazon comparison link into <code>amazon_url</code>.</small></p>
+  </div>
 
 <script>
-/* ===== CONFIG ===== */
-const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
-const SHEET_NAME = "Catalog";
-const GID = "0";
-const WHATSAPP = "13653784497";
+/* ====== CONFIG ====== */
+const SHEET_ID = '1KzTz3QsWVZeVuxte7Jw0uAaqMBbvdQHT_Wwuv1zeWZk'; // твоя таблица
+const GID      = '0'; // gid листа (по умолчанию 0)
+const WHATSAPP = '13653784497'; // номер для диалога WhatsApp (без +)
+/* ==================== */
 
-/* ===== HELPERS ===== */
-function money(n){return '$'+Number(n).toLocaleString();}
-function slug(t){return String(t).toLowerCase().replace(/[^a-z0-9]+/g,'-');}
-function parseCSV(text){
-  const lines=text.split(/\r?\n/).filter(x=>x.trim().length);
-  const head=lines.shift().split(',').map(x=>x.trim());
-  return lines.map(l=>{
-    const vals=l.split(',').map(x=>x.trim());
-    return Object.fromEntries(head.map((h,i)=>[h,vals[i]]));
-  });
+const GRID = document.getElementById('grid');
+const ERR  = document.getElementById('err');
+const EMPTY= document.getElementById('empty');
+const Q    = document.getElementById('q');
+const CAT  = document.getElementById('cat');
+const IN   = document.getElementById('instock');
+
+let ITEMS = [];
+let FILTER = { q:'', cat:'', instock:true };
+
+/* --- CSV fetch (надёжный) --- */
+async function loadSheet() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&id=${SHEET_ID}&gid=${GID}`;
+  const res = await fetch(url, { cache:'no-store' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  return parseCSV(text);
 }
 
-/* ===== LOAD DATA ===== */
-async function loadData(){
+/* --- очень терпимый CSV парсер --- */
+function parseCSV(text){
+  // простой CSV (поддерживает запятые в кавычках)
+  const rows = [];
+  let row = [], cell = '', inQ = false;
+  for (let i=0;i<text.length;i++){
+    const c = text[i], n = text[i+1];
+    if (c === '"' ){ 
+      if (inQ && n === '"'){ cell += '"'; i++; } else { inQ = !inQ; }
+    } else if (c === ',' && !inQ){ row.push(cell); cell=''; }
+      else if ((c === '\n' || c === '\r') && !inQ){
+        if (c === '\r' && n === '\n') i++;
+        row.push(cell); rows.push(row); row=[]; cell='';
+      } else { cell += c; }
+  }
+  if (cell.length || row.length) { row.push(cell); rows.push(row); }
+
+  const head = rows.shift().map(h => h.trim());
+  return rows
+    .filter(r => r.some(v => String(v).trim()!==''))
+    .map(r => Object.fromEntries(head.map((h,i)=>[h, (r[i]??'').toString().trim()])));
+}
+
+/* --- утилиты --- */
+const money = n => '$' + Number(n||0).toLocaleString();
+const slug  = s => String(s||'').toLowerCase();
+
+/* --- построение карточки --- */
+function card(item){
+  const waMsg = encodeURIComponent(`Hi! I'm interested in "${item.title}" for ${money(item.price_now)}.`);
+  const wa = `https://wa.me/${WHATSAPP}?text=${waMsg}`;
+  const cmp = item.amazon_url ? item.amazon_url : '#';
+
+  return `
+  <article class="card">
+    <div class="thumb">
+      <span class="chip">${item.category||'Item'}</span>
+      <img loading="lazy" src="${item.image}" alt="${item.title}">
+    </div>
+    <div class="body">
+      <div class="title">${item.title}</div>
+      <div class="desc">${item.details||''}</div>
+      <div class="prices">
+        <div class="now">${money(item.price_now)}</div>
+        ${item.price_old ? `<div class="old">${money(item.price_old)}</div>`:''}
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn wa"   href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn cmp"  href="${cmp}" target="_blank" rel="noopener">Compare price</a>
+    </div>
+  </article>`;
+}
+
+/* --- рендер по фильтрам --- */
+function render(){
+  const q = slug(FILTER.q);
+  const list = ITEMS.filter(it=>{
+    if (FILTER.instock && slug(it.in_stock) !== 'yes') return false;
+    if (FILTER.cat && it.category !== FILTER.cat) return false;
+    if (q){
+      const hay = `${it.title} ${it.details||''} ${it.category||''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  GRID.innerHTML = list.map(card).join('');
+  EMPTY.style.display = list.length ? 'none' : 'block';
+}
+
+/* --- заполнить селект категорий --- */
+function fillCategories(){
+  const set = new Set(ITEMS.filter(it=>it.category).map(it=>it.category));
+  CAT.innerHTML = `<option value="">All categories</option>` + 
+    Array.from(set).sort().map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+/* --- инициализация --- */
+async function init(){
   try{
-    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
-    const res=await fetch(url);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const text=await res.text();
-    const data=parseCSV(text);
-    render(data.filter(i=>i.in_stock?.toLowerCase()==='yes'));
+    ERR.style.display='none'; ERR.textContent='';
+    ITEMS = await loadSheet();
+
+    // нормализуем поля
+    ITEMS = ITEMS.map(x=>({
+      title: x.title || '',
+      price_now: x.price_now || '',
+      price_old: x.price_old || '',
+      category: x.category || '',
+      image: x.image || '',
+      details: x.details || '',
+      amazon_url: x.amazon_url || '',
+      in_stock: (x.in_stock || '').toLowerCase()
+    }));
+
+    fillCategories();
+    render();
   }catch(e){
-    document.getElementById('error').textContent='Failed to load Google Sheet. Details: '+e.message;
+    ERR.style.display='block';
+    ERR.textContent = `Failed to load Google Sheet. Details: ${e.message}`;
   }
 }
 
-/* ===== RENDER ===== */
-function render(list){
-  const grid=document.getElementById('grid');
-  grid.innerHTML=list.map(item=>`
-    <article class="card">
-      <div class="thumb"><img src="${item.image}" alt="${item.title}"></div>
-      <div class="info">
-        <h2>${item.title}</h2>
-        <p>${item.details||''}</p>
-        <div class="price">
-          <span class="price_now">${money(item.price_now)}</span>
-          <span class="price_old">${money(item.price_old)}</span>
-        </div>
-        <div class="btns">
-          <button class="btn whatsapp" onclick="window.open('https://wa.me/${WHATSAPP}?text=Hi! I\'m interested in ${encodeURIComponent(item.title)}','_blank')">WhatsApp</button>
-          ${item.amazon_url?`<button class="btn compare" onclick="window.open('${item.amazon_url}','_blank')">Compare price</button>`:''}
-        </div>
-      </div>
-    </article>
-  `).join('');
+/* --- события --- */
+Q.oninput = e => { FILTER.q = e.target.value; render(); };
+CAT.onchange = e => { FILTER.cat = e.target.value; render(); };
+IN.onchange  = e => { FILTER.instock = e.target.checked; render(); };
 
-  // animation wave
-  const cards=Array.from(document.querySelectorAll('.card'));
-  cards.forEach((el,i)=>{
-    el.style.transitionDelay=`${i*80}ms`;
-    requestAnimationFrame(()=>el.classList.add('is-visible'));
-  });
-}
-
-loadData();
+init();
 </script>
 </body>
 </html>

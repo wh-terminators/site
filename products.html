@@ -102,7 +102,15 @@
 
   function card(item){
     const fbBtn = item.fb_url ? `<a class="btn btn-fb" href="${item.fb_url}" target="_blank" rel="noopener">View on Facebook</a>` : '';
-    const old = item.price_old ? `<span class="old">${money(item.price_old)}</span>` : '';
+    let old = '';
+if (item.price_old) {
+  if (String(item.price_old).startsWith('http')) {
+    old = `<a href="${item.price_old}" target="_blank" rel="noopener" class="btn btn-fb" style="margin-left:8px;">Compare on Amazon</a>`;
+  } else {
+    old = `<span class="old">${money(item.price_old)}</span>`;
+  }
+}
+
     const badge = item.category ? `<span class="badge">${item.category}</span>` : '';
     return `
       <article class="card">

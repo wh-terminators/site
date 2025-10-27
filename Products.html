@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terminator Deals — Hot Deals Catalog</title>
+  <meta name="description" content="Hot deals from Terminator Deals — direct WhatsApp contact." />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #151822;
+      --muted: #8b93a7;
+      --text: #eef2ff;
+      --brand: #00d18f;
+      --radius: 18px;
+      --shadow: 0 6px 28px rgba(0,0,0,.25);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1100px; margin: 28px auto 60px; padding: 0 16px; }
+    header { display:flex; justify-content: space-between; align-items: center; gap:16px; margin-bottom: 18px; flex-wrap:wrap; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand .logo { width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#10b981); display:grid; place-items:center; font-weight:800; color:#001510; }
+    .brand h1 { font-size: 26px; margin:0; }
+    .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-top:20px; }
+    .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+    .thumb { position:relative; aspect-ratio:4/3; overflow:hidden; }
+    .thumb img { width:100%; height:100%; object-fit:cover; }
+    .badge { position:absolute; top:10px; left:10px; padding:6px 10px; border-radius:999px; background:#111827; color:#fff; font-size:12px; }
+    .body { padding:14px; display:flex; flex-direction:column; gap:6px; }
+    .title { font-size:16px; font-weight:700; }
+    .price { font-size:18px; color:var(--brand); font-weight:700; }
+    .meta { color:var(--muted); font-size:13px; }
+    .cta { padding:14px; margin-top:auto; }
+    .btn { display:block; text-align:center; padding:12px; border-radius:12px; background:linear-gradient(135deg,var(--brand),#10b981); color:#001510; font-weight:700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">WT</div>
+        <div>
+          <h1>Terminator Deals — Hot Deals</h1>
+          <div class="sub">Message us directly on WhatsApp for any item 🔥</div>
+        </div>
+      </div>
+    </header>
+
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <script>
+    const WHATSAPP = "13653784497"; // your WhatsApp number
+
+    const ITEMS = [
+      { title: "Z-Edge 32\" Curved Gaming Monitor", category:"Electronics", price_now:213, price_old:329, image:"images/monitor.jpg", details:"Original $329 • HST included" },
+      { title: "Electric Garage Heater (CTSC)", category:"Heating & Home", price_now:85, price_old:149, image:"images/heater_ctsc.jpg", details:"Pickup North York • Delivery available" },
+      { title: "Enhulk 20V Battery Snow Shovel", category:"Outdoor & Tools", price_now:129, price_old:249, image:"images/snow_shovel_enhulk.jpg", details:"Great for decks, steps, walkways" },
+      { title: "AOSU 4-Cam Solar Security Kit", category:"Security", price_now:298, price_old:499, image:"images/aosu_kit.jpg", details:"No subscription • Solar powered" },
+      { title: "Greener Leaf Blower (Corded)", category:"Outdoor & Tools", price_now:50, price_old:89, image:"images/leaf_blower_greener.jpg", details:"Lightweight • 10 speeds" }
+    ];
+
+    const grid = document.getElementById('grid');
+
+    function slug(s){
+      return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    }
+
+    function money(n){return `$${n}`;}
+
+    function cardTemplate(item){
+      const id = slug(item.title);
+      const selfLink = `https://terminatordeals.ca/products.html#${id}`;
+      const msg = `Hi! I'm interested in ${item.title} for ${money(item.price_now)} (category: ${item.category}).\\n${selfLink}`;
+      const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+      return `<article class='card' id='${id}'>
+        <div class='thumb'><img src='${item.image}' alt='${item.title}'/><span class='badge'>${item.category}</span></div>
+        <div class='body'>
+          <div class='title'><a href='#${id}'>${item.title}</a></div>
+          <div class='price'>${money(item.price_now)}</div>
+          <div class='meta'>${item.details||''}</div>
+        </div>
+        <div class='cta'><a class='btn' href='${wa}' target='_blank' rel='noopener'>Message on WhatsApp</a></div>
+      </article>`;
+    }
+
+    grid.innerHTML = ITEMS.map(cardTemplate).join('');
+  </script>
+</body>
+</html>

@@ -29,6 +29,7 @@
     .meta{color:var(--muted);font-size:13px}
     .cta{padding:14px;margin-top:auto}
     .btn{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#22c55e);color:#001510;font-weight:800}
+    .empty{ text-align:center;padding:40px 16px;border:1px dashed #2b3344;border-radius:16px;background:#121623; }
   </style>
 </head>
 <body>
@@ -47,15 +48,7 @@
   <script>
     // --- SETTINGS ---
     const WHATSAPP = "13653784497"; // твой номер без + и пробелов
-
-    // --- DEMO ITEMS (меняй/добавляй свои) ---
-    const ITEMS = [
-      { title: "Z-Edge 32\" Curved Gaming Monitor", category:"Electronics", price_now:213, price_old:329, image:"", details:"Original $329 • HST included" },
-      { title: "Electric Garage Heater (CTSC)", category:"Heating & Home", price_now:85,  price_old:149, image:"", details:"Pickup North York • Delivery available" },
-      { title: "Enhulk 20V Battery Snow Shovel",   category:"Outdoor & Tools", price_now:129, price_old:249, image:"", details:"Great for decks, steps, walkways" },
-      { title: "AOSU 4-Cam Solar Security Kit",    category:"Security",        price_now:298, price_old:499, image:"", details:"No subscription • Solar powered" },
-      { title: "Greener Leaf Blower (Corded)",     category:"Outdoor & Tools", price_now:50,  price_old:89,  image:"", details:"Lightweight • 10 speeds" }
-    ];
+    const ITEMS_URL = "items.json";  // файл с товарами рядом
 
     // --- HELPERS ---
     const grid = document.getElementById('grid');
@@ -74,13 +67,12 @@
                fill='#8b93a7' font-size='24' font-family='system-ui'>No image</text>
        </svg>`);
 
-    function imgSrc(item){ return item.image && item.image.trim() ? item.image : PLACEHOLDER; }
+    const imgSrc = (item) => (item.image && item.image.trim() ? item.image : PLACEHOLDER);
 
-    // --- CARD TEMPLATE ---
+    // Шаблон карточки
     function cardTemplate(item){
       const id = slug(item.title);
       const selfLink = `https://terminatordeals.ca/products.html#${id}`;
-      // Важно: без переносов строк; используем api.whatsapp.com
       const msg = `I'm interested in ${item.title} for ${money(item.price_now)}. Link: ${selfLink}`;
       const wa  = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
 
@@ -88,7 +80,7 @@
         <article class="card" id="${id}">
           <div class="thumb">
             <img src="${imgSrc(item)}" alt="${item.title}"/>
-            <span class="badge">${item.category}</span>
+            <span class="badge">${item.category || ''}</span>
           </div>
           <div class="body">
             <div class="title"><a href="#${id}">${item.title}</a></div>
@@ -102,12 +94,14 @@
       `;
     }
 
-    // --- RENDER ---
-    function render(){
-      if (ITEMS.length === 0){
+    // Рендер / пустой каталог
+    function render(items){
+      if (Array.isArray(items) && items.length){
+        grid.innerHTML = items.map(cardTemplate).join('');
+      } else {
         const waEmpty = `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent("Hi! I want to ask about stock and new arrivals.")}`;
         grid.innerHTML = `
-          <div style="text-align:center;padding:40px 16px;border:1px dashed #2b3344;border-radius:16px;background:#121623;">
+          <div class="empty">
             <h2 style="margin:0 0 8px;">No items yet</h2>
             <p style="color:#8b93a7;margin:0 0 18px;">We’re updating the catalog. Message us on WhatsApp to ask about current stock.</p>
             <a href="${waEmpty}" target="_blank" rel="noopener"
@@ -115,11 +109,23 @@
               Message on WhatsApp
             </a>
           </div>`;
-      } else {
-        grid.innerHTML = ITEMS.map(cardTemplate).join('');
       }
     }
-    render();
+
+    // Загружаем items.json
+    async function init(){
+      try{
+        const res = await fetch(ITEMS_URL, {cache: "no-store"});
+        if (!res.ok) throw new Error("HTTP "+res.status);
+        const items = await res.json();
+        render(items);
+      }catch(e){
+        console.warn("Cannot load items.json:", e);
+        render([]); // покажем пустой блок и кнопку WhatsApp
+      }
+    }
+    init();
   </script>
 </body>
 </html>
+

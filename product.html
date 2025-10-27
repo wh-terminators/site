@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Product — Terminator Deals</title>
+  <link rel="icon" href="favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1217;--card:#151a21;--muted:#9aa4b2;--text:#e6edf3;
+      --green:#16a34a;--blue:#2563eb;--radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .left{display:flex;align-items:center;gap:12px}
+    .back{padding:8px 10px;border:1px solid #223042;border-radius:10px;background:#0c1118}
+    .pager{display:flex;gap:8px}
+    .pager a{padding:8px 10px;border:1px solid #223042;border-radius:10px;background:#0c1118}
+    .share{padding:8px 10px;border:1px solid #223042;border-radius:10px;background:#0c1118;cursor:pointer}
+    .card{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
+    @media (max-width:900px){.card{grid-template-columns:1fr}}
+    .media{background:#0b1117;border:1px solid #1f2a32;border-radius:16px;overflow:hidden}
+    .media img{width:100%;height:480px;object-fit:cover;display:block}
+    @media (max-width:900px){.media img{height:300px}}
+    .thumbs{display:flex;gap:8px;padding:10px;flex-wrap:wrap;background:#0b1117;border:1px solid #1f2a32;border-radius:16px;margin-top:10px}
+    .thumbs img{width:90px;height:70px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid #243246}
+    .info{background:var(--card);border:1px solid #1f2a32;border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    h1{margin:0 0 8px;font-size:22px}
+    .cat{color:#9de1ff;background:#0b2940;border:1px solid #0ea5e9;padding:4px 8px;border-radius:999px;font-size:12px}
+    .price{margin:12px 0;font-size:22px;font-weight:800;color:#4ade80}
+    .old{color:#93a1b1;text-decoration:line-through;margin-left:10px}
+    .desc{color:var(--muted);line-height:1.6;margin:10px 0 16px;white-space:pre-wrap}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:12px 14px;border-radius:12px;font-weight:700;border:1px solid transparent}
+    .wa{background:linear-gradient(180deg,#22c55e,#16a34a);color:#05270f}
+    .amz{background:linear-gradient(180deg,#3b82f6,#2563eb);color:#fff}
+
+    .similar{margin-top:26px}
+    .similar h2{font-size:18px;margin:0 0 12px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.grid{grid-template-columns:1fr}}
+    .mini{background:#0c1118;border:1px solid #1e2a3a;border-radius:12px;overflow:hidden;display:flex;gap:10px;align-items:center}
+    .mini img{width:110px;height:90px;object-fit:cover}
+    .mini .meta{padding:10px}
+    .mini .t{font-weight:700;margin:0 0 6px}
+    .mini .p{color:#4ade80;font-weight:800}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="left">
+      <a class="back" href="products.html">← Back to catalog</a>
+      <button class="share" id="shareBtn">Share</button>
+    </div>
+    <nav class="pager" id="pager" aria-label="Product navigation"></nav>
+  </div>
+
+  <div id="view"></div>
+
+  <section class="similar" id="similar" style="display:none;">
+    <h2>Customers also viewed</h2>
+    <div class="grid" id="simgrid"></div>
+  </section>
+</div>
+
+<script>
+/** CONFIG **/
+const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
+const SHEET_NAME = 'Sheet1';
+const WHATSAPP   = '+13653784497';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+/** UTILS **/
+const $ = s => document.querySelector(s);
+const qs = new URLSearchParams(location.search);
+const id = qs.get('id') || '';
+const slug = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const money = v => {
+  const n = Number(v);
+  if (Number.isFinite(n)) return `$${n.toLocaleString('en-CA',{maximumFractionDigits:0})}`;
+  const m = String(v||'').match(/[\d.,]+/);
+  return m ? `$${m[0].replace(/,/g,'')}` : '';
+};
+const csvToRows = (csv) => {
+  const lines = csv.split(/\r?\n/).filter(Boolean);
+  const head = lines.shift().split(',').map(h => h.replace(/^"|"$/g,'').trim());
+  return lines.map(line=>{
+    const cells=[]; let cur='', q=false;
+    for (let i=0;i<line.length;i++){
+      const ch=line[i];
+      if (ch==='"' && line[i+1]==='"'){ cur+='"'; i++; continue; }
+      if (ch==='\"'){ q=!q; continue; }
+      if (ch===',' && !q){ cells.push(cur); cur=''; continue; }
+      cur+=ch;
+    }
+    cells.push(cur);
+    const obj={};
+    head.forEach((h,idx)=> obj[h]= (cells[idx]||'').replace(/^"|"$/g,'').trim());
+    return obj;
+  });
+};
+
+function productUrl(id){ return `${location.origin}/product.html?id=${encodeURIComponent(id)}`; }
+
+function renderItem(it){
+  const imgs = String(it.image||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const main = imgs[0] || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop';
+  const now  = money(it.price_now);
+  const old  = money(it.price_old);
+  const waText = `Hi! I'm interested in "${it.title}" (${it.category||'Other'}). Link: ${location.href}`;
+  const wa = `https://wa.me/${WHATSAPP.replace(/\D/g,'')}?text=${encodeURIComponent(waText)}`;
+  const amz = (it.amazon_url||'').trim();
+
+  $('#view').innerHTML = `
+    <div class="card">
+      <div>
+        <div class="media"><img id="mainimg" src="${main}" alt="${it.title}"></div>
+        ${imgs.length>1?`<div class="thumbs" id="thumbs">${imgs.slice(0,12).map((u,i)=>`<img src="${u}" alt="" data-idx="${i}">`).join('')}</div>`:''}
+      </div>
+      <div class="info">
+        <h1>${it.title}</h1>
+        ${it.category?`<span class="cat">${it.category}</span>`:''}
+        <div class="price">${now}${old?`<span class="old">${old}</span>`:''}</div>
+        <div class="desc">${(it.details||'').replace(/\n/g,'\n')}</div>
+        <div class="row">
+          <a class="btn wa"  href="${wa}" target="_blank" rel="noopener">Message on WhatsApp</a>
+          ${amz?`<a class="btn amz" href="${amz}" target="_blank" rel="noopener nofollow">Compare on Amazon</a>`:''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const mainimg = document.getElementById('mainimg');
+  const thumbsEl = document.getElementById('thumbs');
+  if (thumbsEl){
+    thumbsEl.addEventListener('click', (e)=>{
+      const t = e.target.closest('img[data-idx]');
+      if (!t) return;
+      mainimg.src = imgs[Number(t.dataset.idx)];
+    });
+  }
+}
+
+function renderPager(list, idx){
+  const pager = document.getElementById('pager');
+  const prev = list[(idx - 1 + list.length) % list.length];
+  const next = list[(idx + 1) % list.length];
+  pager.innerHTML = `
+    <a href="${productUrl(slug(prev.title))}" aria-label="Previous item">← Prev</a>
+    <a href="${productUrl(slug(next.title))}" aria-label="Next item">Next →</a>
+  `;
+}
+
+function renderSimilarByCategory(all, current){
+  const simWrap = document.getElementById('similar');
+  const simGrid = document.getElementById('simgrid');
+  const same = all
+    .filter(x => x.title !== current.title && (x.category||'') === (current.category||''))
+    .slice(0, 6);
+
+  if (!same.length){ simWrap.style.display='none'; return; }
+
+  simGrid.innerHTML = same.map(s=>{
+    const img = (s.image||'').split(',')[0]?.trim() || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop';
+    return `
+      <a class="mini" href="${productUrl(slug(s.title))}">
+        <img src="${img}" alt="${s.title}">
+        <div class="meta">
+          <div class="t">${s.title}</div>
+          <div class="p">${money(s.price_now)}</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+
+  simWrap.style.display = '';
+}
+
+function renderAlsoViewedByPrice(all, current){
+  // По цене ±25%
+  const price = parseFloat(current.price_now) || 0;
+  if (!price) return [];
+  const min = price * 0.75;
+  const max = price * 1.25;
+  return all
+    .filter(x => x.title !== current.title)
+    .filter(x => {
+      const p = parseFloat(x.price_now) || 0;
+      return p >= min && p <= max;
+    })
+    .slice(0, 6);
+}
+
+/** LOAD ONE **/
+(async function(){
+  if (!id){ document.getElementById('view').innerHTML = '<p>Item not found.</p>'; return; }
+  try{
+    const res = await fetch(CSV_URL,{cache:'no-store'});
+    const csv = await res.text();
+    const rows = csvToRows(csv);
+    const key = s => (s||'').toString().trim().toLowerCase();
+    const items = rows.map(r=>{
+      const obj={}; for (const k in r){ obj[key(k)] = r[k]; }
+      return {
+        title:       obj.title || '',
+        price_now:   obj.price_now || '',
+        price_old:   obj.price_old || '',
+        category:    obj.category || '',
+        image:       obj.image || '',
+        details:     obj.details || '',
+        amazon_url:  obj.amazon_url || '',
+        in_stock:    obj.in_stock || 'yes'
+      };
+    });
+
+    const visible = items.filter(it => String(it.in_stock||'yes').toLowerCase() !== 'no');
+
+    const curIndex = visible.findIndex(it => slug(it.title) === id);
+    const current = curIndex >= 0 ? visible[curIndex] : null;
+
+    if (!current){ document.getElementById('view').innerHTML = '<p>Item not found.</p>'; return; }
+
+    renderItem(current);
+    renderPager(visible, curIndex);
+    renderSimilarByCategory(visible, current);
+
+    // Customers also viewed (по цене): если по категории мало, добавим по цене
+    const also = renderAlsoViewedByPrice(visible, current);
+    if (also.length){
+      const simWrap = document.getElementById('similar');
+      const simGrid = document.getElementById('simgrid');
+      const more = also
+        .filter(a => simGrid.innerHTML.indexOf(slug(a.title)) === -1) // грубая проверка на дубликаты
+        .slice(0, Math.max(0, 6 - simGrid.children.length));
+      if (more.length){
+        simGrid.innerHTML += more.map(s=>{
+          const img = (s.image||'').split(',')[0]?.trim() || 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop';
+          return `
+            <a class="mini" href="${productUrl(slug(s.title))}">
+              <img src="${img}" alt="${s.title}">
+              <div class="meta">
+                <div class="t">${s.title}</div>
+                <div class="p">${money(s.price_now)}</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+        simWrap.style.display='';
+      }
+    }
+
+    document.title = `${current.title} — Terminator Deals`;
+
+    // Share
+    document.getElementById('shareBtn').addEventListener('click', async ()=>{
+      const url = location.href;
+      try{
+        if (navigator.share) {
+          await navigator.share({title: document.title, url});
+        } else {
+          await navigator.clipboard.writeText(url);
+          const btn = document.getElementById('shareBtn');
+          btn.textContent = 'Copied!';
+          setTimeout(()=> btn.textContent='Share', 1000);
+        }
+      }catch(_){}
+    });
+
+  }catch(e){
+    console.error(e);
+    document.getElementById('view').innerHTML = '<p>Failed to load item.</p>';
+  }
+})();
+</script>
+</body>
+</html>

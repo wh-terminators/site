@@ -66,12 +66,14 @@ header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 
 <script>
 /* ====== CONFIG ====== */
-const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk"; // <<< ваш ID таблицы
-const SHEET_NAME = "Sheet1"; // имя листа (точно как внизу в табах)
-const GID = "0";             // или точный gid (из URL)
-const WHATSAPP = "13653784497"; // ваш номер
+/* ====== CONFIG ====== */
+const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+const GID = "0";
+const SHEET_NAME = "Catalog";  // Имя листа как внизу таблицы
+const WHATSAPP = "13653784497"; // Твой номер
 const STATUS = document.getElementById('status');
 const ERRBOX = document.getElementById('error');
+
 
 /* ====== THEME ====== */
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);document.getElementById('theme').textContent=t==='dark'?'🌙':'☀️'};

@@ -10,16 +10,13 @@
   body{background:#0e1015;color:#e9eef6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
   .wrap{max-width:1100px;margin:28px auto;padding:0 16px}
   .title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;margin-bottom:10px}
-  .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#123;padding-inline:10px}
+  .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#123}
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
   .toolbar input,.toolbar select{background:#151a22;border:1px solid #232a36;color:#dfe7f3;border-radius:10px;padding:10px 12px}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  @media(max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:480px){.grid{grid-template-columns:1fr}}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
   .card{background:#131821;border:1px solid #202531;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #0005}
   .thumb{width:100%;height:200px;object-fit:cover;display:block}
-  .cat{position:absolute;left:10px;top:10px;background:#123;border:1px solid #245; color:#9fe; font-size:12px;padding:3px 8px;border-radius:999px}
+  .cat{position:absolute;left:10px;top:10px;background:#123;border:1px solid #245;color:#9fe;font-size:12px;padding:3px 8px;border-radius:999px}
   .ph{position:relative}
   .body{padding:12px}
   .t{font-weight:700;margin:2px 0 6px}
@@ -28,13 +25,21 @@
   .now{color:#22d47b;font-weight:800}
   .old{text-decoration:line-through;opacity:.6}
   .btns{display:flex;gap:8px;margin:12px 0 8px}
-  .btn{flex:1;text-align:center;background:#0b5;border:0;color:#001; font-weight:700; padding:10px 12px;border-radius:12px;cursor:pointer}
+  .btn{flex:1;text-align:center;background:#0b5;border:0;color:#001;font-weight:700;padding:10px 12px;border-radius:12px;cursor:pointer}
   .btn.sec{background:#18314f;color:#cfe}
   .btn.ghost{background:#161b25;color:#cfe;border:1px solid #2a3241}
   .like{display:inline-flex;align-items:center;gap:6px;font-size:13px;opacity:.8;cursor:pointer}
   .like.liked{color:#ffb703;opacity:1}
   .foot{display:flex;justify-content:space-between;align-items:center;padding:0 12px 12px}
   .hidden{display:none!important}
+
+  /* --- Размер карточек --- */
+  body.size-comfortable .grid{gap:18px}
+  body.size-comfortable .thumb{height:200px}
+  body.size-compact .grid{gap:12px}
+  body.size-compact .thumb{height:160px}
+  body.size-dense .grid{gap:8px}
+  body.size-dense .thumb{height:130px}
 </style>
 </head>
 <body>
@@ -49,13 +54,9 @@
     <input id="q" type="search" placeholder="Search by title, details, category">
     <select id="cat"><option value="">All categories</option></select>
     <select id="size">
-      <option value="comfortable">Size: Comfortable</option>
-      <option value="compact">Size: Compact</option>
-    </select>
-    <select id="perPage">
-      <option value="12">12 per page</option>
-      <option value="24">24 per page</option>
-      <option value="48">48 per page</option>
+      <option value="comfortable">Comfortable</option>
+      <option value="compact">Compact</option>
+      <option value="dense">Dense</option>
     </select>
   </div>
 
@@ -64,141 +65,84 @@
 </div>
 
 <script>
-const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // ваш ID таблицы
-const PHONE = '13653784497'; // без плюсика для wa.me
-// ---- helpers
-const money = v => '$' + Number(v||0).toLocaleString('en-CA', {maximumFractionDigits:0});
+const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
+const PHONE = '13653784497';
+const money = v => '$' + Number(v||0).toLocaleString('en-CA',{maximumFractionDigits:0});
 const slug  = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-const imgSrc = u => (!u) ? '/assets/products/placeholder.webp'
-  : /^https?:\/\//i.test(u) ? u : (u.startsWith('/') ? u : `/${u}`);
+const imgSrc = u => (!u)?'/assets/products/placeholder.webp':(/^https?:\/\//i.test(u)?u:(u.startsWith('/')?u:`/${u}`));
 
 function likeKey(id){ return 'wt_like_'+id; }
 function isLiked(id){ return localStorage.getItem(likeKey(id))==='1'; }
 function toggleLike(id){
-  const k = likeKey(id);
   const on = !isLiked(id);
-  localStorage.setItem(k, on?'1':'0');
+  localStorage.setItem(likeKey(id), on?'1':'0');
   const el = document.querySelector(`[data-like="${id}"]`);
   if(el){ el.classList.toggle('liked', on); el.querySelector('span').textContent = on?'Liked':'Like'; }
 }
 
-// ---- fetch data from Google Sheets (CSV)
 async function loadItems(){
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
   const csv = await (await fetch(url,{cache:'no-store'})).text();
   return parseCSV(csv).map(r=>({
-    title: r.title || '',
-    price_now: Number(r.price_now||0),
-    price_old: r.price_old || '',
-    category: r.category || '',
-    image: r.image || '',
-    details: r.details || '',
-    a_url: r.a_url || r.url || '',       // поддержим старый столбец url
-    in_stock: (r.in_stock||'yes').toString().toLowerCase().startsWith('y') ? 'yes' : 'no',
-    id: slug(r.title)
+    title:r.title||'',price_now:+r.price_now||0,price_old:r.price_old||'',category:r.category||'',
+    image:r.image||'',details:r.details||'',a_url:r.a_url||'',in_stock:(r.in_stock||'yes').startsWith('y')?'yes':'no',id:slug(r.title)
   }));
 }
-
-// простенький CSV → objects
 function parseCSV(txt){
-  const rows = [];
-  let r=[], cell='', quote=false;
-  for(let i=0;i<txt.length;i++){
-    const c=txt[i], n=txt[i+1];
-    if(c==='\"'){ if(quote && n==='\"'){cell+='\"'; i++;} else quote=!quote; }
-    else if(c===',' && !quote){ r.push(cell); cell=''; }
-    else if((c==='\n'||c==='\r') && !quote){ if(cell!==''||r.length){ r.push(cell); rows.push(r); r=[]; cell=''; } }
+  const rows=[],r=[],a=[];let cell='',q=false;
+  for(let i=0;i<txt.length;i++){const c=txt[i],n=txt[i+1];
+    if(c==='\"'){if(q&&n==='\"'){cell+='\"';i++;}else q=!q;}
+    else if(c===','&&!q){r.push(cell);cell='';}
+    else if((c==='\n'||c==='\r')&&!q){if(cell!==''||r.length){r.push(cell);rows.push(r.slice());r.length=0;cell='';}}
     else cell+=c;
-  }
-  if(cell!==''||r.length){ r.push(cell); rows.push(r); }
-  const header = rows.shift().map(h=>h.trim());
-  return rows.filter(x=>x.length).map(row=>{
-    const o={}; header.forEach((h,i)=>o[h]=row[i]??''); return o;
-  });
+  }if(cell!==''||r.length){r.push(cell);rows.push(r);}
+  const head=rows.shift().map(h=>h.trim());
+  return rows.map(row=>{const o={};head.forEach((h,i)=>o[h]=row[i]??'');return o;});
 }
 
-// ---- rendering
-let ITEMS=[], FILTER={q:'', cat:'', size:'comfortable', per:12};
-
-function render(){
-  const grid = document.getElementById('grid');
-  const q = FILTER.q.trim().toLowerCase();
-  let list = ITEMS.filter(x=>x.in_stock==='yes');                   // по умолчанию только In stock
-  if(FILTER.cat) list = list.filter(x=>x.category===FILTER.cat);
-  if(q){
-    list = list.filter(x =>
-      x.title.toLowerCase().includes(q) ||
-      (x.details||'').toLowerCase().includes(q) ||
-      (x.category||'').toLowerCase().includes(q)
-    );
-  }
-
-  document.getElementById('empty').classList.toggle('hidden', list.length>0);
-  grid.classList.toggle('compact', FILTER.size==='compact');
-  grid.style.gap = FILTER.size==='compact' ? '12px':'16px';
-
-  const take = Number(FILTER.per||12);
-  list = list.slice(0,take);
-
-  grid.innerHTML = list.map(cardHTML).join('');
-  // проставим лайки из localStorage
-  list.forEach(x=>{
-    const el = document.querySelector(`[data-like="${x.id}"]`);
-    if(el) el.classList.toggle('liked', isLiked(x.id));
-  });
-}
-
-function cardHTML(item){
-  const self = `/product.html?id=${encodeURIComponent(item.id)}`;
-  const msg = `Hi! I'm interested in "${item.title}" (${money(item.price_now)}). Link: ${location.origin}${self}`;
-  const wa  = `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
-
-  const compareBtn = item.a_url ? `<a class="btn sec" href="${item.a_url}" target="_blank" rel="noopener">Compare price</a>` : '';
-
-  return `
-  <article class="card">
-    <div class="ph">
-      <a href="${self}"><img class="thumb" src="${imgSrc(item.image)}" alt="${item.title}"></a>
-      <span class="cat">${item.category||'Item'}</span>
-    </div>
-    <div class="body">
-      <div class="t">${item.title}</div>
-      <div class="d">${(item.details||'').slice(0,110)}</div>
-      <div class="price">
-        <div class="now">${money(item.price_now)}</div>
-        ${item.price_old ? `<div class="old">${money(item.price_old)}</div>`:''}
-      </div>
-      <div class="btns">
-        <a class="btn" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-        ${compareBtn}
-      </div>
-    </div>
-    <div class="foot">
-      <a class="btn ghost" style="flex:0 0 auto" href="${self}">Open</a>
-      <div class="like ${isLiked(item.id)?'liked':''}" data-like="${item.id}" onclick="toggleLike('${item.id}')">★ <span>${isLiked(item.id)?'Liked':'Like'}</span></div>
-    </div>
-  </article>`;
-}
-
-// ---- init & UI wiring
-(async function(){
+let ITEMS=[],FILTER={q:'',cat:''};
+async function init(){
   ITEMS = await loadItems();
-
-  // заполним категории
-  const cats = Array.from(new Set(ITEMS.filter(x=>x.in_stock==='yes').map(x=>x.category).filter(Boolean))).sort();
-  const sel = document.getElementById('cat');
-  cats.forEach(c=>{
-    const o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o);
-  });
-
-  // input events
-  document.getElementById('q').addEventListener('input', e=>{ FILTER.q=e.target.value; render(); });
-  document.getElementById('cat').addEventListener('change', e=>{ FILTER.cat=e.target.value; render(); });
-  document.getElementById('size').addEventListener('change', e=>{ FILTER.size=e.target.value; render(); });
-  document.getElementById('perPage').addEventListener('change', e=>{ FILTER.per=e.target.value; render(); });
-
+  const cats=[...new Set(ITEMS.filter(x=>x.in_stock==='yes').map(x=>x.category))].sort();
+  const sel=document.getElementById('cat');
+  cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
   render();
+}
+function render(){
+  const grid=document.getElementById('grid'),q=FILTER.q.toLowerCase(),cat=FILTER.cat;
+  let list=ITEMS.filter(x=>x.in_stock==='yes');
+  if(cat) list=list.filter(x=>x.category===cat);
+  if(q) list=list.filter(x=>x.title.toLowerCase().includes(q)||x.details.toLowerCase().includes(q)||x.category.toLowerCase().includes(q));
+  grid.innerHTML=list.map(x=>{
+    const wa=`https://wa.me/${PHONE}?text=${encodeURIComponent(`Hi! I'm interested in "${x.title}" (${money(x.price_now)}). Link: ${location.origin}/product.html?id=${x.id}`)}`;
+    const compare=x.a_url?`<a class="btn sec" href="${x.a_url}" target="_blank">Compare price</a>`:'';
+    return `<article class="card">
+      <div class="ph"><a href="/product.html?id=${x.id}"><img class="thumb" src="${imgSrc(x.image)}"></a><span class="cat">${x.category}</span></div>
+      <div class="body"><div class="t">${x.title}</div><div class="d">${x.details.slice(0,100)}</div>
+      <div class="price"><span class="now">${money(x.price_now)}</span>${x.price_old?`<span class="old">${money(x.price_old)}</span>`:''}</div>
+      <div class="btns"><a class="btn" href="${wa}" target="_blank">WhatsApp</a>${compare}</div></div>
+      <div class="foot"><div class="like ${isLiked(x.id)?'liked':''}" data-like="${x.id}" onclick="toggleLike('${x.id}')">★ <span>${isLiked(x.id)?'Liked':'Like'}</span></div></div>
+    </article>`;
+  }).join('');
+}
+
+document.getElementById('q').oninput=e=>{FILTER.q=e.target.value;render();}
+document.getElementById('cat').onchange=e=>{FILTER.cat=e.target.value;render();}
+
+// выбор размера
+const sizeSelect=document.getElementById('size');
+function applySize(size){
+  document.body.classList.remove('size-comfortable','size-compact','size-dense');
+  document.body.classList.add('size-'+size);
+  localStorage.setItem('cardSize',size);
+}
+(function(){
+  const saved=localStorage.getItem('cardSize')||'comfortable';
+  applySize(saved);
+  sizeSelect.value=saved;
+  sizeSelect.addEventListener('change',e=>applySize(e.target.value));
 })();
+init();
 </script>
 </body>
 </html>

@@ -1,228 +1,245 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Terminator Deals — Hot Deals</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terminator Deals — Hot Deals</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    :root{
+      --bg:#0b1320;--card:#101b2e;--text:#e7edf7;--muted:#a9b6c9;
+      --accent:#14c36e;--accent-2:#2e7df7;--chip:#1a2a44;--danger:#ff5b5b;
+      --shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    [data-theme="light"]{
+      --bg:#f4f7fb;--card:#ffffff;--text:#0e1726;--muted:#5b6b82;
+      --accent:#0bbf66;--accent-2:#1b6cf7;--chip:#eef3fb;--danger:#e44242;
+      --shadow:0 8px 24px rgba(0,0,0,.12);
+    }
 
-<!-- Minimal modern reset -->
-<style>
-  :root{
-    --bg: #0b0f14; --card:#121823; --text:#e9eef5; --muted:#9fb0c3; --accent:#1dd75b; --badge:#1e2a3a; --chip:#1a2230; --border:#243044;
-  }
-  @media (prefers-color-scheme: light){
-    :root{ --bg:#f6f8fb; --card:#ffffff; --text:#0b1220; --muted:#4b5b71; --accent:#13b04b; --badge:#e9eef5; --chip:#eef3fa; --border:#dbe4f0; }
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-  }
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1200px;margin:0 auto;padding:20px}
-  header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-  .badge{font-weight:600;padding:6px 10px;border-radius:999px;background:var(--badge);display:inline-block}
-  .hint{font-size:12px;color:var(--muted);margin-left:auto}
-  .toolbar{display:grid;grid-template-columns:1fr 170px 140px; gap:10px; margin:12px 0 18px}
-  @media (max-width:680px){ .toolbar{grid-template-columns:1fr 1fr; } .cat{grid-column:2 / span 1} .stock{grid-column:1 / span 2}}
-  .input,select{
-    background:var(--card);color:var(--text);border:1px solid var(--border);
-    border-radius:10px;padding:10px 12px;outline:none;
-  }
-  .input::placeholder{color:var(--muted)}
-  .switch{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:14px}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;}
+    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 60px;}
+    header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .dot{width:34px;height:34px;border-radius:50%;display:inline-grid;place-items:center;background:var(--accent);font-weight:700;color:#07381f}
+    h1{font-size:20px;margin:0 6px 0 0}
+    .badge{font-size:12px;color:var(--muted);background:var(--chip);padding:3px 8px;border-radius:999px}
 
-  /* GRID: 1 на мобиле, 4 на ноутбуке */
-  .grid{display:grid;gap:16px}
-  .grid{grid-template-columns:repeat(1,minmax(0,1fr))}
-  @media (min-width:700px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (min-width:1024px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    /* панели */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 20px}
+    .search{flex:1;min-width:220px}
+    .search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #2a3a57;background:var(--card);color:var(--text)}
+    select,button.switch{padding:10px 12px;border-radius:10px;border:1px solid #2a3a57;background:var(--card);color:var(--text)}
+    button.switch{cursor:pointer}
 
-  .card{
-    background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
-    box-shadow:0 6px 18px rgba(0,0,0,.08);
-  }
-  .thumb{position:relative;padding-top:62%;background:#0e141d}
-  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .chip{position:absolute;left:10px;top:10px;background:var(--chip);color:var(--muted);font-size:12px;border-radius:999px;padding:4px 8px}
-  .body{padding:12px 14px 6px}
-  .title{font-weight:700;margin:2px 0 6px}
-  .desc{color:var(--muted);font-size:13px;height:38px;overflow:hidden}
-  .prices{display:flex;align-items:center;gap:10px;margin:10px 0 8px}
-  .now{font-weight:800}
-  .old{color:var(--muted);text-decoration:line-through}
-  .actions{display:flex;gap:10px;padding:10px 14px 14px}
-  .btn{
-    flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--border);text-align:center;font-weight:700;cursor:pointer;
-    transition:.15s transform ease, .15s opacity ease;
-  }
-  .btn:hover{transform:translateY(-1px)}
-  .wa{background:var(--accent);color:#00190a;border:none}
-  .cmp{background:transparent}
-  .empty,.error{margin:30px 0;padding:16px;border-radius:10px}
-  .empty{background:var(--card);color:var(--muted);border:1px dashed var(--border)}
-  .error{background:#2b1214;color:#ffb4b4;border:1px solid #5e2026}
-  small.muted{color:var(--muted)}
-</style>
+    /* сетка */
+    #grid{display:grid;gap:18px}
+    /* 1 на мобиле, 2 на планшете, 4 на десктопе */
+    @media (min-width:640px){ #grid{grid-template-columns:repeat(2,1fr);} }
+    @media (min-width:1024px){ #grid{grid-template-columns:repeat(4,1fr);} }
+
+    .card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:4/3;background:#0a1322 url('assets/placeholder.png') center/cover no-repeat}
+    .body{padding:14px}
+    .cat{display:inline-block;background:var(--chip);color:var(--muted);font-size:12px;padding:4px 8px;border-radius:999px;margin:6px 0}
+    .title{font-weight:700;margin:4px 0 8px}
+    .desc{color:var(--muted);font-size:14px;height:40px;overflow:hidden}
+    .price{display:flex;align-items:baseline;gap:10px;margin:10px 0 12px}
+    .now{color:var(--accent);font-weight:800}
+    .old{color:var(--muted);text-decoration:line-through}
+    .btns{display:flex;gap:10px;margin-top:auto;padding:0 14px 14px}
+    .btn{flex:1;display:inline-flex;justify-content:center;align-items:center;gap:8px;border:none;border-radius:12px;padding:10px 12px;cursor:pointer;text-decoration:none;font-weight:700}
+    .wapp{background:var(--accent);color:#05381f}
+    .cmp{background:var(--accent-2);color:#fff}
+    .hidden{display:none!important}
+
+    .errorBox{background:#2c0e12;color:#ffb3b3;border:1px solid #ff6b6b;padding:10px;border-radius:10px;margin:10px 0}
+    .empty{color:var(--muted);padding:30px}
+  </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="badge">WT</div>
-      <h1 style="margin:0;font-size:20px">Terminator Deals — Hot Deals</h1>
-      <span class="hint">Live from Google Sheets → WhatsApp</span>
+      <div class="dot">WT</div>
+      <h1>Terminator Deals — Hot Deals</h1>
+      <span class="badge">Live from Google Sheets → WhatsApp</span>
+      <span id="status" class="badge"></span>
     </header>
 
-    <div id="err" class="error" style="display:none"></div>
+    <div id="error" class="errorBox hidden"></div>
 
     <div class="toolbar">
-      <input id="q" class="input" placeholder="Search by title, details, category…">
-      <select id="cat" class="cat input"><option value="">All categories</option></select>
-      <label class="stock switch">
-        <input id="instock" type="checkbox" checked>
-        <span>In stock only</span>
-      </label>
+      <div class="search"><input id="q" placeholder="Search by title, details, category…"></div>
+      <select id="cat">
+        <option value="">All categories</option>
+      </select>
+      <select id="stock">
+        <option value="in">In stock only</option>
+        <option value="all">All items</option>
+      </select>
+      <button class="switch" id="themeBtn">Toggle theme</button>
     </div>
 
-    <section id="grid" class="grid"></section>
-    <div id="empty" class="empty" style="display:none">Nothing found.</div>
-    <p style="margin-top:18px"><small class="muted">Tip: put image URLs (any public CDN or Facebook image URL), and Amazon comparison link into <code>amazon_url</code>.</small></p>
+    <section id="grid"></section>
+    <div id="empty" class="empty hidden">Nothing found.</div>
   </div>
 
 <script>
 /* ====== CONFIG ====== */
-const SHEET_ID = '1KzTz3QsWVZeVuxte7Jw0uAaqMBbvdQHT_Wwuv1zeWZk'; // твоя таблица
-const GID      = '0'; // gid листа (по умолчанию 0)
-const WHATSAPP = '13653784497'; // номер для диалога WhatsApp (без +)
-/* ==================== */
+const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';   // <- твой ID таблицы
+// основной вариант (лучший): gviz CSV по gid=0
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=0`;
+// запасной вариант (если вдруг 404): публикация в веб + export
+const CSV_FALLBACK = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&id=${SHEET_ID}&gid=0`;
 
-const GRID = document.getElementById('grid');
-const ERR  = document.getElementById('err');
-const EMPTY= document.getElementById('empty');
-const Q    = document.getElementById('q');
-const CAT  = document.getElementById('cat');
-const IN   = document.getElementById('instock');
+const WHATSAPP = '13653784497'; // твой номер без плюса
+const STATUS = document.getElementById('status');
+const ERRBOX = document.getElementById('error');
 
-let ITEMS = [];
-let FILTER = { q:'', cat:'', instock:true };
+/* ======= HELPERS ======= */
+const money = n => `$${Number(n||0).toLocaleString()}`;
+const slug = s => String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 
-/* --- CSV fetch (надёжный) --- */
-async function loadSheet() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&id=${SHEET_ID}&gid=${GID}`;
-  const res = await fetch(url, { cache:'no-store' });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const text = await res.text();
-  return parseCSV(text);
-}
-
-/* --- очень терпимый CSV парсер --- */
+// простой CSV-парсер с поддержкой кавычек
 function parseCSV(text){
-  // простой CSV (поддерживает запятые в кавычках)
   const rows = [];
-  let row = [], cell = '', inQ = false;
-  for (let i=0;i<text.length;i++){
-    const c = text[i], n = text[i+1];
-    if (c === '"' ){ 
-      if (inQ && n === '"'){ cell += '"'; i++; } else { inQ = !inQ; }
-    } else if (c === ',' && !inQ){ row.push(cell); cell=''; }
-      else if ((c === '\n' || c === '\r') && !inQ){
-        if (c === '\r' && n === '\n') i++;
-        row.push(cell); rows.push(row); row=[]; cell='';
-      } else { cell += c; }
+  let i=0, field='', row=[], inQuotes=false;
+  while(i<text.length){
+    const c=text[i], n=text[i+1];
+    if(inQuotes){
+      if(c === '"' && n === '"'){ field+='"'; i+=2; continue; }
+      if(c === '"' && n !== '"'){ inQuotes=false; i++; continue; }
+      field += c; i++; continue;
+    }else{
+      if(c === '"'){ inQuotes=true; i++; continue; }
+      if(c === ','){ row.push(field); field=''; i++; continue; }
+      if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=''; i++; continue; }
+      if(c === '\r'){ i++; continue; }
+      field += c; i++; continue;
+    }
   }
-  if (cell.length || row.length) { row.push(cell); rows.push(row); }
-
-  const head = rows.shift().map(h => h.trim());
-  return rows
-    .filter(r => r.some(v => String(v).trim()!==''))
-    .map(r => Object.fromEntries(head.map((h,i)=>[h, (r[i]??'').toString().trim()])));
+  row.push(field); rows.push(row);
+  const header = rows.shift().map(h => h.trim());
+  return rows.filter(r => r.length && r.some(v=>v!=='')).map(r => Object.fromEntries(header.map((h,idx)=>[h, r[idx]??''])));
 }
 
-/* --- утилиты --- */
-const money = n => '$' + Number(n||0).toLocaleString();
-const slug  = s => String(s||'').toLowerCase();
+function showError(msg){
+  ERRBOX.textContent = msg;
+  ERRBOX.classList.remove('hidden');
+}
 
-/* --- построение карточки --- */
-function card(item){
-  const waMsg = encodeURIComponent(`Hi! I'm interested in "${item.title}" for ${money(item.price_now)}.`);
-  const wa = `https://wa.me/${WHATSAPP}?text=${waMsg}`;
-  const cmp = item.amazon_url ? item.amazon_url : '#';
+function ok(){ STATUS.textContent = '✓ loaded'; }
+
+/* ======= RENDER ======= */
+const FILTER = { q:'', cat:'', stock:'in' };
+const els = {
+  grid: document.getElementById('grid'),
+  empty: document.getElementById('empty'),
+  q: document.getElementById('q'),
+  cat: document.getElementById('cat'),
+  stock: document.getElementById('stock'),
+  themeBtn: document.getElementById('themeBtn')
+};
+
+function cardTemplate(item){
+  const id = slug(item.title);
+  const img = (item.image||'').trim();
+  const amz = (item.amazon_url||'').trim();
+  const now = money(item.price_now);
+  const old = item.price_old ? `<span class="old">${money(item.price_old)}</span>` : '';
+  const cmpBtn = amz ? `<a class="btn cmp" href="${amz}" target="_blank" rel="noopener">Compare price</a>` : '';
+  const msg = encodeURIComponent(`Hi! I'm interested in "${item.title}" for ${now}. Link: ${location.origin}/products.html#${id}`);
 
   return `
-  <article class="card">
-    <div class="thumb">
-      <span class="chip">${item.category||'Item'}</span>
-      <img loading="lazy" src="${item.image}" alt="${item.title}">
-    </div>
+  <article class="card" id="${id}">
+    <img class="thumb" src="${img}" alt="${item.title}" loading="lazy" onerror="this.src='assets/placeholder.png'">
     <div class="body">
-      <div class="title">${item.title}</div>
+      <span class="cat">${item.category||'—'}</span>
+      <div class="title">${item.title||''}</div>
       <div class="desc">${item.details||''}</div>
-      <div class="prices">
-        <div class="now">${money(item.price_now)}</div>
-        ${item.price_old ? `<div class="old">${money(item.price_old)}</div>`:''}
-      </div>
+      <div class="price"><span class="now">${now}</span>${old}</div>
     </div>
-    <div class="actions">
-      <a class="btn wa"   href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-      <a class="btn cmp"  href="${cmp}" target="_blank" rel="noopener">Compare price</a>
+    <div class="btns">
+      <a class="btn wapp" href="https://wa.me/${WHATSAPP}?text=${msg}" target="_blank" rel="noopener">WhatsApp</a>
+      ${cmpBtn}
     </div>
   </article>`;
 }
 
-/* --- рендер по фильтрам --- */
-function render(){
-  const q = slug(FILTER.q);
-  const list = ITEMS.filter(it=>{
-    if (FILTER.instock && slug(it.in_stock) !== 'yes') return false;
-    if (FILTER.cat && it.category !== FILTER.cat) return false;
-    if (q){
-      const hay = `${it.title} ${it.details||''} ${it.category||''}`.toLowerCase();
-      if (!hay.includes(q)) return false;
+function render(list){
+  const q = FILTER.q.toLowerCase();
+  const cat = FILTER.cat;
+  const wantInStock = FILTER.stock === 'in';
+
+  const filtered = list.filter(it=>{
+    if(wantInStock && String(it.in_stock||'').toLowerCase()!=='yes') return false;
+    if(cat && it.category !== cat) return false;
+    if(q){
+      const hay = `${it.title} ${it.details} ${it.category}`.toLowerCase();
+      if(!hay.includes(q)) return false;
     }
     return true;
   });
 
-  GRID.innerHTML = list.map(card).join('');
-  EMPTY.style.display = list.length ? 'none' : 'block';
+  els.grid.innerHTML = filtered.map(cardTemplate).join('');
+  els.empty.classList.toggle('hidden', filtered.length>0);
 }
 
-/* --- заполнить селект категорий --- */
-function fillCategories(){
-  const set = new Set(ITEMS.filter(it=>it.category).map(it=>it.category));
-  CAT.innerHTML = `<option value="">All categories</option>` + 
-    Array.from(set).sort().map(c=>`<option value="${c}">${c}</option>`).join('');
+/* ======= LOAD ======= */
+async function loadCSV(url){
+  const res = await fetch(url, { cache:'no-store' });
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  return parseCSV(text);
 }
 
-/* --- инициализация --- */
 async function init(){
   try{
-    ERR.style.display='none'; ERR.textContent='';
-    ITEMS = await loadSheet();
+    let rows;
+    try{
+      rows = await loadCSV(CSV_URL);
+    }catch(e){
+      // пробуем запасной URL (на случай 404)
+      rows = await loadCSV(CSV_FALLBACK);
+    }
 
-    // нормализуем поля
-    ITEMS = ITEMS.map(x=>({
-      title: x.title || '',
-      price_now: x.price_now || '',
-      price_old: x.price_old || '',
-      category: x.category || '',
-      image: x.image || '',
-      details: x.details || '',
-      amazon_url: x.amazon_url || '',
-      in_stock: (x.in_stock || '').toLowerCase()
-    }));
+    // ожидаемые заголовки:
+    // title, price_now, price_old, category, image, details, amazon_url, in_stock
+    // нормализуем ключи
+    rows = rows.map(r=>{
+      const obj = {};
+      for(const k in r){ obj[k.trim().toLowerCase()] = r[k].trim(); }
+      return obj;
+    });
 
-    fillCategories();
-    render();
-  }catch(e){
-    ERR.style.display='block';
-    ERR.textContent = `Failed to load Google Sheet. Details: ${e.message}`;
+    // заполним категории
+    const cats = [...new Set(rows.map(r=>r.category).filter(Boolean))].sort();
+    els.cat.innerHTML = `<option value="">All categories</option>` + cats.map(c=>`<option>${c}</option>`).join('');
+
+    // первоначальные фильтры
+    FILTER.stock = 'in';
+    render(rows);
+
+    // события
+    els.q.oninput = e => { FILTER.q = e.target.value; render(rows); };
+    els.cat.onchange = e => { FILTER.cat = e.target.value; render(rows); };
+    els.stock.onchange = e => { FILTER.stock = e.target.value; render(rows); };
+
+    // тема
+    els.themeBtn.onclick = ()=>{
+      const cur = document.documentElement.getAttribute('data-theme')||'dark';
+      const next = cur==='dark'?'light':'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    };
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+    ok();
+  }catch(err){
+    showError(`Failed to load Google Sheet. Details: ${err.message}`);
   }
 }
-
-/* --- события --- */
-Q.oninput = e => { FILTER.q = e.target.value; render(); };
-CAT.onchange = e => { FILTER.cat = e.target.value; render(); };
-IN.onchange  = e => { FILTER.instock = e.target.checked; render(); };
 
 init();
 </script>

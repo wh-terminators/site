@@ -1,125 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Terminator Deals — Catalog</title>
-  <meta name="description" content="Live Facebook Marketplace catalog with direct WhatsApp contact."/>
-  <style>
-    body {margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;background:#0f1115;color:#eef2ff}
-    .wrap{max-width:1100px;margin:30px auto;padding:0 16px}
-    header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#10b981,#22c55e);display:grid;place-items:center;font-weight:800;color:#001510}
-    h1{font-size:26px;margin:0}
-    .sub{color:#8b93a7;font-size:14px;margin-top:4px}
-    .search{margin-top:10px}
-    .search input{
-      width:100%;
-      max-width:420px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #23283a;
-      background:#0c0f17;
-      color:#eef2ff;
-      outline:none;
-    }
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
-    .card{background:#151822;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 28px rgba(0,0,0,.25)}
-    .thumb{position:relative;aspect-ratio:4/3;background:#111826}
-    .thumb img{width:100%;height:100%;object-fit:cover}
-    .body{padding:14px;display:flex;flex-direction:column;gap:6px}
-    .title{font-size:16px;font-weight:700}
-    .price{font-size:18px;color:#10b981;font-weight:800}
-    .meta{color:#8b93a7;font-size:13px}
-    .cta{padding:14px;margin-top:auto}
-    .btn{display:block;text-align:center;padding:12px;border-radius:12px;background:linear-gradient(135deg,#10b981,#22c55e);color:#001510;font-weight:800;text-decoration:none}
-    .chipbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .chip{border:1px solid #223;padding:8px 12px;border-radius:12px;background:#0c0f17;color:#8b93a7;cursor:pointer}
-    .chip.active{background:#10b981;color:#001510;font-weight:700}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terminator Deals — Hot Deals</title>
+<link rel="icon" href="favicon.ico" />
+<style>
+  body{background:#0f141b;color:#e9eef5;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:32px auto;padding:0 16px}
+  .top{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  h1{font-size:28px;margin:0}
+  .pill{background:#14324a;border:1px solid #214a6b;color:#a6e3ff;padding:6px 10px;border-radius:999px;font-size:12px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+  .controls input,.controls select{background:#0b1117;border:1px solid #243447;border-radius:10px;color:#e9eef5;padding:10px 12px;font-size:14px;outline:none}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.grid{grid-template-columns:1fr}}
+  .card{background:#121923;border:1px solid #1f2a37;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+  .thumb{aspect-ratio:4/3;object-fit:cover;width:100%;background:#0b1117}
+  .body{padding:14px}
+  .title{font-size:16px;font-weight:700;margin:0 0 6px}
+  .price{font-weight:800;color:#16d26e}
+  .old{color:#90a4b8;text-decoration:line-through;margin-left:8px;font-weight:500}
+  .meta{opacity:.75;font-size:12px;margin-top:6px}
+  .row{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+  .btn{display:inline-flex;justify-content:center;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid transparent;font-weight:700;text-decoration:none}
+  .btn-wa{background:#24d366;color:#042410}
+  .btn-fb{background:#0b1117;border-color:#223246;color:#9ec3ff}
+  .badge{position:absolute;left:10px;top:10px;background:#0b1117cc;border:1px solid #223246;color:#bcd2e8;padding:4px 8px;border-radius:999px;font-size:12px}
+  .card-top{position:relative}
+  .empty{opacity:.7;margin:32px 0}
+</style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div class="logo">WT</div>
-      <div>
-        <h1>Terminator Deals — Hot Deals</h1>
-        <div class="sub">Live sync with Facebook Marketplace. Click “Message” to contact us on WhatsApp 🔥</div>
-      </div>
-    </header>
-
-    <div class="search">
-      <input id="q" type="search" placeholder="Search by title…" />
+    <div class="top">
+      <h1>Terminator Deals — Hot Deals</h1>
+      <span class="pill">Live from Google Sheets → WhatsApp</span>
     </div>
 
-    <div id="catbar" class="chipbar"></div>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search by title…" />
+      <select id="cat"><option value="">All categories</option></select>
+      <select id="stock">
+        <option value="">All items</option>
+        <option value="yes">In stock</option>
+        <option value="no">Sold / hidden</option>
+      </select>
+    </div>
+
     <div id="grid" class="grid"></div>
+    <p id="empty" class="empty" style="display:none">Nothing found.</p>
   </div>
 
 <script>
-const WHATSAPP = "13653784497";
-const API_URL = "https://api.apify.com/v2/datasets/KkctyzcZDf0TyIgXb/items?format=json&clean=true";
+  // === SETTINGS ===
+  const SHEET_ID   = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk'; // <-- твой ID
+  const SHEET_NAME = 'Products';                               // <-- имя листа
+  const WHATSAPP   = '13653784497';                            // <-- номер без плюса
 
-const grid = document.getElementById('grid');
-const catbar = document.getElementById('catbar');
-const q = document.getElementById('q');
+  // gviz JSON endpoint:
+  const GVIZ = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-function normalize(raw){
-  const title = raw.marketplace_listing_title || raw.custom_title || "Untitled";
-  const price = raw.listing_price?.amount || "";
-  const city = raw.location?.city?.display_name || "";
-  const img = raw.primary_listing_photo?.image?.uri || "";
-  const url = raw.listing_url || "";
-  const cat = raw.marketplace_listing_category_id || "Marketplace";
-  return {title, price, city, img, url, cat};
-}
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const catSel = document.getElementById('cat');
+  const stockSel = document.getElementById('stock');
+  const searchInput = document.getElementById('search');
 
-function waLink(item){
-  const msg = `Hi! I'm interested in "${item.title}" listed for $${item.price}. Location: ${item.city}. Link: ${item.url}`;
-  return `https://api.whatsapp.com/send?phone=${WHATSAPP}&text=${encodeURIComponent(msg)}`;
-}
+  let ITEMS = [];
 
-function card(item){
-  return `
-  <article class="card">
-    <div class="thumb"><img src="${item.img}" alt="${item.title}"/></div>
-    <div class="body">
-      <div class="title">${item.title}</div>
-      <div class="price">${item.price ? `$${item.price}` : "Ask price"}</div>
-      <div class="meta">${item.city}</div>
-      <a href="${item.url}" target="_blank" class="meta">View on Facebook</a>
-    </div>
-    <div class="cta">
-      <a class="btn" href="${waLink(item)}" target="_blank">Message on WhatsApp</a>
-    </div>
-  </article>`;
-}
+  function slug(s){return String(s||'').toLowerCase().trim();}
 
-let items = [], activeCat = 'all';
-function render(){
-  const term = (q?.value || '').toLowerCase().trim();
+  function money(n){
+    if(n==null||n==='') return '';
+    const v = Number(n);
+    return isFinite(v) ? `$${v.toFixed(v%1?2:0)}` : String(n);
+  }
 
-  const byCat = i => activeCat==='all' ? true : i.cat === activeCat;
-  const byTitle = i => !term ? true : i.title.toLowerCase().includes(term);
+  function parseGviz(text){
+    const json = text.replace(/^[\s\S]*setResponse\(/,'').replace(/\);?\s*$/,'');
+    return JSON.parse(json);
+  }
 
-  const filtered = items.filter(byCat).filter(byTitle);
-  grid.innerHTML = filtered.map(card).join('') || `<p>No items found.</p>`;
-}
+  function gvizToRows(gviz){
+    const cols = gviz.table.cols.map(c=>c.label || c.id);
+    return gviz.table.rows.map(r=>{
+      const row = {};
+      r.c.forEach((cell, i)=>{
+        row[cols[i]] = cell ? cell.v : '';
+      });
+      return row;
+    });
+  }
 
-function renderCats(){
-  const cats = ['all', ...new Set(items.map(i=>i.cat))];
-  catbar.innerHTML = cats.map(c=>`<div class="chip${c===activeCat?' active':''}" data-cat="${c}">${c==='all'?'All':c}</div>`).join('');
-  catbar.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{activeCat=ch.dataset.cat;renderCats();render();});
-}
+  function buildWA(item){
+    const msg = `Hi! I'm interested in "${item.title}" for ${money(item.price_now)} (category: ${item.category}).`;
+    return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}${item.fb_url?'%0A'+encodeURIComponent(item.fb_url):''}`;
+  }
 
-(async()=>{
-  const res = await fetch(API_URL);
-  const data = await res.json();
-  items = data.map(normalize);
-  renderCats();
-  render();
-  q?.addEventListener('input', render);
-})();
+  function card(item){
+    const fbBtn = item.fb_url ? `<a class="btn btn-fb" href="${item.fb_url}" target="_blank" rel="noopener">View on Facebook</a>` : '';
+    const old = item.price_old ? `<span class="old">${money(item.price_old)}</span>` : '';
+    const badge = item.category ? `<span class="badge">${item.category}</span>` : '';
+    return `
+      <article class="card">
+        <div class="card-top">
+          <img class="thumb" src="${item.image || ''}" alt="${item.title || ''}" loading="lazy" />
+          ${badge}
+        </div>
+        <div class="body">
+          <h3 class="title">${item.title || ''}</h3>
+          <div class="price">${money(item.price_now)}${old}</div>
+          <div class="meta">${item.details || ''}</div>
+          <div class="row">
+            <a class="btn btn-wa" href="${buildWA(item)}" target="_blank" rel="noopener">Message on WhatsApp</a>
+            ${fbBtn}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function render(){
+    const q = slug(searchInput.value);
+    const cat = catSel.value;
+    const st  = stockSel.value;
+
+    const filtered = ITEMS.filter(x=>{
+      if (st && slug(x.in_stock) !== st) return false;
+      if (cat && x.category !== cat) return false;
+      if (q && !slug(x.title).includes(q)) return false;
+      return true;
+    });
+
+    grid.innerHTML = filtered.map(card).join('');
+    empty.style.display = filtered.length ? 'none' : '';
+  }
+
+  function fillCategories(){
+    const set = new Set(ITEMS.map(i=>i.category).filter(Boolean));
+    const now = catSel.value;
+    catSel.innerHTML = `<option value="">All categories</option>` +
+      [...set].sort().map(c=>`<option>${c}</option>`).join('');
+    if ([...set].includes(now)) catSel.value = now;
+  }
+
+  async function load(){
+    try{
+      const res = await fetch(GVIZ, { cache:'no-store' });
+      const text = await res.text();
+      const g = parseGviz(text);
+      const rows = gvizToRows(g);
+
+      ITEMS = rows.map(r=>{
+        const obj = {};
+        for (const k in r) obj[k.trim().toLowerCase()] = r[k];
+        return {
+          title:     obj.title || '',
+          price_now: obj.price_now || '',
+          price_old: obj.price_old || '',
+          category:  obj.category || '',
+          image:     obj.image || '',
+          details:   obj.details || '',
+          fb_url:    obj.fb_url || '',
+          in_stock:  (obj.in_stock || 'yes').toString().toLowerCase()
+        };
+      }).filter(x=>x.in_stock!=='no');
+
+      fillCategories();
+      render();
+    }catch(e){
+      console.error(e);
+      empty.style.display='';
+      empty.textContent = 'Failed to load products.';
+    }
+  }
+
+  searchInput.addEventListener('input', render);
+  catSel.addEventListener('change', render);
+  stockSel.addEventListener('change', render);
+
+  load();
 </script>
 </body>
 </html>

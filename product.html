@@ -1,107 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Deal</title>
-<link rel="icon" href="/favicon.ico">
-<style>
-  body{background:#0e1015;color:#e9eef6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-  .wrap{max-width:980px;margin:28px auto;padding:0 16px}
-  .back{display:inline-flex;gap:8px;align-items:center;color:#9fe;text-decoration:none;margin-bottom:12px}
-  .card{display:grid;grid-template-columns:1.2fr 1fr;gap:22px}
-  @media(max-width:900px){.card{grid-template-columns:1fr}}
-  #p-image{width:100%;height:440px;object-fit:cover;border-radius:16px;border:1px solid #202531}
-  .title{font-weight:800;font-size:24px;margin:6px 0}
-  .price{display:flex;gap:10px;align-items:center;margin:8px 0}
-  .now{color:#22d47b;font-weight:900}
-  .old{text-decoration:line-through;opacity:.6}
-  .btns{display:flex;gap:10px;margin:14px 0}
-  .btn{flex:1;text-align:center;background:#0b5;color:#001;font-weight:800;border-radius:12px;padding:12px 14px;text-decoration:none}
-  .btn.sec{background:#18314f;color:#cfe}
-  details{background:#121825;border:1px solid #222b3a;border-radius:12px;padding:12px}
-  summary{cursor:pointer;font-weight:700;margin-bottom:6px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product • Terminator Deals</title>
+  <style>
+    :root{ --bg:#0f1218; --card:#161b22; --text:#e9eef5; --muted:#9fb0c3; --brand:#16c172; --accent:#2d6cdf; --chip:#263040; --chipText:#9fb0c3; --shadow: 0 8px 28px rgba(0,0,0,.35);}
+    [data-theme="light"]{ --bg:#f6f8fb; --card:#ffffff; --text:#0b1220; --muted:#4b5b70; --brand:#0aa46a; --accent:#1f5bd6; --chip:#e9eef6; --chipText:#42536a; --shadow: 0 8px 28px rgba(10,20,40,.12);}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:980px;margin:24px auto;padding:0 16px}
+    header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+    .logo{width:28px;height:28px;border-radius:8px;background:#24d27e;color:#0c1a12;display:grid;place-items:center;font-weight:700}
+    .pill{font-size:12px;color:var(--chipText);background:var(--chip);border-radius:999px;padding:4px 10px;margin-left:8px}
+    .btn{background:var(--card);border:1px solid rgba(120,140,160,.25);color:var(--text);border-radius:10px;padding:10px 12px;cursor:pointer}
+    .btn.primary{background:var(--brand);border:none;color:#072116;font-weight:700}
+    .btn.secondary{background:var(--chip);color:var(--chipText);border:none}
+    .grid{display:grid;gap:24px}
+    @media (min-width: 900px){ .grid{ grid-template-columns: 1fr 1fr; } }
+    .img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;box-shadow:var(--shadow);background:#0b0f14}
+    .price{display:flex;align-items:baseline;gap:12px;font-size:20px}
+    .now{color:#00d084;font-weight:800}
+    .old{color:var(--muted);text-decoration:line-through}
+    .muted{color:var(--muted)}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back" href="/products.html">← Back to catalog</a>
+  <div class="wrap">
+    <header>
+      <div class="logo">WT</div>
+      <a href="products.html" class="btn">← Back to catalog</a>
+      <span class="pill" id="themeBtn" style="margin-left:auto;cursor:pointer">🌙 Theme</span>
+    </header>
 
-  <div class="card">
-    <img id="p-image" src="" alt="">
-    <div>
-      <div class="title" id="p-title"></div>
-      <div class="price"><span class="now" id="p-now"></span><span class="old" id="p-old"></span></div>
-      <div id="p-cat" style="opacity:.8;margin-bottom:6px"></div>
-
-      <div class="btns">
-        <a id="btn-wa" class="btn" target="_blank" rel="noopener">WhatsApp</a>
-        <a id="btn-compare" class="btn sec hidden" target="_blank" rel="noopener">Compare price</a>
-      </div>
-
-      <details open>
-        <summary>Details</summary>
-        <div id="p-details"></div>
-      </details>
-    </div>
+    <div id="content" class="grid"></div>
   </div>
-</div>
 
 <script>
-const SHEET_ID = '1KzTz3QsWVZeVuxtE7Jw0uAaqMBvvdQHT_Wuuv1zeWZk';
-const PHONE = '13653784497';
-const money = v => '$' + Number(v||0).toLocaleString('en-CA',{maximumFractionDigits:0});
-const imgSrc = u => (!u)?'/assets/products/placeholder.webp':(/^https?:\/\//i.test(u)?u:(u.startsWith('/')?u:`/${u}`));
-const slug = s => (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+  const GID = "0";
+  const WHATSAPP = "13653784497";
+  const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
 
-function qs(id){return document.getElementById(id)}
-function getId(){const p=new URLSearchParams(location.search);return p.get('id')||''}
+  // theme
+  const applyTheme=(t)=>{ document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); };
+  (()=>{
+    applyTheme(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light'));
+    document.getElementById('themeBtn').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+  })();
 
-async function load(){
-  const csv = await (await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`,{cache:'no-store'})).text();
-  const items = parseCSV(csv).map(r=>({
-    title:r.title||'', price_now:r.price_now, price_old:r.price_old, category:r.category||'',
-    image:r.image||'', details:r.details||'', a_url:r.a_url||r.url||'', in_stock:(r.in_stock||'yes').toLowerCase().startsWith('y')?'yes':'no',
-    id:slug(r.title)
-  }));
-  const id = getId();
-  const item = items.find(x=>x.id===id) || items[0];
-  if(!item){ location.href='/products.html'; return; }
-
-  qs('p-image').src = imgSrc(item.image);
-  qs('p-image').alt = item.title;
-  qs('p-title').textContent = item.title;
-  qs('p-cat').textContent = item.category||'';
-  qs('p-now').textContent = money(item.price_now);
-  qs('p-old').textContent = item.price_old?money(item.price_old):'';
-  qs('p-details').textContent = item.details||'';
-
-  const self = location.href; // ссылка обратно на эту страницу
-  const msg = `Hi! I'm interested in "${item.title}" (${money(item.price_now)}). Link: ${self}`;
-  qs('btn-wa').href = `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
-
-  if(item.a_url){
-    const c = qs('btn-compare');
-    c.href = item.a_url;
-    c.classList.remove('hidden');
+  function slug(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+  function money(n){ return '$' + Number(n).toLocaleString(); }
+  async function fetchCSV(url){
+    const res = await fetch(url, {cache:'no-store'}); const txt = await res.text();
+    const rows = txt.split(/\r?\n/).filter(r=>r.trim().length);
+    const head = rows.shift().split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+    return rows.map(r=>{
+      const cols=[]; let cur='', q=false;
+      for (let c of r){ if (c=='"'){ q=!q; cur+=c; } else if (c==',' && !q){ cols.push(cur); cur=''; } else { cur+=c; } }
+      cols.push(cur);
+      const obj={}; head.forEach((h,i)=>{ obj[h]= (cols[i]||'').replace(/^"|"$/g,''); }); return obj;
+    });
   }
-}
 
-function parseCSV(txt){
-  const rows=[];let r=[],cell='',q=false;
-  for(let i=0;i<txt.length;i++){
-    const c=txt[i],n=txt[i+1];
-    if(c==='\"'){ if(q&&n==='\"'){cell+='\"';i++;}else q=!q; }
-    else if(c===','&&!q){ r.push(cell); cell=''; }
-    else if((c==='\n'||c==='\r')&&!q){ if(cell!==''||r.length){ r.push(cell); rows.push(r); r=[]; cell=''; } }
-    else cell+=c;
-  }
-  if(cell!==''||r.length){ r.push(cell); rows.push(r); }
-  const head = rows.shift().map(h=>h.trim());
-  return rows.filter(x=>x.length).map(row=>{const o={}; head.forEach((h,i)=>o[h]=row[i]??''); return o;});
-}
+  (async ()=>{
+    const idParam = new URLSearchParams(location.search).get('id');
+    const list = await fetchCSV(SHEET_URL);
+    const items = list.map(r=>({
+      id: slug(r.title),
+      title:r.title||'', price_now:Number(r.price_now||0), price_old:r.price_old?Number(r.price_old):'',
+      category:r.category||'', details:r.details||'', image:r.image||'',
+      amazon_url:r.amazon_url||r.amz||'', in_stock:r.in_stock||''
+    }));
+    const item = items.find(x=>x.id===idParam) || items[0];
 
-load();
+    const img = item.image && /^https?:\/\//i.test(item.image) ? item.image : 'assets/placeholder.webp';
+    const compare = item.amazon_url && /^https?:\/\//i.test(item.amazon_url) ? item.amazon_url : '';
+    const waMsg = encodeURIComponent(`Hi! I'm interested in ${item.title} for ${money(item.price_now)} (${item.category}).`);
+    const wa = `https://wa.me/${WHATSAPP}?text=${waMsg}`;
+
+    document.title = `${item.title} — Terminator Deals`;
+    document.getElementById('content').innerHTML = `
+      <div><img class="img" src="${img}" alt="${item.title}"></div>
+      <div>
+        <h1 style="margin:0 0 6px">${item.title}</h1>
+        <div class="muted" style="margin-bottom:12px">${item.category||''}</div>
+        <div class="price" style="margin-bottom:14px">
+          <span class="now">${money(item.price_now||0)}</span>
+          ${item.price_old?`<span class="old">${money(item.price_old)}</span>`:''}
+        </div>
+        <p class="muted" style="margin-bottom:16px">${(item.details||'').replace(/\n/g,'<br>')}</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+          ${compare?`<a class="btn secondary" href="${compare}" target="_blank" rel="noopener">Compare price</a>`:''}
+        </div>
+      </div>
+    `;
+  })();
 </script>
 </body>
 </html>

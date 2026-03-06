@@ -1,50 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>Shopping Guides | Warehouse Terminators</title>
+  <title>Shopping Guides | Warehouse Terminators</title>
+  <meta name="description" content="Shopping guides about liquidation deals, appliances, electronics, and smart ways to save money when shopping in Toronto." />
 
-<meta name="description" content="Guides about liquidation deals, appliances, electronics, and smart ways to save money when shopping in Toronto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root{
+      --bg:#07111d;
+      --panel:#0c1a2d;
+      --panel-2:#10213a;
+      --border:#193457;
+      --text:#e8eef7;
+      --muted:#c6d1df;
+      --soft:#9fb2c9;
+      --accent:#2f6fed;
+      --accent-2:#1f8a55;
+      --shadow:0 12px 30px rgba(0,0,0,.18);
+      --radius:20px;
+    }
 
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#06101b 0%, #081427 100%);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 60px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:22px;
+      margin-bottom:24px;
+    }
+
+    .hero-copy,
+    .hero-media,
+    .article-card,
+    .info-card{
+      background:rgba(12,26,45,.94);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-copy{
+      padding:34px 32px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      align-self:flex-start;
+      padding:7px 12px;
+      border-radius:999px;
+      background:#102540;
+      border:1px solid #1c3a61;
+      color:#bfd0e4;
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:18px;
+    }
+
+    .hero-copy h1{
+      margin:0 0 16px;
+      font-size:clamp(38px, 5vw, 62px);
+      line-height:1.02;
+      letter-spacing:-0.03em;
+      font-weight:800;
+      color:#f5f8fc;
+      max-width:12ch;
+    }
+
+    .hero-copy p{
+      margin:0;
+      font-size:clamp(18px, 2vw, 22px);
+      line-height:1.75;
+      color:var(--muted);
+      max-width:36ch;
+    }
+
+    .hero-media{
+      overflow:hidden;
+      min-height:320px;
+    }
+
+    .hero-media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-bottom:24px;
+    }
+
+    .info-card{
+      padding:24px;
+    }
+
+    .info-card h3{
+      margin:0 0 10px;
+      font-size:clamp(24px,2vw,30px);
+      line-height:1.1;
+      letter-spacing:-0.02em;
+      color:#f4f7fb;
+      font-weight:750;
+    }
+
+    .info-card p{
+      margin:0;
+      font-size:clamp(16px,1.3vw,18px);
+      line-height:1.8;
+      color:#d3ddeb;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:clamp(28px,3.5vw,44px);
+      line-height:1.05;
+      letter-spacing:-0.03em;
+      color:#f5f8fc;
+      font-weight:800;
+    }
+
+    .articles{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .article-card{
+      padding:24px;
+      transition:.18s ease;
+    }
+
+    .article-card:hover{
+      transform:translateY(-2px);
+      border-color:#29518a;
+    }
+
+    .article-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+
+    .article-badge{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:600;
+      color:#bfd0e4;
+      border:1px solid #244264;
+      background:#102540;
+    }
+
+    .article-card h2{
+      margin:0 0 10px;
+      font-size:clamp(24px,2.4vw,34px);
+      line-height:1.12;
+      letter-spacing:-0.02em;
+      font-weight:750;
+    }
+
+    .article-card h2 a{
+      color:#f5f8fc;
+      text-decoration:none;
+    }
+
+    .article-card h2 a:hover{
+      color:#9fd3ff;
+    }
+
+    .article-card p{
+      margin:0 0 16px;
+      font-size:17px;
+      line-height:1.8;
+      color:var(--muted);
+      max-width:70ch;
+    }
+
+    .article-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:180px;
+      padding:14px 18px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:15px;
+      transition:.18s ease;
+      border:1px solid transparent;
+      box-shadow:0 10px 20px rgba(0,0,0,.14);
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .btn.primary{
+      background:linear-gradient(180deg,#2d67df,#214ba8);
+      border-color:#2a57b8;
+      color:#fff;
+    }
+
+    .btn.secondary{
+      background:linear-gradient(180deg,#1f8b56,#156e42);
+      border-color:#1b7c4c;
+      color:#fff;
+    }
+
+    .footer-note{
+      margin-top:20px;
+      color:var(--soft);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    @media (max-width: 920px){
+      .page{
+        padding:18px 14px 40px;
+      }
+
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .info-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-copy,
+      .info-card,
+      .article-card{
+        padding:22px;
+        border-radius:16px;
+      }
+
+      .hero-copy h1{
+        max-width:none;
+      }
+
+      .hero-copy p{
+        max-width:none;
+      }
+
+      .hero-media{
+        min-height:220px;
+      }
+
+      .article-actions{
+        flex-direction:column;
+      }
+
+      .btn{
+        width:100%;
+        min-width:0;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>Shopping Guides & Deal Tips</h1>
+  <div class="page">
 
-<p>
-Learn how liquidation deals work, how to save money on appliances and electronics, and how to compare prices before buying.
-</p>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Warehouse Terminators • Shopping Guides</div>
+        <h1>Shopping Guides & Deal Tips</h1>
+        <p>
+          Learn how liquidation deals work, how to choose the right appliances for your home, and how to compare prices before buying. This page collects our latest guides to help shoppers make smarter decisions.
+        </p>
+      </div>
 
-<hr>
+      <div class="hero-media">
+        <img src="assets/liquidation-appliances-hero.webp" alt="Shopping guides and liquidation appliance deals">
+      </div>
+    </section>
 
-<h2>Latest Articles</h2>
+    <section class="info-grid">
+      <div class="info-card">
+        <h3>Why these guides?</h3>
+        <p>
+          We write practical articles to help shoppers understand products, compare options, and feel more confident before buying.
+        </p>
+      </div>
 
-<ul>
+      <div class="info-card">
+        <h3>What you’ll find</h3>
+        <p>
+          Appliance buying guides, product comparisons, liquidation tips, and simple explanations without unnecessary jargon.
+        </p>
+      </div>
 
-<li>
-<a href="/how-liquidation-appliances-toronto.html">
-Can You Really Buy Appliances for Half Price in Toronto?
-</a>
-</li>
+      <div class="info-card">
+        <h3>How to use them</h3>
+        <p>
+          Read a guide, learn what matters, then jump straight into our live catalog to check what deals are available right now.
+        </p>
+      </div>
+    </section>
 
-<li>
-<a href="/air-purifier-toronto.html">
-How to Choose an Air Purifier for Your Home in Toronto
-</a>
-</li>
+    <h2 class="section-title">Latest Articles</h2>
 
-  <li>
-  <a style="color:#4ea3ff" href="/coffee-machine-guide-toronto.html">
-    How to Choose a Coffee Machine for Your Home
-  </a>
-</li>
-<!-- новые статьи добавляешь сюда -->
+    <section class="articles">
 
-</ul>
+      <article class="article-card">
+        <div class="article-top">
+          <span class="article-badge">Liquidation Basics</span>
+        </div>
+        <h2>
+          <a href="/how-liquidation-appliances-toronto.html">
+            Can You Really Buy Appliances for Half Price in Toronto?
+          </a>
+        </h2>
+        <p>
+          Learn how liquidation stores work, why some products cost much less than retail, and why liquidation inventory does not automatically mean used.
+        </p>
+        <div class="article-actions">
+          <a class="btn primary" href="/how-liquidation-appliances-toronto.html">Read Article</a>
+          <a class="btn secondary" href="/products.html?s=home">Browse Home Appliances</a>
+        </div>
+      </article>
+
+      <article class="article-card">
+        <div class="article-top">
+          <span class="article-badge">Home Comfort</span>
+        </div>
+        <h2>
+          <a href="/air-purifier-toronto.html">
+            How to Choose an Air Purifier for Your Home in Toronto
+          </a>
+        </h2>
+        <p>
+          Understand how to choose an air purifier by room size, what features matter most, and why so many households are adding air purifiers to their homes.
+        </p>
+        <div class="article-actions">
+          <a class="btn primary" href="/air-purifier-toronto.html">Read Article</a>
+          <a class="btn secondary" href="/products.html?s=purifier">Browse Air Purifier Deals</a>
+        </div>
+      </article>
+
+      <article class="article-card">
+        <div class="article-top">
+          <span class="article-badge">Coffee Machines</span>
+        </div>
+        <h2>
+          <a href="/coffee-machine-guide-toronto.html">
+            How to Choose a Coffee Machine for Your Home
+          </a>
+        </h2>
+        <p>
+          Compare coffee machine types, understand the main brand differences, and choose the right setup based on your favourite drinks and daily routine.
+        </p>
+        <div class="article-actions">
+          <a class="btn primary" href="/coffee-machine-guide-toronto.html">Read Article</a>
+          <a class="btn secondary" href="/products.html?s=coffee">Browse Coffee Machine Deals</a>
+        </div>
+      </article>
+
+      <!-- New articles go below this line -->
+
+    </section>
+
+    <div class="footer-note">
+      New articles will be added here as the guide library grows. You can also jump directly into the catalog anytime to browse current inventory and compare available deals.
+    </div>
+
+  </div>
 
 </body>
 </html>

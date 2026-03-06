@@ -104,19 +104,32 @@ function setProductSEO(item){
   if(!canonical){ canonical=document.createElement("link"); canonical.rel="canonical"; document.head.appendChild(canonical); }
   canonical.href=url;
 
+  const conditionUrl =
+  String(item.condition || '').toLowerCase().includes('used')
+    ? "https://schema.org/UsedCondition"
+    : "https://schema.org/NewCondition";
+  
   const schema={
-    "@context":"https://schema.org",
-    "@type":"Product",
-    "name": item.title,
-    "description": item.details || item.title,
-    "image": item.image ? [item.image] : [],
-    "offers":{
-      "@type":"Offer",
-      "priceCurrency":"CAD",
-      "price": item.price_now,
-      "availability": (String(item.in_stock||'').toLowerCase().startsWith('y')) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "url": url
-    }
+ "@context":"https://schema.org",
+ "@type":"Product",
+ "name": item.title,
+ "description": item.details || item.title,
+ "image": item.image ? [item.image] : [],
+ "sku": item.id,
+ "brand": {
+   "@type": "Brand",
+   "name": item.title.split(" ")[0]
+ },
+ "offers":{
+   "@type":"Offer",
+   "priceCurrency":"CAD",
+   "price": item.price_now,
+   "availability": (String(item.in_stock||'').toLowerCase().startsWith('y'))
+       ? "https://schema.org/InStock"
+       : "https://schema.org/OutOfStock",
+   "itemCondition": conditionUrl,
+   "url": url
+ }
   };
   let s=document.getElementById("product-schema");
   if(!s){ s=document.createElement("script"); s.type="application/ld+json"; s.id="product-schema"; document.head.appendChild(s); }

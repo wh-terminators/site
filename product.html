@@ -165,11 +165,14 @@ function setProductSEO(item){
 
     const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp';
     const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:'';
-   const wa = `https://wa.me/${WHATSAPP}?text=` +
-encodeURIComponent(
-`Hi! I'm interested in ${item.title}
+  const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(x.id)}`;
 
-Price: ${money(item.price_now)}
+const wa = `https://wa.me/${WHATSAPP}?text=` +
+encodeURIComponent(
+`Hi! I'm interested in ${x.title}
+
+Price: ${money(x.price_now)}
+Category: ${x.category}
 
 ${productUrl}`
 );

@@ -157,10 +157,11 @@ const FILTER = { q:'', cat:'*', stock:true };
 function cardHTML(item){
   const id = item.id; // already slug/id
   const detailsSafe = (item.details||'').replace(/\s+/g,' ').trim();
-  const productUrl = `product.html?id=${encodeURIComponent(id)}`;
+const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(id)}`;
 
-  const wa=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi! I'm interested in ${item.title} for ${money(item.price_now)} (${item.category}). Link: https://terminatordeals.ca/${productUrl}`)}`;
-
+const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+  `Hi! I'm interested in "${item.title}" for ${money(item.price_now)} (${item.category}).\n\nLink: ${productUrl}`
+)}`;
   return `
   <article class="card">
     <a href="${productUrl}" style="text-decoration:none;color:inherit">

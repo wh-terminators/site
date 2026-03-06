@@ -43,7 +43,58 @@ const SHEET_NAME = "Catalog";  // Имя листа как внизу табли
 const WHATSAPP = "13653784497"; // Твой номер
 const STATUS = document.getElementById('status');
 const ERRBOX = document.getElementById('error');
+function setProductSEO(item) {
 
+const base = "https://terminatordeals.ca";
+const url = base + "/product.html?id=" + encodeURIComponent(item.id || "");
+
+document.title = item.title + " – Warehouse Terminators Toronto";
+
+let meta = document.querySelector('meta[name="description"]');
+if(!meta){
+ meta = document.createElement("meta");
+ meta.name = "description";
+ document.head.appendChild(meta);
+}
+
+meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
+
+let canonical = document.querySelector('link[rel="canonical"]');
+if(!canonical){
+ canonical = document.createElement("link");
+ canonical.rel = "canonical";
+ document.head.appendChild(canonical);
+}
+
+canonical.href = url;
+
+const schema = {
+ "@context":"https://schema.org",
+ "@type":"Product",
+ "name": item.title,
+ "description": item.details || item.title,
+ "image": item.image ? [item.image] : [],
+ "offers":{
+   "@type":"Offer",
+   "priceCurrency":"CAD",
+   "price": item.price_now,
+   "availability":"https://schema.org/InStock",
+   "url": url
+ }
+};
+
+let s = document.getElementById("product-schema");
+
+if(!s){
+ s = document.createElement("script");
+ s.type = "application/ld+json";
+ s.id = "product-schema";
+ document.head.appendChild(s);
+}
+
+s.textContent = JSON.stringify(schema);
+
+}
 
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t)};
 (()=>{applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));document.getElementById('theme').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')})();
@@ -78,6 +129,7 @@ async function loadSheet(){
     const rows=await loadSheet();
     const items=rows.map(r=>({id:slug(r.title),title:r.title||'',price_now:Number(r.price_now||0),price_old:r.price_old?Number(r.price_old):'',category:r.category||'',details:r.details||'',image:r.image||'',amazon_url:r.amazon_url||r.amz||'',in_stock:r.in_stock||''}));
     const x=items.find(i=>i.id===id)||items[0];
+    setProductSEO(x);
     if(!x){document.getElementById('err').style.display='block';document.getElementById('err').textContent='Product not found.';return;}
     const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp';
     const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:'';

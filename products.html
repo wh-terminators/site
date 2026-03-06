@@ -248,7 +248,13 @@ function render(){
     console.error(e);
   }
 })();
+const params = new URLSearchParams(window.location.search);
+const searchFromUrl = params.get('s');
 
+if (searchFromUrl) {
+  FILTER.q = searchFromUrl;
+  qIn.value = searchFromUrl;
+}
 qIn.oninput = e=>{ FILTER.q = e.target.value; render(); };
 catIn.onchange = e=>{ FILTER.cat = e.target.value; render(); };
 stockIn.onchange = e=>{ FILTER.stock = e.target.checked; render(); };

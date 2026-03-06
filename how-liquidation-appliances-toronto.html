@@ -6,341 +6,408 @@
   <title>Can You Really Buy Appliances for Half Price in Toronto? | Liquidation Deals Explained</title>
   <meta name="description" content="Learn how liquidation deals work in Toronto, why many products are brand new, and how shoppers can compare real prices on appliances like air fryers and vacuums." />
   <link href="css/styles.css" rel="stylesheet" />
- <style>
-  body{
-    background:#07111f;
-    color:#dbe4f0;
-    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    margin:0;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  .article-wrap{
-    max-width:1080px;
-    margin:0 auto;
-    padding:28px 18px 56px;
-  }
+  <style>
+    :root{
+      --bg:#07111d;
+      --panel:#0c1a2d;
+      --panel-2:#0f2138;
+      --border:#193457;
+      --text:#e8eef7;
+      --muted:#c6d1df;
+      --soft:#9fb2c9;
+      --accent:#2f6fed;
+      --accent-2:#1f8a55;
+      --shadow:0 12px 30px rgba(0,0,0,.18);
+      --radius:20px;
+    }
 
-  .hero{
-    display:grid;
-    grid-template-columns:1.15fr 0.85fr;
-    gap:20px;
-    align-items:stretch;
-    margin-bottom:22px;
-  }
+    *{box-sizing:border-box}
 
-  .hero-text,
-  .hero-image,
-  .content-card,
-  .mini-card,
-  .cta-box{
-    background:#0d1b31;
-    border:1px solid #1d3557;
-    border-radius:18px;
-    box-shadow:0 8px 24px rgba(0,0,0,.18);
-  }
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#06101b 0%, #081427 100%);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-  .hero-text{
-    padding:28px;
-  }
-
-  .hero-text h1{
-    font-size:clamp(34px, 5vw, 58px);
-    line-height:1.08;
-    letter-spacing:-0.02em;
-    margin:0 0 18px;
-    color:#f3f6fb;
-    font-weight:700;
-  }
-
-  .hero-text p{
-    font-size:clamp(18px, 2vw, 22px);
-    line-height:1.72;
-    color:#d4deea;
-    margin:0;
-    max-width:28ch;
-  }
-
-  .hero-image{
-    overflow:hidden;
-    min-height:280px;
-  }
-
-  .hero-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-  }
-
-  .mini-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:16px;
-    margin-bottom:22px;
-  }
-
-  .mini-card{
-    padding:22px;
-  }
-
-  .mini-card h3{
-    margin:0 0 10px;
-    font-size:clamp(24px, 2vw, 32px);
-    line-height:1.15;
-    color:#f2f6fb;
-    font-weight:650;
-    letter-spacing:-0.01em;
-  }
-
-  .mini-card p{
-    margin:0;
-    color:#d1dceb;
-    line-height:1.75;
-    font-size:clamp(17px, 1.5vw, 19px);
-  }
-
-  .content-card{
-    padding:30px;
-    margin-bottom:18px;
-  }
-
-  .content-card h2{
-    font-size:clamp(32px, 3.8vw, 52px);
-    line-height:1.08;
-    letter-spacing:-0.02em;
-    margin:0 0 18px;
-    color:#f4f7fb;
-    font-weight:700;
-    max-width:18ch;
-  }
-
-  .content-card p{
-    font-size:clamp(18px, 1.7vw, 21px);
-    line-height:1.9;
-    color:#d7e1ee;
-    margin:0 0 18px;
-    max-width:70ch;
-  }
-
-  .cta-box{
-    padding:28px 24px;
-    margin:24px 0;
-    text-align:center;
-  }
-
-  .cta-box h2{
-    margin:0 0 10px;
-    font-size:clamp(30px, 3vw, 42px);
-    color:#f4f7fb;
-    line-height:1.1;
-    letter-spacing:-0.02em;
-  }
-
-  .cta-box p{
-    margin:0 0 18px;
-    font-size:clamp(17px, 1.5vw, 20px);
-    color:#d3deeb;
-    line-height:1.8;
-  }
-
-  .cta-buttons{
-    display:flex;
-    gap:14px;
-    flex-wrap:wrap;
-    justify-content:center;
-  }
-
-  .cta-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:15px 22px;
-    border-radius:14px;
-    font-weight:700;
-    font-size:18px;
-    text-decoration:none;
-    color:#fff;
-    min-width:240px;
-    transition:.18s ease;
-    border:1px solid transparent;
-  }
-
-  .cta-btn:hover{
-    transform:translateY(-1px);
-  }
-
-  .cta-btn.green{
-    background:linear-gradient(180deg,#1d8d57,#136d42);
-    border-color:#1b7d4d;
-  }
-
-  .cta-btn.blue{
-    background:linear-gradient(180deg,#2b5fd1,#2148a1);
-    border-color:#2a4fa9;
-  }
-
-  .highlight{
-    color:#9fd3ff;
-    font-weight:700;
-  }
-
-  @media (max-width: 900px){
-    .article-wrap{
-      padding:18px 14px 40px;
+    .article-shell{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 60px;
     }
 
     .hero{
-      grid-template-columns:1fr;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:22px;
+      align-items:stretch;
+      margin-bottom:22px;
     }
 
-    .mini-grid{
-      grid-template-columns:1fr;
+    .hero-copy,
+    .hero-media,
+    .quick-card,
+    .section-card,
+    .cta-card{
+      background:rgba(12,26,45,.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
 
-    .hero-text,
-    .content-card,
-    .mini-card,
-    .cta-box{
-      padding:22px;
-      border-radius:16px;
+    .hero-copy{
+      padding:34px 32px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
-    .hero-text p,
-    .content-card p,
-    .mini-card p,
-    .cta-box p{
-      max-width:none;
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      align-self:flex-start;
+      padding:7px 12px;
+      border-radius:999px;
+      background:#102540;
+      border:1px solid #1c3a61;
+      color:#bfd0e4;
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:18px;
     }
 
-    .content-card h2{
-      max-width:none;
+    .hero-copy h1{
+      margin:0 0 18px;
+      font-size:clamp(38px, 5.4vw, 64px);
+      line-height:1.02;
+      letter-spacing:-0.03em;
+      font-weight:800;
+      color:#f5f8fc;
+      max-width:12ch;
+    }
+
+    .hero-copy p{
+      margin:0;
+      font-size:clamp(18px, 2vw, 22px);
+      line-height:1.75;
+      color:var(--muted);
+      max-width:34ch;
+    }
+
+    .hero-media{
+      overflow:hidden;
+      min-height:360px;
+    }
+
+    .hero-media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .quick-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-bottom:22px;
+    }
+
+    .quick-card{
+      padding:24px;
+    }
+
+    .quick-card h3{
+      margin:0 0 12px;
+      font-size:clamp(24px, 2.1vw, 32px);
+      line-height:1.1;
+      letter-spacing:-0.02em;
+      color:#f4f7fb;
+      font-weight:750;
+    }
+
+    .quick-card p{
+      margin:0;
+      font-size:clamp(16px, 1.35vw, 19px);
+      line-height:1.8;
+      color:#d3ddeb;
+    }
+
+    .section-card{
+      padding:34px 32px;
+      margin-bottom:18px;
+    }
+
+    .section-card h2{
+      margin:0 0 18px;
+      font-size:clamp(32px, 4vw, 54px);
+      line-height:1.03;
+      letter-spacing:-0.03em;
+      color:#f5f8fc;
+      font-weight:800;
+      max-width:15ch;
+    }
+
+    .section-card p{
+      margin:0 0 18px;
+      font-size:clamp(18px, 1.6vw, 21px);
+      line-height:1.9;
+      color:var(--muted);
+      max-width:72ch;
+    }
+
+    .section-card p:last-child{
+      margin-bottom:0;
+    }
+
+    .accent{
+      color:#9fd3ff;
+      font-weight:700;
+    }
+
+    .cta-card{
+      padding:34px 28px;
+      text-align:center;
+      margin:24px 0;
+      background:linear-gradient(180deg, rgba(15,33,56,.98), rgba(12,26,45,.98));
+    }
+
+    .cta-card h2{
+      margin:0 0 12px;
+      font-size:clamp(30px, 3.2vw, 44px);
+      line-height:1.05;
+      letter-spacing:-0.03em;
+      color:#f6f9fd;
+      font-weight:800;
+    }
+
+    .cta-card p{
+      margin:0 0 22px;
+      font-size:clamp(17px, 1.45vw, 20px);
+      line-height:1.8;
+      color:#cdd8e6;
+      max-width:54ch;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .cta-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:14px;
     }
 
     .cta-btn{
-      width:100%;
-      min-width:0;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      min-width:240px;
+      padding:15px 22px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:17px;
+      transition:.18s ease;
+      color:#fff;
+      border:1px solid transparent;
+      box-shadow:0 10px 20px rgba(0,0,0,.14);
     }
-  }
-</style>
+
+    .cta-btn:hover{
+      transform:translateY(-1px);
+      color:#fff;
+    }
+
+    .cta-btn.green{
+      background:linear-gradient(180deg,#1f8b56,#156e42);
+      border-color:#1b7c4c;
+    }
+
+    .cta-btn.blue{
+      background:linear-gradient(180deg,#2d67df,#214ba8);
+      border-color:#2a57b8;
+    }
+
+    .final-note{
+      margin-top:8px;
+      color:var(--soft);
+      font-size:15px;
+      line-height:1.7;
+      text-align:center;
+    }
+
+    @media (max-width: 920px){
+      .article-shell{
+        padding:18px 14px 40px;
+      }
+
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .quick-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-copy,
+      .quick-card,
+      .section-card,
+      .cta-card{
+        padding:24px 22px;
+        border-radius:16px;
+      }
+
+      .hero-copy h1,
+      .section-card h2{
+        max-width:none;
+      }
+
+      .hero-copy p,
+      .section-card p{
+        max-width:none;
+      }
+
+      .hero-media{
+        min-height:240px;
+      }
+
+      .cta-btn{
+        width:100%;
+        min-width:0;
+      }
+    }
+  </style>
 </head>
-<body style="background:#081428;color:white;font-family:Arial, sans-serif;">
-<div class="article-wrap">
+<body>
 
-  <section class="hero">
-    <div class="hero-text">
-      <h1>Can You Really Buy Appliances for Half Price in Toronto?</h1>
+  <div class="article-shell">
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Liquidation Guide • Toronto</div>
+        <h1>Can You Really Buy Appliances for Half Price in Toronto?</h1>
+        <p>
+          Many shoppers think cheap means used, damaged, or risky. In reality, liquidation inventory often includes overstock, sealed items, and customer returns that were never truly used. Here’s how it works — and why the savings can be real.
+        </p>
+      </div>
+
+      <div class="hero-media">
+        <img src="assets/liquidation-appliances-hero.webp" alt="Discount appliances and liquidation deals in Toronto">
+      </div>
+    </section>
+
+    <section class="quick-grid">
+      <div class="quick-card">
+        <h3>Why cheaper?</h3>
+        <p>
+          Liquidation stores buy excess inventory, returns, and overstock in bulk, which allows them to sell products for significantly less than regular retail prices.
+        </p>
+      </div>
+
+      <div class="quick-card">
+        <h3>Are they used?</h3>
+        <p>
+          Not always. Many products are brand new, factory sealed, or open-box items that were never actually used by the customer.
+        </p>
+      </div>
+
+      <div class="quick-card">
+        <h3>Why buy this way?</h3>
+        <p>
+          You can save serious money, compare live prices, and still get quality household products from well-known brands.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <h2>Why Can Liquidation Stores Sell Products for So Much Less?</h2>
       <p>
-        Many shoppers think cheap means used, damaged, or risky. In reality, liquidation inventory often includes overstock, sealed items, and customer returns that were never truly used. Here’s how it works — and why the savings can be real.
+        Traditional retail follows a long chain: manufacturer, distributor, retailer, then customer. Every step adds markup. By the time a product reaches the final buyer, the price already includes warehousing, shipping, store overhead, staffing, marketing, and profit margins.
       </p>
-    </div>
-
-    <div class="hero-image">
-      <img src="assets/happy_customer.webp" alt="Liquidation deals in Toronto">
-    </div>
-  </section>
-
-  <section class="mini-grid">
-    <div class="mini-card">
-      <h3>Why cheaper?</h3>
       <p>
-        Liquidation stores buy excess inventory, returns, and overstock in bulk, which allows them to sell products for significantly less than regular retail prices.
+        Liquidation stores operate differently. Instead of buying inventory through the normal retail chain, liquidation businesses purchase excess inventory in bulk from large retailers and distribution channels. This inventory may include overstock, customer returns, cancelled orders, shelf-pulls, box damage, and seasonal clearance items.
       </p>
-    </div>
-
-    <div class="mini-card">
-      <h3>Are they used?</h3>
       <p>
-        Not always. Many products are brand new, factory sealed, or open-box items that were never actually used by the customer.
+        Retailers often want to clear this inventory quickly. That is why liquidation businesses can often offer products at <span class="accent">significantly lower prices</span> than traditional retail stores.
       </p>
-    </div>
+    </section>
 
-    <div class="mini-card">
-      <h3>Why buy this way?</h3>
+    <section class="section-card">
+      <h2>Are Liquidation Products Always Used?</h2>
       <p>
-        You can save serious money, compare live prices, and still get quality household products from well-known brands.
+        No. This is one of the biggest myths about liquidation shopping. Many people hear the word “liquidation” and assume everything is used or broken. In reality, many products are brand new, factory sealed, or open-box items that were never actually used.
       </p>
-    </div>
-  </section>
+      <p>
+        Sometimes a customer returned the product because they ordered the wrong model, changed their mind, or simply no longer needed it. In other cases, the product is overstock that never reached a customer at all.
+      </p>
+      <p>
+        In other words, liquidation does <span class="accent">not automatically mean used</span>. It often means the item no longer fits the retailer’s normal sales process.
+      </p>
+    </section>
 
-  <section class="content-card">
-    <h2>Why Can Liquidation Stores Sell Products for So Much Less?</h2>
-    <p>
-      Traditional retail follows a long chain: manufacturer, distributor, retailer, then customer. Every step adds markup. By the time a product reaches the final buyer, the price already includes warehousing, shipping, staffing, store overhead, marketing, and profit margins.
-    </p>
-    <p>
-      Liquidation stores work differently. Instead of buying inventory through the normal retail channel, they purchase excess inventory in bulk from large retailers and distribution channels. This may include overstock, customer returns, cancelled orders, shelf-pulls, box damage, and seasonal clearance items.
-    </p>
-    <p>
-      Retailers often want to clear this inventory quickly. That is why liquidation businesses can often offer products at <span class="highlight">significantly lower prices</span> than traditional retail stores.
-    </p>
-  </section>
+    <section class="section-card">
+      <h2>Should You Be Afraid of Buying Liquidation Products?</h2>
+      <p>
+        Not necessarily. You just need to understand the trade-off. Liquidation shopping is different from buying at a traditional store with a full return policy and standard retail support.
+      </p>
+      <p>
+        The upside is simple: lower pricing. The buyer’s job is to review the condition, compare the price, and decide whether the savings make sense. For many customers, they absolutely do.
+      </p>
+      <p>
+        Some products may even still qualify for manufacturer warranty, depending on the brand and serial-number registration policy.
+      </p>
+    </section>
 
-  <section class="content-card">
-    <h2>Are Liquidation Products Always Used?</h2>
-    <p>
-      No. This is one of the biggest myths about liquidation shopping. Many people hear the word “liquidation” and assume everything is used or broken. In reality, many products are brand new, factory sealed, or open-box items that were never actually used.
-    </p>
-    <p>
-      Sometimes the customer returned the product because they ordered the wrong model, changed their mind, or no longer needed it. In other cases, the product is overstock that never reached a customer at all.
-    </p>
-    <p>
-      In other words, liquidation does <span class="highlight">not automatically mean used</span>. It often means the item simply no longer fits the retailer’s regular sales process.
-    </p>
-  </section>
+    <section class="cta-card">
+      <h2>Compare Real Deals Yourself</h2>
+      <p>
+        The easiest way to understand liquidation pricing is to browse live inventory and compare prices directly on the site.
+      </p>
 
-  <section class="content-card">
-    <h2>Should You Be Afraid of Buying Liquidation Products?</h2>
-    <p>
-      Not necessarily. You just need to understand the trade-off. Liquidation shopping is different from buying at a traditional store with a full return policy and standard retail support.
-    </p>
-    <p>
-      The upside is obvious: much lower pricing. The buyer’s job is to check the condition, review the details, and compare the price. For many customers, the savings are worth it.
-    </p>
-    <p>
-      Some products may even still qualify for manufacturer warranty, depending on the brand and serial-number registration policy.
-    </p>
-  </section>
+      <div class="cta-buttons">
+        <a class="cta-btn green" href="/products.html?s=air+fryer">Browse Air Fryer Deals</a>
+        <a class="cta-btn blue" href="/products.html?s=vacuum">Browse Vacuum Deals</a>
+      </div>
 
-  <section class="cta-box">
-    <h2>Compare Real Deals Yourself</h2>
-    <p>
-      The easiest way to understand liquidation pricing is to browse live inventory and compare prices directly.
-    </p>
+      <div class="final-note">
+        You can also use the Compare Price button on many listings to check how pricing compares with major retailers and marketplaces.
+      </div>
+    </section>
 
-    <div class="cta-buttons">
-      <a class="cta-btn green" href="/products.html?s=air+fryer">Browse Air Fryer Deals</a>
-      <a class="cta-btn blue" href="/products.html?s=vacuum">Browse Vacuum Deals</a>
-    </div>
-  </section>
+    <section class="section-card">
+      <h2>What Are the Biggest Benefits?</h2>
+      <p>
+        The first benefit is simple: <span class="accent">saving money</span>. If you are furnishing a home, replacing an appliance, or shopping on a budget, the difference between retail pricing and liquidation pricing can add up very quickly.
+      </p>
+      <p>
+        The second benefit is access to brand-name inventory. The savings usually come from the inventory channel, not because the product itself is low quality.
+      </p>
+      <p>
+        The third benefit is opportunity. Inventory changes constantly, so shoppers can discover strong deals that would rarely appear through a normal retail store.
+      </p>
+    </section>
 
-  <section class="content-card">
-    <h2>What Are the Biggest Benefits?</h2>
-    <p>
-      The first benefit is simple: <span class="highlight">saving money</span>. If you are furnishing a home, replacing an appliance, or shopping on a budget, the difference between retail pricing and liquidation pricing can add up very fast.
-    </p>
-    <p>
-      The second benefit is access to brand-name inventory. The savings often come from the inventory channel, not because the product itself is low quality.
-    </p>
-    <p>
-      The third benefit is opportunity. Inventory changes constantly, so shoppers can discover strong deals that would rarely appear through a normal retail store.
-    </p>
-  </section>
-
-  <section class="content-card">
-    <h2>Final Thoughts</h2>
-    <p>
-      Liquidation products are not automatically used, broken, or risky. In many cases, they are overstock items, open-box products, cancelled orders, or returns that were never truly used.
-    </p>
-    <p>
-      The reason they are cheaper is not because they are fake or illegal. It is because they come through a different inventory channel.
-    </p>
-    <p>
-      For shoppers in Toronto who want to save money on appliances and household products, liquidation can be a smart alternative to traditional retail. The key is understanding the condition, comparing the price, and shopping with clear expectations.
-    </p>
-  </section>
+    <section class="section-card">
+      <h2>Final Thoughts</h2>
+      <p>
+        Liquidation products are not automatically used, broken, or risky. In many cases, they are overstock items, open-box products, cancelled orders, or returns that were never truly used.
+      </p>
+      <p>
+        The reason they are cheaper is not because they are fake or illegal. It is because they come through a different inventory channel.
+      </p>
+      <p>
+        For shoppers in Toronto who want to save money on appliances and household products, liquidation can be a smart alternative to traditional retail. The key is understanding the condition, comparing the price, and shopping with clear expectations.
+      </p>
+    </section>
 
   </div>
+
 </body>
 </html>

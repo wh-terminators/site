@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Product • Terminator Deals</title>
+
+<meta name="robots" content="index, follow" />
+<meta name="description" content="Product details and price at Terminator Deals in Toronto." />
+<link rel="canonical" href="https://terminatordeals.ca/product.html" />
+
 <style>
 :root{--bg:#0f1218;--card:#161b22;--text:#e9eef5;--muted:#9fb0c3;--brand:#16c172;--chip:#263040;--chipText:#9fb0c3;--shadow:0 8px 28px rgba(0,0,0,.35)}
 [data-theme="light"]{--bg:#f6f8fb;--card:#fff;--text:#0b1220;--muted:#4b5b70;--brand:#0aa46a;--chip:#e9eef6;--chipText:#42536a;--shadow:0 8px 28px rgba(10,20,40,.12)}
@@ -11,7 +16,7 @@
 .wrap{max-width:980px;margin:24px auto;padding:0 16px}
 header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .logo{width:28px;height:28px;border-radius:8px;background:#24d27e;color:#0c1a12;display:grid;place-items:center;font-weight:800}
-.btn{background:var(--card);border:1px solid rgba(120,140,160,.25);color:var(--text);border-radius:10px;padding:10px 12px;cursor:pointer}
+.btn{background:var(--card);border:1px solid rgba(120,140,160,.25);color:var(--text);border-radius:10px;padding:10px 12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
 .btn.primary{background:var(--brand);border:none;color:#072116;font-weight:700}
 .btn.secondary{background:var(--chip);color:var(--chipText);border:none}
 .grid{display:grid;gap:24px}
@@ -24,6 +29,7 @@ header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .error{background:#331f1f;border:1px solid #cc6666;color:#ffd7d7;border-radius:10px;padding:10px 12px;margin:12px 0;white-space:pre-wrap}
 </style>
 </head>
+
 <body>
 <div class="wrap">
   <header>
@@ -31,85 +37,49 @@ header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
     <a href="products.html" class="btn">← Back to catalog</a>
     <button id="theme" class="btn" style="margin-left:auto">Theme</button>
   </header>
+
   <div id="err" class="error" style="display:none"></div>
   <div id="content" class="grid"></div>
 </div>
 
 <script>
 /* ====== CONFIG ====== */
-const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
-const GID = "0";
-const SHEET_NAME = "Catalog";  // Имя листа как внизу таблицы
-const WHATSAPP = "13653784497"; // Твой номер
-const STATUS = document.getElementById('status');
-const ERRBOX = document.getElementById('error');
-function setProductSEO(item) {
+const SHEET_ID   = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+const GID        = "0";
+const SHEET_NAME = "Catalog";
+const WHATSAPP   = "13653784497";
 
-const base = "https://terminatordeals.ca";
-const url = base + "/product.html?id=" + encodeURIComponent(item.id || "");
-
-document.title = item.title + " – Warehouse Terminators Toronto";
-
-let meta = document.querySelector('meta[name="description"]');
-if(!meta){
- meta = document.createElement("meta");
- meta.name = "description";
- document.head.appendChild(meta);
-}
-
-meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
-
-let canonical = document.querySelector('link[rel="canonical"]');
-if(!canonical){
- canonical = document.createElement("link");
- canonical.rel = "canonical";
- document.head.appendChild(canonical);
-}
-
-canonical.href = url;
-
-const schema = {
- "@context":"https://schema.org",
- "@type":"Product",
- "name": item.title,
- "description": item.details || item.title,
- "image": item.image ? [item.image] : [],
- "offers":{
-   "@type":"Offer",
-   "priceCurrency":"CAD",
-   "price": item.price_now,
-   "availability":"https://schema.org/InStock",
-   "url": url
- }
-};
-
-let s = document.getElementById("product-schema");
-
-if(!s){
- s = document.createElement("script");
- s.type = "application/ld+json";
- s.id = "product-schema";
- document.head.appendChild(s);
-}
-
-s.textContent = JSON.stringify(schema);
-
-}
-
+/* ====== THEME ====== */
 const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t)};
 (()=>{applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));document.getElementById('theme').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')})();
 
-function slug(s){return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+/* ====== HELPERS ====== */
+function slug(s){return String(s||'').toLowerCase().trim().replace(/[^\p{L}\p{N}]+/ug,'-').replace(/(^-|-$)/g,'').slice(0,120)}
 function money(n){return '$'+Number(n||0).toLocaleString();}
+
 function parseCSV(text){
-  const lines=text.split(/\r?\n/).filter(x=>x.trim().length);
-  const head=lines.shift().match(/("([^"]|"")*"|[^,]+)/g).map(h=>h.replace(/^"|"$/g,''));
-  return lines.map(row=>{
-    const cols=row.match(/("([^"]|"")*"|[^,]+)/g)||[];
-    const obj={}; head.forEach((h,i)=>{ obj[h]=(cols[i]||'').replace(/^"|"$/g,''); });
+  const rows=[];
+  let i=0, cur='', row=[], inQ=false;
+  while(i<text.length){
+    const c=text[i];
+    if(c === '"'){
+      if(inQ && text[i+1] === '"'){ cur+='"'; i++; }
+      else inQ=!inQ;
+    } else if(c===',' && !inQ){ row.push(cur); cur=''; }
+    else if((c==='\n' || c==='\r') && !inQ){
+      if(cur!=='' || row.length){ row.push(cur); rows.push(row); row=[]; cur=''; }
+    } else cur+=c;
+    i++;
+  }
+  if(cur!=='' || row.length){ row.push(cur); rows.push(row); }
+  const head=(rows.shift()||[]).map(h=>String(h||'').trim());
+  return rows.filter(r=>r.some(x=>String(x||'').trim()!=='')).map(r=>{
+    const obj={};
+    head.forEach((h,idx)=> obj[h]=(r[idx]||'').trim());
     return obj;
   });
 }
+
 async function loadSheet(){
   const urls=[
     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`,
@@ -117,24 +87,80 @@ async function loadSheet(){
   ];
   let last=null;
   for(const u of urls){
-    try{const r=await fetch(u,{cache:'no-store'});if(!r.ok) throw new Error(`HTTP ${r.status}`);return parseCSV(await r.text());}
-    catch(e){last=e;}
+    try{
+      const r=await fetch(u,{cache:'no-store'});
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      return parseCSV(await r.text());
+    }catch(e){ last=e; }
   }
-  throw last||new Error('Load failed');
+  throw last || new Error('Load failed');
+}
+
+/* ====== SEO ====== */
+function setProductSEO(item){
+  const base = "https://terminatordeals.ca";
+  const url  = base + "/product.html?id=" + encodeURIComponent(item.id || "");
+
+  document.title = (item.title || "Product") + " – Terminator Deals Toronto";
+
+  let meta=document.querySelector('meta[name="description"]');
+  if(!meta){ meta=document.createElement("meta"); meta.name="description"; document.head.appendChild(meta); }
+  meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
+
+  let canonical=document.querySelector('link[rel="canonical"]');
+  if(!canonical){ canonical=document.createElement("link"); canonical.rel="canonical"; document.head.appendChild(canonical); }
+  canonical.href=url;
+
+  const schema={
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name": item.title,
+    "description": item.details || item.title,
+    "image": item.image ? [item.image] : [],
+    "offers":{
+      "@type":"Offer",
+      "priceCurrency":"CAD",
+      "price": item.price_now,
+      "availability": (String(item.in_stock||'').toLowerCase().startsWith('y')) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "url": url
+    }
+  };
+  let s=document.getElementById("product-schema");
+  if(!s){ s=document.createElement("script"); s.type="application/ld+json"; s.id="product-schema"; document.head.appendChild(s); }
+  s.textContent=JSON.stringify(schema);
 }
 
 (async()=>{
   try{
     const id=new URLSearchParams(location.search).get('id');
     const rows=await loadSheet();
-    const items=rows.map(r=>({id:slug(r.title),title:r.title||'',price_now:Number(r.price_now||0),price_old:r.price_old?Number(r.price_old):'',category:r.category||'',details:r.details||'',image:r.image||'',amazon_url:r.amazon_url||r.amz||'',in_stock:r.in_stock||''}));
-    const x=items.find(i=>i.id===id)||items[0];
+
+    const items=rows.map(r=>({
+      id: slug(r.id || r.title),                 // <-- поддержка id-колонки (если добавишь)
+      title: r.title||'',
+      price_now: Number(r.price_now||0),
+      price_old: r.price_old?Number(r.price_old):'',
+      category: r.category||'',
+      details: r.details||'',
+      image: r.image||'',
+      amazon_url: r.amazon_url||'',
+      in_stock: r.in_stock||''
+    }));
+
+    const x = items.find(i=>i.id===id);
+    if(!x){
+      const b=document.getElementById('err');
+      b.style.display='block';
+      b.textContent='Product not found. (Wrong id in URL or sheet not loaded)';
+      return;
+    }
+
     setProductSEO(x);
-    if(!x){document.getElementById('err').style.display='block';document.getElementById('err').textContent='Product not found.';return;}
+
     const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp';
     const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:'';
     const wa=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi! I'm interested in ${x.title} for ${money(x.price_now)} (${x.category}).`)}`;
-    document.title=`${x.title} — Terminator Deals`;
+
     document.getElementById('content').innerHTML=`
       <div><img class="img" src="${img}" alt="${x.title}"></div>
       <div>
@@ -147,12 +173,12 @@ async function loadSheet(){
         <p class="muted" style="margin-bottom:16px">${(x.details||'').replace(/\n/g,'<br>')}</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-          ${cmp?`<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener">Compare price</a>`:''}
+          ${cmp?`<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>`:''}
         </div>
       </div>`;
   }catch(e){
     const b=document.getElementById('err'); b.style.display='block';
-    b.textContent=`Failed to load product.\nCheck sharing and headers.\nDetails: ${e.message||String(e)}`;
+    b.textContent=`Failed to load product.\nDetails: ${e.message||String(e)}\n\nFix: File → Publish to the web (in Google Sheets) OR check SHEET_ID / sheet name.`;
     console.error(e);
   }
 })();

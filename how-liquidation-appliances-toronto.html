@@ -6,26 +6,28 @@
   <title>Can You Really Buy Appliances for Half Price in Toronto? | Liquidation Deals Explained</title>
   <meta name="description" content="Learn how liquidation deals work in Toronto, why many products are brand new, and how shoppers can compare real prices on appliances like air fryers and vacuums." />
   <link href="css/styles.css" rel="stylesheet" />
-  <style>
+ <style>
   body{
-    background:#081428;
-    color:#fff;
-    font-family:Inter, Arial, sans-serif;
+    background:#07111f;
+    color:#dbe4f0;
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     margin:0;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
 
   .article-wrap{
-    max-width:1100px;
+    max-width:1080px;
     margin:0 auto;
-    padding:40px 20px 60px;
+    padding:28px 18px 56px;
   }
 
   .hero{
     display:grid;
-    grid-template-columns:1.2fr 0.8fr;
-    gap:24px;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:20px;
     align-items:stretch;
-    margin-bottom:32px;
+    margin-bottom:22px;
   }
 
   .hero-text,
@@ -33,32 +35,36 @@
   .content-card,
   .mini-card,
   .cta-box{
-    background:#101b33;
-    border:1px solid #223457;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.22);
+    background:#0d1b31;
+    border:1px solid #1d3557;
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(0,0,0,.18);
   }
 
   .hero-text{
-    padding:32px;
+    padding:28px;
   }
 
   .hero-text h1{
-    font-size:52px;
+    font-size:clamp(34px, 5vw, 58px);
     line-height:1.08;
+    letter-spacing:-0.02em;
     margin:0 0 18px;
+    color:#f3f6fb;
+    font-weight:700;
   }
 
   .hero-text p{
-    font-size:20px;
-    line-height:1.7;
-    color:#d9e6ff;
+    font-size:clamp(18px, 2vw, 22px);
+    line-height:1.72;
+    color:#d4deea;
     margin:0;
+    max-width:28ch;
   }
 
   .hero-image{
     overflow:hidden;
-    min-height:320px;
+    min-height:280px;
   }
 
   .hero-image img{
@@ -70,9 +76,9 @@
 
   .mini-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    margin-bottom:28px;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:22px;
   }
 
   .mini-card{
@@ -80,91 +86,111 @@
   }
 
   .mini-card h3{
-    margin:0 0 12px;
-    font-size:24px;
+    margin:0 0 10px;
+    font-size:clamp(24px, 2vw, 32px);
+    line-height:1.15;
+    color:#f2f6fb;
+    font-weight:650;
+    letter-spacing:-0.01em;
   }
 
   .mini-card p{
     margin:0;
-    color:#d6e3fb;
-    line-height:1.65;
-    font-size:16px;
+    color:#d1dceb;
+    line-height:1.75;
+    font-size:clamp(17px, 1.5vw, 19px);
   }
 
   .content-card{
     padding:30px;
-    margin-bottom:22px;
+    margin-bottom:18px;
   }
 
   .content-card h2{
-    font-size:38px;
-    line-height:1.15;
+    font-size:clamp(32px, 3.8vw, 52px);
+    line-height:1.08;
+    letter-spacing:-0.02em;
     margin:0 0 18px;
+    color:#f4f7fb;
+    font-weight:700;
+    max-width:18ch;
   }
 
   .content-card p{
-    font-size:19px;
-    line-height:1.85;
-    color:#e7efff;
+    font-size:clamp(18px, 1.7vw, 21px);
+    line-height:1.9;
+    color:#d7e1ee;
     margin:0 0 18px;
+    max-width:70ch;
   }
 
   .cta-box{
-    padding:26px;
-    margin:28px 0;
+    padding:28px 24px;
+    margin:24px 0;
     text-align:center;
   }
 
   .cta-box h2{
-    margin:0 0 12px;
-    font-size:34px;
+    margin:0 0 10px;
+    font-size:clamp(30px, 3vw, 42px);
+    color:#f4f7fb;
+    line-height:1.1;
+    letter-spacing:-0.02em;
   }
 
   .cta-box p{
-    margin:0 0 20px;
-    font-size:18px;
-    color:#d6e3fb;
+    margin:0 0 18px;
+    font-size:clamp(17px, 1.5vw, 20px);
+    color:#d3deeb;
+    line-height:1.8;
   }
 
   .cta-buttons{
     display:flex;
-    gap:16px;
+    gap:14px;
     flex-wrap:wrap;
     justify-content:center;
   }
 
   .cta-btn{
-    display:inline-block;
-    padding:16px 26px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:15px 22px;
     border-radius:14px;
     font-weight:700;
     font-size:18px;
     text-decoration:none;
     color:#fff;
-    min-width:260px;
-    transition:.2s ease;
+    min-width:240px;
+    transition:.18s ease;
+    border:1px solid transparent;
   }
 
   .cta-btn:hover{
-    transform:translateY(-2px);
+    transform:translateY(-1px);
   }
 
   .cta-btn.green{
-    background:linear-gradient(180deg,#1f8a55,#10723f);
-    border:1px solid #137845;
+    background:linear-gradient(180deg,#1d8d57,#136d42);
+    border-color:#1b7d4d;
   }
 
   .cta-btn.blue{
-    background:linear-gradient(180deg,#2356c9,#1f46a3);
-    border:1px solid #244aa6;
+    background:linear-gradient(180deg,#2b5fd1,#2148a1);
+    border-color:#2a4fa9;
   }
 
   .highlight{
-    color:#7dd3fc;
+    color:#9fd3ff;
     font-weight:700;
   }
 
   @media (max-width: 900px){
+    .article-wrap{
+      padding:18px 14px 40px;
+    }
+
     .hero{
       grid-template-columns:1fr;
     }
@@ -173,12 +199,28 @@
       grid-template-columns:1fr;
     }
 
-    .hero-text h1{
-      font-size:40px;
+    .hero-text,
+    .content-card,
+    .mini-card,
+    .cta-box{
+      padding:22px;
+      border-radius:16px;
+    }
+
+    .hero-text p,
+    .content-card p,
+    .mini-card p,
+    .cta-box p{
+      max-width:none;
     }
 
     .content-card h2{
-      font-size:30px;
+      max-width:none;
+    }
+
+    .cta-btn{
+      width:100%;
+      min-width:0;
     }
   }
 </style>

@@ -165,7 +165,14 @@ function setProductSEO(item){
 
     const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp';
     const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:'';
-    const wa=`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi! I'm interested in ${x.title} for ${money(x.price_now)} (${x.category}).`)}`;
+   const wa = `https://wa.me/${WHATSAPP}?text=` +
+encodeURIComponent(
+`Hi! I'm interested in ${item.title}
+
+Price: ${money(item.price_now)}
+
+${productUrl}`
+);
 
     document.getElementById('content').innerHTML=`
       <div><img class="img" src="${img}" alt="${x.title}"></div>

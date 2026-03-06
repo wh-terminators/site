@@ -1,4 +1,4 @@
 ### Warehouse Terminators website
 
-Old shitty version 
+Best SEO
 

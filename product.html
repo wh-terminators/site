@@ -186,6 +186,7 @@ ${productUrl}`
           <span class="now">${money(x.price_now)}</span>
           ${x.price_old?`<span class="old">${money(x.price_old)}</span>`:''}
         </div>
+        ${x.condition ? `<div class="muted" style="margin-bottom:12px"><strong>Condition:</strong> ${x.condition}</div>` : ''}
         <p class="muted" style="margin-bottom:16px">${(x.details||'').replace(/\n/g,'<br>')}</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>

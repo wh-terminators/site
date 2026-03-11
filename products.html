@@ -23,7 +23,7 @@
     .title{display:flex;align-items:center;gap:10px;font-weight:800}
     .title .dot{width:36px;height:36px;border-radius:50%;background:#22c55e22;display:grid;place-items:center;border:1px solid #233146}
     .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .input, select{height:40px;border:1px solid #233146;background:var(--card);color:var(--text);border-radius:10px;padding:0 12px;outline:none;transition:.2s;border-radius:10px;width:100%;}
+    .input, select{height:40px;border:1px solid #233146;background:var(--card);color:var(--text);border-radius:10px;padding:0 12px;outline:none;transition:.2s;width:100%;}
     .input:focus, select:focus{border-color:#2b4a95; box-shadow:0 0 0 4px var(--ring)}
     .controls > *{flex:1 1 220px}
     .toggle{display:flex;align-items:center;gap:8px}
@@ -98,37 +98,60 @@
 <script>
 /* ====== CONFIG ====== */
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?gid=0&single=true&output=csv";
-const WHATSAPP   = "13653784497";
+const WHATSAPP = "13653784497";
 
 const STATUS = document.getElementById('status');
 const ERRBOX = document.getElementById('error');
 const LOADED = document.getElementById('loadmark');
-const grid   = document.getElementById('grid');
+const grid = document.getElementById('grid');
 
-const money = n => `$${Number(n||0).toLocaleString()}`;
-const slug  = s => String(s||'').toLowerCase().trim().replace(/[^\p{L}\p{N}]+/ug,'-').replace(/^-+|-+$/g,'').slice(0,120);
+const money = n => `$${Number(n || 0).toLocaleString()}`;
+const slug = s => String(s || '')
+  .toLowerCase()
+  .trim()
+  .replace(/[^\p{L}\p{N}]+/ug, '-')
+  .replace(/^-+|-+$/g, '')
+  .slice(0, 120);
 
 function csvToObjects(text){
-  const rows=[];
-  let i=0, cur='', row=[], inQ=false;
-  while(i<text.length){
-    const c=text[i];
+  const rows = [];
+  let i = 0, cur = '', row = [], inQ = false;
+
+  while(i < text.length){
+    const c = text[i];
     if(c === '"'){
-      if(inQ && text[i+1] === '"'){ cur+='"'; i++; }
-      else inQ=!inQ;
-    } else if(c===',' && !inQ){ row.push(cur); cur=''; }
-    else if((c==='\n' || c==='\r') && !inQ){
-      if(cur!=='' || row.length){ row.push(cur); rows.push(row); row=[]; cur=''; }
-    } else cur+=c;
+      if(inQ && text[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if(c === ',' && !inQ){
+      row.push(cur);
+      cur = '';
+    } else if((c === '\n' || c === '\r') && !inQ){
+      if(cur !== '' || row.length){
+        row.push(cur);
+        rows.push(row);
+        row = [];
+        cur = '';
+      }
+    } else {
+      cur += c;
+    }
     i++;
   }
-  if(cur!=='' || row.length){ row.push(cur); rows.push(row); }
-  const head=(rows.shift()||[]).map(h=>String(h||'').trim());
-  return rows.filter(r=>r.some(x=>String(x||'').trim()!=='')).map(r=>{
-    const obj={};
-    head.forEach((h,idx)=> obj[h]=(r[idx]||'').trim());
-    return obj;
-  });
+
+  if(cur !== '' || row.length){
+    row.push(cur);
+    rows.push(row);
+  }
+
+  const head = (rows.shift() || []).map(h => String(h || '').trim());
+
+  return rows
+    .filter(r => r.some(x => String(x || '').trim() !== ''))
+    .map(r => {
+      const obj = {};
+      head.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
+      return obj;
+    });
 }
 
 async function loadSheet(){
@@ -136,43 +159,53 @@ async function loadSheet(){
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   return csvToObjects(await r.text());
 }
-/* THEME */
+
+/* ====== THEME ====== */
 (function initTheme(){
   const saved = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
   const themeSel = document.getElementById('themeSel');
   themeSel.value = saved;
-  themeSel.addEventListener('change', e=>{
+
+  themeSel.addEventListener('change', e => {
     const val = e.target.value;
     document.documentElement.setAttribute('data-theme', val);
     localStorage.setItem('theme', val);
   });
 })();
 
-const qIn   = document.getElementById('q');
+const qIn = document.getElementById('q');
 const catIn = document.getElementById('cat');
 const stockIn = document.getElementById('stock');
+
 const FILTER = { q:'', cat:'*', stock:true };
+let ITEMS = [];
 
 function cardHTML(item){
-  const id = item.id; // already slug/id
-  const detailsSafe = (item.details||'').replace(/\s+/g,' ').trim();
-const productUrl = `https://terminatordeals.ca/product.html?id=${id}`;
+  const id = item.id;
+  const detailsSafe = (item.details || '').replace(/\s+/g, ' ').trim();
+  const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(id)}`;
 
-const wa = `https://wa.me/${WHATSAPP}?text=` +
-encodeURIComponent(
+  const wa = `https://wa.me/${WHATSAPP}?text=` +
+    encodeURIComponent(
 `Hi! I'm interested in ${item.title}
 
 Price: ${money(item.price_now)}
+${item.condition ? `Condition: ${item.condition}` : ''}
 
 ${productUrl}`
-);
+    );
+
+  const imgSrc = item.image && /^https?:\/\//i.test(item.image)
+    ? item.image
+    : 'assets/placeholder.webp';
+
   return `
   <article class="card">
     <a href="${productUrl}" style="text-decoration:none;color:inherit">
       <div class="thumb">
-        <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='assets/placeholder.webp'">
-        <span class="chip">${item.category||'Item'}</span>
+        <img src="${imgSrc}" alt="${item.title}" loading="lazy" onerror="this.src='assets/placeholder.webp'">
+        <span class="chip">${item.category || 'Item'}</span>
       </div>
     </a>
 
@@ -181,83 +214,101 @@ ${productUrl}`
 
       <div class="priceRow">
         <span>${money(item.price_now)}</span>
-        ${item.price_old?`<span class="old">${money(item.price_old)}</span>`:''}
+        ${item.price_old ? `<span class="old">${money(item.price_old)}</span>` : ''}
       </div>
 
       <div class="meta">
-        <span class="dot" style="background:${item.in_stock?'#22c55e':'#ef4444'}"></span>
-        ${item.in_stock?'In stock':'Out of stock'}
+        <span class="dot" style="background:${item.in_stock ? '#22c55e' : '#ef4444'}"></span>
+        ${item.in_stock ? 'In stock' : 'Out of stock'}
       </div>
+
+      ${item.condition ? `<div class="meta">Condition: ${item.condition}</div>` : ''}
 
       <div class="details collapsed">${detailsSafe}</div>
 
       <div class="btns">
         <a class="btn gray" href="${productUrl}">View details</a>
         <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-        ${ item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : '' }
+        ${item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
       </div>
     </div>
   </article>`;
 }
 
-let ITEMS=[];
-
 function render(){
-  const q = (FILTER.q||'').toLowerCase();
-  const list = ITEMS.filter(it=>{
+  const q = (FILTER.q || '').toLowerCase();
+
+  const list = ITEMS.filter(it => {
     if(FILTER.stock && !it.in_stock) return false;
-    if(FILTER.cat!=='*' && it.category!==FILTER.cat) return false;
+    if(FILTER.cat !== '*' && it.category !== FILTER.cat) return false;
+
     if(q){
-      const hay = `${it.title} ${it.details} ${it.category}`.toLowerCase();
+      const hay = `${it.title} ${it.details} ${it.category} ${it.condition}`.toLowerCase();
       if(!hay.includes(q)) return false;
     }
+
     return true;
   });
 
   grid.innerHTML = list.map(cardHTML).join('');
-  document.getElementById('empty').classList.toggle('hidden', list.length!==0);
+  document.getElementById('empty').classList.toggle('hidden', list.length !== 0);
 }
 
 (async()=>{
   try{
     const rows = await loadSheet();
 
-    ITEMS = rows.map(r=>{
-     const id = slug(r.title); // <-- если добавишь колонку id, будет ещё лучше
+    ITEMS = rows.map(r => {
+      const id = slug(r.id || r.title);
       return {
         id,
         title: r.title || 'Untitled',
-        price_now: Number(r.price_now||0),
+        price_now: Number(r.price_now || 0),
         price_old: r.price_old ? Number(r.price_old) : '',
         category: r.category || 'Other',
         image: r.image || 'assets/placeholder.webp',
         details: r.details || '',
+        condition: r.condition || r.Condition || '',
         amazon_url: r.amazon_url || '',
-        in_stock: String(r.in_stock||'yes').toLowerCase().startsWith('y')
+        in_stock: String(r.in_stock || 'yes').toLowerCase().startsWith('y')
       };
     });
 
-    const cats = Array.from(new Set(ITEMS.map(x=>x.category).filter(Boolean))).sort();
-    catIn.innerHTML = `<option value="*">All categories</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    const cats = Array.from(new Set(ITEMS.map(x => x.category).filter(Boolean))).sort();
+    catIn.innerHTML = `<option value="*">All categories</option>` +
+      cats.map(c => `<option value="${c}">${c}</option>`).join('');
 
     LOADED.classList.remove('hidden');
     render();
   }catch(e){
     ERRBOX.classList.remove('hidden');
-    ERRBOX.textContent = `Failed to load Google Sheet. Details: ${e.message||String(e)}\n\nFix: Google Sheets → File → Publish to the web (recommended) OR check Sheet name & sharing.`;
+    ERRBOX.textContent = `Failed to load Google Sheet. Details: ${e.message || String(e)}\n\nFix: Google Sheets → File → Publish to the web (recommended) OR check Sheet name & sharing.`;
     console.error(e);
   }
 })();
+
 const params = new URLSearchParams(window.location.search);
 const searchFromUrl = params.get('s');
 
-if (searchFromUrl) {
+if(searchFromUrl){
   FILTER.q = searchFromUrl;
   qIn.value = searchFromUrl;
 }
-qIn.oninput = e=>{ FILTER.q = e.target.value; render(); };
-catIn.onchange = e=>{ FILTER.cat = e.target.value; render(); };
-stockIn.onchange = e=>{ FILTER.stock = e.target.checked; render(); };
+
+qIn.oninput = e => {
+  FILTER.q = e.target.value;
+  render();
+};
+
+catIn.onchange = e => {
+  FILTER.cat = e.target.value;
+  render();
+};
+
+stockIn.onchange = e => {
+  FILTER.stock = e.target.checked;
+  render();
+};
 </script>
 </body>
 </html>

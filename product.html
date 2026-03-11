@@ -50,34 +50,68 @@ const SHEET_NAME = "Catalog";
 const WHATSAPP   = "13653784497";
 
 /* ====== THEME ====== */
-const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t)};
-(()=>{applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));document.getElementById('theme').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')})();
+const applyTheme=t=>{
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('theme',t);
+};
+(()=>{
+  applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+  document.getElementById('theme').onclick=()=>{
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+  };
+})();
 
 /* ====== HELPERS ====== */
-function slug(s){return String(s||'').toLowerCase().trim().replace(/[^\p{L}\p{N}]+/ug,'-').replace(/(^-|-$)/g,'').slice(0,120)}
-function money(n){return '$'+Number(n||0).toLocaleString();}
+function slug(s){
+  return String(s||'')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}]+/ug,'-')
+    .replace(/(^-|-$)/g,'')
+    .slice(0,120);
+}
+function money(n){
+  return '$'+Number(n||0).toLocaleString();
+}
 
 function parseCSV(text){
   const rows=[];
   let i=0, cur='', row=[], inQ=false;
+
   while(i<text.length){
     const c=text[i];
     if(c === '"'){
       if(inQ && text[i+1] === '"'){ cur+='"'; i++; }
       else inQ=!inQ;
-    } else if(c===',' && !inQ){ row.push(cur); cur=''; }
-    else if((c==='\n' || c==='\r') && !inQ){
-      if(cur!=='' || row.length){ row.push(cur); rows.push(row); row=[]; cur=''; }
-    } else cur+=c;
+    } else if(c===',' && !inQ){
+      row.push(cur); cur='';
+    } else if((c==='\n' || c==='\r') && !inQ){
+      if(cur!=='' || row.length){
+        row.push(cur);
+        rows.push(row);
+        row=[];
+        cur='';
+      }
+    } else {
+      cur+=c;
+    }
     i++;
   }
-  if(cur!=='' || row.length){ row.push(cur); rows.push(row); }
+
+  if(cur!=='' || row.length){
+    row.push(cur);
+    rows.push(row);
+  }
+
   const head=(rows.shift()||[]).map(h=>String(h||'').trim());
-  return rows.filter(r=>r.some(x=>String(x||'').trim()!=='')).map(r=>{
-    const obj={};
-    head.forEach((h,idx)=> obj[h]=(r[idx]||'').trim());
-    return obj;
-  });
+
+  return rows
+    .filter(r=>r.some(x=>String(x||'').trim()!==''))
+    .map(r=>{
+      const obj={};
+      head.forEach((h,idx)=> obj[h]=(r[idx]||'').trim());
+      return obj;
+    });
 }
 
 const PUBLISHED_CSV =
@@ -96,106 +130,132 @@ function setProductSEO(item){
 
   document.title = (item.title || "Product") + " – Terminator Deals Toronto";
 
-  let meta=document.querySelector('meta[name="description"]');
-  if(!meta){ meta=document.createElement("meta"); meta.name="description"; document.head.appendChild(meta); }
+  let meta = document.querySelector('meta[name="description"]');
+  if(!meta){
+    meta = document.createElement("meta");
+    meta.name = "description";
+    document.head.appendChild(meta);
+  }
   meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
 
-  let canonical=document.querySelector('link[rel="canonical"]');
-  if(!canonical){ canonical=document.createElement("link"); canonical.rel="canonical"; document.head.appendChild(canonical); }
-  canonical.href=url;
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if(!canonical){
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.appendChild(canonical);
+  }
+  canonical.href = url;
 
-  const conditionUrl =
-  String(item.condition || '').toLowerCase().includes('used')
-    ? "https://schema.org/UsedCondition"
-    : "https://schema.org/NewCondition";
-  
-  const schema={
- "@context":"https://schema.org",
- "@type":"Product",
- "name": item.title,
- "description": item.details || item.title,
- "image": item.image ? [item.image] : [],
- "sku": item.id,
- "brand": {
-   "@type": "Brand",
-   "name": item.title.split(" ")[0]
- },
- "offers":{
-   "@type":"Offer",
-   "priceCurrency":"CAD",
-   "price": item.price_now,
-   "availability": (String(item.in_stock||'').toLowerCase().startsWith('y'))
-       ? "https://schema.org/InStock"
-       : "https://schema.org/OutOfStock",
-   "itemCondition": conditionUrl,
-   "url": url
- }
+  const conditionText = String(item.condition || '').toLowerCase().trim();
+
+  let conditionUrl = "";
+  if (conditionText.includes('used')) {
+    conditionUrl = "https://schema.org/UsedCondition";
+  } else if (conditionText.includes('new')) {
+    conditionUrl = "https://schema.org/NewCondition";
+  }
+
+  const schema = {
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name": item.title,
+    "description": item.details || item.title,
+    "image": item.image ? [item.image] : [],
+    "sku": item.id,
+    "brand": {
+      "@type": "Brand",
+      "name": item.title ? item.title.split(" ")[0] : "Terminator Deals"
+    },
+    "offers": {
+      "@type":"Offer",
+      "priceCurrency":"CAD",
+      "price": item.price_now,
+      "availability": String(item.in_stock||'').toLowerCase().startsWith('y')
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      ...(conditionUrl ? { "itemCondition": conditionUrl } : {}),
+      "url": url
+    }
   };
-  let s=document.getElementById("product-schema");
-  if(!s){ s=document.createElement("script"); s.type="application/ld+json"; s.id="product-schema"; document.head.appendChild(s); }
-  s.textContent=JSON.stringify(schema);
+
+  let s = document.getElementById("product-schema");
+  if(!s){
+    s = document.createElement("script");
+    s.type = "application/ld+json";
+    s.id = "product-schema";
+    document.head.appendChild(s);
+  }
+  s.textContent = JSON.stringify(schema);
 }
 
 (async()=>{
   try{
-    const id=new URLSearchParams(location.search).get('id');
-    const rows=await loadSheet();
+    const id = new URLSearchParams(location.search).get('id');
+    const rows = await loadSheet();
 
-    const items=rows.map(r=>({
-      id: slug(r.id || r.title),                 // <-- поддержка id-колонки (если добавишь)
-      title: r.title||'',
-      price_now: Number(r.price_now||0),
-      price_old: r.price_old?Number(r.price_old):'',
-      category: r.category||'',
-      details: r.details||'',
-      image: r.image||'',
-      amazon_url: r.amazon_url||'',
-      in_stock: r.in_stock||''
+    const items = rows.map(r=>({
+      id: slug(r.id || r.title),
+      title: r.title || '',
+      price_now: Number(r.price_now || 0),
+      price_old: r.price_old ? Number(r.price_old) : '',
+      category: r.category || '',
+      details: r.details || '',
+      image: r.image || '',
+      amazon_url: r.amazon_url || '',
+      in_stock: r.in_stock || '',
+      condition: r.condition || r.Condition || ''
     }));
 
     const x = items.find(i=>i.id===id);
+
     if(!x){
-      const b=document.getElementById('err');
-      b.style.display='block';
-      b.textContent='Product not found. (Wrong id in URL or sheet not loaded)';
+      const b = document.getElementById('err');
+      b.style.display = 'block';
+      b.textContent = 'Product not found. (Wrong id in URL or sheet not loaded)';
       return;
     }
 
     setProductSEO(x);
 
-    const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp';
-    const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:'';
-  const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(x.id)}`;
+    const img = (x.image && /^https?:\/\//i.test(x.image)) ? x.image : 'assets/placeholder.webp';
+    const cmp = (x.amazon_url && /^https?:\/\//i.test(x.amazon_url)) ? x.amazon_url : '';
+    const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(x.id)}`;
 
-const wa = `https://wa.me/${WHATSAPP}?text=` +
-encodeURIComponent(
+    const wa = `https://wa.me/${WHATSAPP}?text=` +
+      encodeURIComponent(
 `Hi! I'm interested in ${x.title}
 
 Price: ${money(x.price_now)}
 Category: ${x.category}
+${x.condition ? `Condition: ${x.condition}` : ''}
 
 ${productUrl}`
-);
+      );
 
-    document.getElementById('content').innerHTML=`
-      <div><img class="img" src="${img}" alt="${x.title}"></div>
+    document.getElementById('content').innerHTML = `
+      <div><img class="img" src="${img}" alt="${x.title}" onerror="this.src='assets/placeholder.webp'"></div>
       <div>
         <h1 style="margin:0 0 6px">${x.title}</h1>
-        <div class="muted" style="margin-bottom:12px">${x.category||''}</div>
+        <div class="muted" style="margin-bottom:12px">${x.category || ''}</div>
+
         <div class="price" style="margin-bottom:14px">
           <span class="now">${money(x.price_now)}</span>
-          ${x.price_old?`<span class="old">${money(x.price_old)}</span>`:''}
+          ${x.price_old ? `<span class="old">${money(x.price_old)}</span>` : ''}
         </div>
+
         ${x.condition ? `<div class="muted" style="margin-bottom:12px"><strong>Condition:</strong> ${x.condition}</div>` : ''}
-        <p class="muted" style="margin-bottom:16px">${(x.details||'').replace(/\n/g,'<br>')}</p>
+
+        <p class="muted" style="margin-bottom:16px">${(x.details || '').replace(/\n/g,'<br>')}</p>
+
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-          ${cmp?`<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>`:''}
+          ${cmp ? `<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
         </div>
       </div>`;
   }catch(e){
-    const b=document.getElementById('err'); b.style.display='block';
-    b.textContent=`Failed to load product.\nDetails: ${e.message||String(e)}\n\nFix: File → Publish to the web (in Google Sheets) OR check SHEET_ID / sheet name.`;
+    const b = document.getElementById('err');
+    b.style.display = 'block';
+    b.textContent = `Failed to load product.\nDetails: ${e.message || String(e)}\n\nFix: File → Publish to the web (in Google Sheets) OR check SHEET_ID / sheet name.`;
     console.error(e);
   }
 })();

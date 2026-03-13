@@ -170,8 +170,6 @@ gtag('config', 'G-YF5MVRT2CM');
 }
 
 .map{
-  position:relative;
-  z-index:5;
   margin-bottom:30px;
 }
 
@@ -181,22 +179,11 @@ gtag('config', 'G-YF5MVRT2CM');
   border:0;
   border-radius:14px;
   display:block;
-  position:relative;
-  z-index:6;
-  pointer-events:auto !important;
-  touch-action:auto;
-  background:#e9ecef;
 }
 
-.map-actions{
-  text-align:center;
-  margin-top:16px;
-  position:relative;
-  z-index:7;
-}
-
-.map-actions .btn{
-  margin:0 10px 10px 0;
+.reviews-wrap{
+  margin-top:40px;
+  margin-bottom:40px;
 }
 
 @media (max-width:768px){
@@ -220,14 +207,10 @@ gtag('config', 'G-YF5MVRT2CM');
   .map iframe{
     height:300px;
   }
-
-  .map-actions .btn{
-    display:block;
-    width:100%;
-    margin:0 0 10px 0;
-  }
 }
 </style>
+
+<script src="https://elfsightcdn.com/platform.js" async></script>
 </head>
 
 <body>
@@ -363,27 +346,16 @@ gtag('config', 'G-YF5MVRT2CM');
 
   <div class="map container" id="contact">
     <iframe
-      src="https://www.google.com/maps?q=Warehouse+Terminators,+126A+Oakdale+Rd,+North+York,+ON+M3N+1V9&z=15&output=embed"
-      title="Warehouse Terminators location map"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
+      src="https://www.google.com/maps?q=126A%20Oakdale%20Rd%2C%20North%20York%2C%20ON%20M3N%201V9&output=embed"
+      title="Warehouse Terminators map"
+      loading="lazy">
     </iframe>
+  </div>
 
-    <div class="map-actions">
-      <a
-        href="https://www.google.com/maps/dir/?api=1&destination=Warehouse+Terminators,+126A+Oakdale+Rd,+North+York,+ON+M3N+1V9"
-        target="_blank"
-        rel="noopener"
-        class="btn btn-primary px-4">
-        Open Directions
-      </a>
+  <div id="instagram-widget" class="elfsight-app-4eefdd1b-3e17-481e-95f0-3433135f7afe container" data-elfsight-app-lazy></div>
 
-      <a
-        href="tel:+13653784497"
-        class="btn btn-primary px-4">
-        Call Store
-      </a>
-    </div>
+  <div class="reviews-wrap container">
+    <div class="elfsight-app-ad58d913-1e10-4799-89f3-46aab9c381d0" data-elfsight-app-lazy></div>
   </div>
 
   <footer class="py-5 bg-dark text-center text-lg-start text-white" style="background-color:#1c2331">

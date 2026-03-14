@@ -87,11 +87,26 @@
     }
 
     .btns{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{flex:1 1 130px; display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;border-radius:12px;border:1px solid #233146;background:linear-gradient(180deg,#1b2334,transparent);color:var(--text);font-weight:700;text-decoration:none;transition:.18s;}
+    .btn{flex:1 1 130px; display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;border-radius:12px;border:1px solid #233146;background:linear-gradient(180deg,#1b2334,transparent);color:var(--text);font-weight:700;text-decoration:none;transition:.18s;cursor:pointer;}
     .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.25); border-color:#2b4a95}
     .btn.green{background:linear-gradient(180deg,#1f8a55,#10723f); border-color:#137845}
     .btn.blue{background:linear-gradient(180deg,#2356c9,#1f46a3); border-color:#244aa6}
     .btn.gray{background:linear-gradient(180deg,#2a3348,#1a2234); border-color:#2a3a55}
+
+    .cart-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:90px;
+      height:40px;
+      padding:0 14px;
+      border-radius:10px;
+      border:1px solid #233146;
+      background:linear-gradient(180deg,#2a3348,#1a2234);
+      color:var(--text);
+      font-weight:700;
+      text-decoration:none;
+    }
 
     .errorBox{background:rgba(239,68,68,.1); color:#fecaca; border:1px solid rgba(239,68,68,.35); padding:12px;border-radius:12px}
     .hidden{display:none}
@@ -189,6 +204,9 @@
       </div>
       <span id="status" class="badge">Live from Google Sheets</span>
       <span id="loadmark" class="badge hidden ok">loaded</span>
+      <div class="rightControls">
+        <a href="/cart.html" class="cart-link">Cart</a>
+      </div>
     </div>
 
     <div class="controls">
@@ -215,6 +233,7 @@
 /* ====== CONFIG ====== */
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?gid=0&single=true&output=csv";
 const WHATSAPP = "13653784497";
+const CART_KEY = "wt_cart";
 
 const STATUS = document.getElementById('status');
 const ERRBOX = document.getElementById('error');
@@ -228,6 +247,46 @@ const slug = s => String(s || '')
   .replace(/[^\p{L}\p{N}]+/ug, '-')
   .replace(/^-+|-+$/g, '')
   .slice(0, 120);
+
+function getCart(){
+  try{
+    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  }catch{
+    return [];
+  }
+}
+
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function addToCart(item){
+  const cart = getCart();
+  const existing = cart.find(x => x.id === item.id);
+
+  if(existing){
+    existing.qty = Number(existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      id: item.id,
+      title: item.title,
+      price_now: item.price_now,
+      image: item.image,
+      condition: item.condition || "",
+      shipping_canada: !!item.shipping_canada,
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+  alert("Added to cart");
+}
+
+function addItemById(id){
+  const item = ITEMS.find(x => x.id === id);
+  if(!item) return;
+  addToCart(item);
+}
 
 function csvToObjects(text){
   const rows = [];
@@ -346,6 +405,7 @@ ${productUrl}`
 
       <div class="btns">
         <a class="btn gray" href="${productUrl}">View details</a>
+        <button class="btn gray" onclick="addItemById('${item.id}')">Add to cart</button>
         <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
         ${item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
       </div>
@@ -428,42 +488,6 @@ stockIn.onchange = e => {
   FILTER.stock = e.target.checked;
   render();
 };
-
-  const CART_KEY = "wt_cart";
-
-function getCart(){
-  try{
-    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-  }catch{
-    return [];
-  }
-}
-
-function saveCart(cart){
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
-function addToCart(item){
-  const cart = getCart();
-  const existing = cart.find(x => x.id === item.id);
-
-  if(existing){
-    existing.qty = Number(existing.qty || 1) + 1;
-  } else {
-    cart.push({
-      id: item.id,
-      title: item.title,
-      price_now: item.price_now,
-      image: item.image,
-      condition: item.condition || "",
-      qty: 1
-    });
-  }
-
-  saveCart(cart);
-  alert("Added to cart");
-}
-
 </script>
 </body>
 </html>

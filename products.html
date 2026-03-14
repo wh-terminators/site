@@ -428,6 +428,42 @@ stockIn.onchange = e => {
   FILTER.stock = e.target.checked;
   render();
 };
+
+  const CART_KEY = "wt_cart";
+
+function getCart(){
+  try{
+    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  }catch{
+    return [];
+  }
+}
+
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function addToCart(item){
+  const cart = getCart();
+  const existing = cart.find(x => x.id === item.id);
+
+  if(existing){
+    existing.qty = Number(existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      id: item.id,
+      title: item.title,
+      price_now: item.price_now,
+      image: item.image,
+      condition: item.condition || "",
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+  alert("Added to cart");
+}
+
 </script>
 </body>
 </html>

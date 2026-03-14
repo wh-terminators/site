@@ -1,87 +1,220 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Cart • Terminator Deals</title>
   <style>
     :root{
-      --bg:#0f1218;
-      --card:#161b22;
-      --text:#e9eef5;
-      --muted:#9fb0c3;
-      --brand:#16c172;
-      --chip:#263040;
-      --shadow:0 8px 28px rgba(0,0,0,.35);
-    }
-    [data-theme="light"]{
       --bg:#f6f8fb;
-      --card:#fff;
+      --card:#ffffff;
       --text:#0b1220;
       --muted:#4b5b70;
-      --brand:#0aa46a;
+      --brand:#16a34a;
       --chip:#e9eef6;
       --shadow:0 8px 28px rgba(10,20,40,.12);
+      --border:#d6deea;
     }
+
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Arial}
-    .wrap{max-width:980px;margin:24px auto;padding:0 16px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:42px;padding:10px 14px;border-radius:12px;
-      text-decoration:none;border:none;cursor:pointer;
-      background:var(--chip);color:var(--text);font-weight:700;
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.5 system-ui,Arial
     }
-    .btn.green{background:var(--brand);color:#062114}
-    .btn.red{background:#b91c1c;color:#fff}
-    .btn.gray{background:#263040;color:#fff}
-    .list{display:grid;gap:14px}
+
+    .wrap{
+      max-width:980px;
+      margin:24px auto;
+      padding:0 16px
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:18px
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      border:1px solid var(--border);
+      cursor:pointer;
+      background:#eef3f9;
+      color:#0f172a;
+      font-weight:700;
+      transition:.18s;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+      border-color:#9fb3cc;
+    }
+
+    .btn.green{
+      background:linear-gradient(180deg,#22c55e,#16a34a);
+      border:1px solid #159947;
+      color:#fff;
+    }
+
+    .btn.red{
+      background:#dc2626;
+      border:1px solid #b91c1c;
+      color:#fff;
+    }
+
+    .btn.gray{
+      background:#e8eef6;
+      border:1px solid #c9d4e2;
+      color:#0f172a;
+    }
+
+    .list{
+      display:grid;
+      gap:14px
+    }
+
     .item{
       background:var(--card);
       border-radius:16px;
       padding:14px;
       box-shadow:var(--shadow);
+      border:1px solid var(--border);
       display:grid;
       grid-template-columns:100px 1fr auto;
       gap:14px;
       align-items:center;
     }
+
     .item img{
-      width:100px;height:100px;object-fit:cover;border-radius:12px;background:#111827;
+      width:100px;
+      height:100px;
+      object-fit:cover;
+      border-radius:12px;
+      background:#eef2f7;
     }
-    .name{font-size:18px;font-weight:800;line-height:1.25;margin-bottom:6px}
-    .meta{color:var(--muted);font-size:14px}
-    .price{font-size:20px;font-weight:800}
-    .qtyRow{display:flex;align-items:center;gap:8px;margin-top:10px}
+
+    .name{
+      font-size:18px;
+      font-weight:800;
+      line-height:1.25;
+      margin-bottom:6px
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:14px
+    }
+
+    .shipping-badge{
+      display:inline-block;
+      margin-top:8px;
+      padding:4px 8px;
+      font-size:11px;
+      font-weight:700;
+      border-radius:8px;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #bbf7d0;
+    }
+
+    .price{
+      font-size:20px;
+      font-weight:800
+    }
+
+    .qtyRow{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:10px
+    }
+
     .qtyBtn{
-      width:32px;height:32px;border:none;border-radius:8px;cursor:pointer;
-      background:#334155;color:#fff;font-size:18px;
+      width:32px;
+      height:32px;
+      border:1px solid #c9d4e2;
+      border-radius:8px;
+      cursor:pointer;
+      background:#e8eef6;
+      color:#0f172a;
+      font-size:18px;
+      font-weight:700;
     }
+
     .summary{
-      margin-top:18px;background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shadow);
-    }
-    .summaryRow{display:flex;justify-content:space-between;gap:12px;font-size:18px;font-weight:800}
-    .empty{
-      background:var(--card);border-radius:16px;padding:30px;text-align:center;color:var(--muted);
+      margin-top:18px;
+      background:var(--card);
+      border-radius:16px;
+      padding:18px;
       box-shadow:var(--shadow);
+      border:1px solid var(--border);
     }
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+    .summaryRow{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:18px;
+      font-weight:800
+    }
+
+    .empty{
+      background:var(--card);
+      border-radius:16px;
+      padding:30px;
+      text-align:center;
+      color:var(--muted);
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px
+    }
+
     @media (max-width:700px){
       .item{
         grid-template-columns:72px 1fr;
       }
+
       .item img{
-        width:72px;height:72px;
+        width:72px;
+        height:72px;
       }
+
       .side{
         grid-column:1 / -1;
         display:flex;
         justify-content:space-between;
         align-items:center;
       }
-      .name{font-size:16px}
-      .price{font-size:18px}
+
+      .name{
+        font-size:16px
+      }
+
+      .price{
+        font-size:18px
+      }
+
+      .actions .btn{
+        width:100%;
+      }
     }
   </style>
 </head>
@@ -98,6 +231,9 @@
 <script>
 const WHATSAPP = "13653784497";
 const CART_KEY = "wt_cart";
+
+document.documentElement.setAttribute('data-theme', 'light');
+localStorage.setItem('theme', 'light');
 
 function money(n){
   return "$" + Number(n || 0).toLocaleString();
@@ -149,6 +285,7 @@ function buildWhatsAppUrl(cart){
 
     lines.push(`${qty}x ${item.title} — ${money(item.price_now)} each`);
     if(item.condition) lines.push(`Condition: ${item.condition}`);
+    if(item.shipping_canada) lines.push(`Shipping: Available across Canada`);
     lines.push(`Product: https://terminatordeals.ca/product.html?id=${encodeURIComponent(item.id)}`);
     lines.push("");
   }
@@ -185,6 +322,7 @@ function renderCart(){
           <div>
             <div class="name">${item.title}</div>
             <div class="meta">${item.condition ? `Condition: ${item.condition}` : ""}</div>
+            ${item.shipping_canada ? `<div class="shipping-badge">🇨🇦 Ships across Canada</div>` : ``}
             <div class="qtyRow">
               <button class="qtyBtn" onclick="changeQty('${item.id}', -1)">−</button>
               <span>${Number(item.qty || 1)}</span>

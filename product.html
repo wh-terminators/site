@@ -22,6 +22,7 @@
   --ship-bg:#f3f7fc;
   --ship-border:rgba(66,83,106,.18);
   --ship-text:#0b1220;
+  --border:#d6deea;
 }
 
 *{box-sizing:border-box}
@@ -89,6 +90,21 @@ header{
   background:#e8eef6;
   color:#0f172a;
   border:1px solid #c9d4e2;
+}
+
+.cart-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:90px;
+  min-height:42px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid #c9d4e2;
+  background:#e8eef6;
+  color:#0f172a;
+  font-weight:700;
+  text-decoration:none;
 }
 
 .grid{
@@ -160,7 +176,6 @@ header{
   flex-wrap:wrap
 }
 
-/* MOBILE IMPROVEMENTS */
 @media (max-width:768px){
 
   .wrap{
@@ -194,8 +209,9 @@ header{
     font-size:14px
   }
 
-  .btn{
-    height:42px;
+  .btn,
+  .cart-link{
+    min-height:42px;
     font-size:14px;
     border-radius:12px
   }
@@ -214,7 +230,7 @@ header{
 <header>
   <div class="logo">WT</div>
   <a href="products.html" class="btn">← Back to catalog</a>
-  <a href="/cart.html" class="btn">Cart</a>
+  <a href="/cart.html" class="cart-link">Cart<span id="cartCountWrap" style="display:none;"> (<span id="cartCount">0</span>)</span></a>
 </header>
 
 <div id="err" class="error" style="display:none"></div>
@@ -244,6 +260,17 @@ function saveCart(cart){
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+function updateCartCount(){
+  try{
+    const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    const total = cart.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+    const countEl = document.getElementById("cartCount");
+    const wrapEl = document.getElementById("cartCountWrap");
+    if(countEl) countEl.textContent = total;
+    if(wrapEl) wrapEl.style.display = total > 0 ? "inline" : "none";
+  }catch{}
+}
+
 function addToCart(item){
   const cart = getCart();
   const existing = cart.find(x => x.id === item.id);
@@ -263,6 +290,7 @@ function addToCart(item){
   }
 
   saveCart(cart);
+  updateCartCount();
   alert("Added to cart");
 }
 
@@ -455,6 +483,8 @@ ${productUrl}`
       </div>
     `;
 
+    updateCartCount();
+
   } catch(e){
 
     const b = document.getElementById('err');
@@ -469,4 +499,3 @@ ${productUrl}`
 
 </body>
 </html>
-

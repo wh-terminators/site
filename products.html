@@ -379,7 +379,7 @@
       <span id="status" class="badge">Live from Google Sheets</span>
       <span id="loadmark" class="badge hidden ok">loaded</span>
       <div class="rightControls">
-        <a href="/cart.html" class="cart-link">Cart</a>
+        <a href="/cart.html" class="cart-link">Cart<span id="cartCountWrap" style="display:none;"> (<span id="cartCount">0</span>)</span></a>
       </div>
     </div>
 
@@ -438,6 +438,17 @@ function saveCart(cart){
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+function updateCartCount(){
+  try{
+    const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    const total = cart.reduce((sum, item) => sum + Number(item.qty || 1), 0);
+    const countEl = document.getElementById("cartCount");
+    const wrapEl = document.getElementById("cartCountWrap");
+    if(countEl) countEl.textContent = total;
+    if(wrapEl) wrapEl.style.display = total > 0 ? "inline" : "none";
+  }catch{}
+}
+
 function addToCart(item){
   const cart = getCart();
   const existing = cart.find(x => x.id === item.id);
@@ -457,6 +468,7 @@ function addToCart(item){
   }
 
   saveCart(cart);
+  updateCartCount();
   alert("Added to cart");
 }
 
@@ -629,6 +641,7 @@ function render(){
       cats.map(c => `<option value="${c}">${c}</option>`).join('');
 
     LOADED.classList.remove('hidden');
+    updateCartCount();
     render();
   }catch(e){
     ERRBOX.classList.remove('hidden');

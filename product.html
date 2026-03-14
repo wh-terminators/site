@@ -176,9 +176,6 @@ function setProductSEO(item){
       ...(conditionUrl ? { "itemCondition": conditionUrl } : {}),
       "url": url
     }
-    ${product.shipping_canada === "yes" ? `
-<p class="shipping-line">🇨🇦 Shipping available across Canada (quote required)</p>
-` : ``}
   };
 
   let s = document.getElementById("product-schema");

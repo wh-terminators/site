@@ -10,7 +10,6 @@
 <link rel="canonical" href="https://terminatordeals.ca/product.html" />
 
 <style>
-
 :root{
 --bg:#0f1218;
 --card:#161b22;
@@ -52,7 +51,8 @@ header{
 display:flex;
 align-items:center;
 gap:10px;
-margin-bottom:18px
+margin-bottom:18px;
+flex-wrap:wrap
 }
 
 .logo{
@@ -75,7 +75,9 @@ padding:10px 12px;
 cursor:pointer;
 text-decoration:none;
 display:inline-flex;
-align-items:center
+align-items:center;
+justify-content:center;
+font-weight:700
 }
 
 .btn.primary{
@@ -142,8 +144,6 @@ margin:12px 0;
 white-space:pre-wrap
 }
 
-/* SHIPPING BLOCK */
-
 .shipping-box{
 background:#121923;
 border:1px solid rgba(120,140,160,.2);
@@ -152,6 +152,12 @@ padding:12px;
 margin:16px 0;
 font-size:14px;
 line-height:1.5
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap
 }
 
 /* MOBILE IMPROVEMENTS */
@@ -173,6 +179,7 @@ aspect-ratio:1/1
 h1{
 font-size:22px;
 line-height:1.25;
+margin-top:12px;
 
 display:-webkit-box;
 -webkit-line-clamp:3;
@@ -194,8 +201,11 @@ font-size:14px;
 border-radius:12px
 }
 
+.actions .btn{
+width:100%
 }
 
+}
 </style>
 </head>
 
@@ -206,6 +216,7 @@ border-radius:12px
 <header>
 <div class="logo">WT</div>
 <a href="products.html" class="btn">← Back to catalog</a>
+<a href="/cart.html" class="btn">Cart</a>
 <button id="theme" class="btn" style="margin-left:auto">Theme</button>
 </header>
 
@@ -215,253 +226,257 @@ border-radius:12px
 </div>
 
 <script>
-
 /* CONFIG */
-
-const SHEET_ID="1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk"
-const GID="0"
-const SHEET_NAME="Catalog"
-const WHATSAPP="13653784497"
+const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
+const GID = "0";
+const SHEET_NAME = "Catalog";
+const WHATSAPP = "13653784497";
+const CART_KEY = "wt_cart";
 
 /* THEME */
+const applyTheme = t => {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+};
 
-const applyTheme=t=>{
-document.documentElement.setAttribute('data-theme',t)
-localStorage.setItem('theme',t)
+(() => {
+  applyTheme(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+  document.getElementById('theme').onclick = () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  };
+})();
+
+/* CART */
+function getCart(){
+  try{
+    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  }catch{
+    return [];
+  }
 }
 
-(()=>{
-applyTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'))
-
-document.getElementById('theme').onclick=()=>{
-applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
-})()
+
+function addToCart(item){
+  const cart = getCart();
+  const existing = cart.find(x => x.id === item.id);
+
+  if(existing){
+    existing.qty = Number(existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      id: item.id,
+      title: item.title,
+      price_now: item.price_now,
+      image: item.image,
+      condition: item.condition || "",
+      shipping_canada: !!item.shipping_canada,
+      qty: 1
+    });
+  }
+
+  saveCart(cart);
+  alert("Added to cart");
+}
 
 /* HELPERS */
-
 function slug(s){
-return String(s||'')
-.toLowerCase()
-.trim()
-.replace(/[^\p{L}\p{N}]+/ug,'-')
-.replace(/(^-|-$)/g,'')
-.slice(0,120)
+  return String(s || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}]+/ug,'-')
+    .replace(/(^-|-$)/g,'')
+    .slice(0,120);
 }
 
 function money(n){
-return '$'+Number(n||0).toLocaleString()
+  return '$' + Number(n || 0).toLocaleString();
 }
 
 function parseCSV(text){
+  const rows = [];
+  let i = 0, cur = '', row = [], inQ = false;
 
-const rows=[]
-let i=0,cur='',row=[],inQ=false
+  while(i < text.length){
+    const c = text[i];
 
-while(i<text.length){
+    if(c === '"'){
+      if(inQ && text[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    }
+    else if(c === ',' && !inQ){
+      row.push(cur);
+      cur = '';
+    }
+    else if((c === '\n' || c === '\r') && !inQ){
+      if(cur !== '' || row.length){
+        row.push(cur);
+        rows.push(row);
+        row = [];
+        cur = '';
+      }
+    }
+    else cur += c;
 
-const c=text[i]
+    i++;
+  }
 
-if(c === '"'){
-if(inQ && text[i+1] === '"'){cur+='"';i++}
-else inQ=!inQ
+  if(cur !== '' || row.length){
+    row.push(cur);
+    rows.push(row);
+  }
+
+  const head = (rows.shift() || []).map(h => String(h || '').trim());
+
+  return rows
+    .filter(r => r.some(x => String(x || '').trim() !== ''))
+    .map(r => {
+      const obj = {};
+      head.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
+      return obj;
+    });
 }
 
-else if(c===',' && !inQ){
-row.push(cur)
-cur=''
-}
-
-else if((c==='\n'||c==='\r') && !inQ){
-if(cur!==''||row.length){
-row.push(cur)
-rows.push(row)
-row=[]
-cur=''
-}
-}
-
-else cur+=c
-
-i++
-}
-
-if(cur!==''||row.length){
-row.push(cur)
-rows.push(row)
-}
-
-const head=(rows.shift()||[]).map(h=>String(h||'').trim())
-
-return rows
-.filter(r=>r.some(x=>String(x||'').trim()!==''))
-
-.map(r=>{
-const obj={}
-head.forEach((h,idx)=>obj[h]=(r[idx]||'').trim())
-return obj
-})
-
-}
-
-const PUBLISHED_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?output=csv&gid=0"
+const PUBLISHED_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?output=csv&gid=0";
 
 async function loadSheet(){
-
-const r=await fetch(PUBLISHED_CSV,{cache:"no-store"})
-if(!r.ok) throw new Error(`HTTP ${r.status}`)
-
-return parseCSV(await r.text())
-
+  const r = await fetch(PUBLISHED_CSV, { cache: "no-store" });
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return parseCSV(await r.text());
 }
 
 /* SEO */
-
 function setProductSEO(item){
+  const base = "https://terminatordeals.ca";
+  const url = base + "/product.html?id=" + encodeURIComponent(item.id || "");
 
-const base="https://terminatordeals.ca"
-const url=base+"/product.html?id="+encodeURIComponent(item.id||"")
+  document.title = (item.title || "Product") + " – Terminator Deals Toronto";
 
-document.title=(item.title||"Product")+" – Terminator Deals Toronto"
+  let meta = document.querySelector('meta[name="description"]');
+  if(!meta){
+    meta = document.createElement("meta");
+    meta.name = "description";
+    document.head.appendChild(meta);
+  }
 
-let meta=document.querySelector('meta[name="description"]')
-
-if(!meta){
-meta=document.createElement("meta")
-meta.name="description"
-document.head.appendChild(meta)
-}
-
-meta.content=(item.details||item.title||"Liquidation deal in Toronto").slice(0,155)
-
+  meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
 }
 
 (async()=>{
 
-try{
+  try{
 
-const id=new URLSearchParams(location.search).get('id')
+    const id = new URLSearchParams(location.search).get('id');
+    const rows = await loadSheet();
 
-const rows=await loadSheet()
+    const items = rows.map(r => ({
+      id: slug(r.id || r.title),
+      title: r.title || '',
+      price_now: Number(r.price_now || 0),
+      price_old: r.price_old ? Number(r.price_old) : '',
+      category: r.category || '',
+      details: r.details || '',
+      image: r.image || '',
+      amazon_url: r.amazon_url || '',
+      in_stock: r.in_stock || '',
+      condition: r.condition || r.Condition || '',
+      shipping_canada: String(r.shipping_canada || '').toLowerCase() === 'yes'
+    }));
 
-const items=rows.map(r=>({
+    const x = items.find(i => i.id === id);
 
-id:slug(r.id||r.title),
+    if(!x){
+      const b = document.getElementById('err');
+      b.style.display = 'block';
+      b.textContent = 'Product not found.';
+      return;
+    }
 
-title:r.title||'',
+    setProductSEO(x);
 
-price_now:Number(r.price_now||0),
+    const img = (x.image && /^https?:\/\//i.test(x.image)) ? x.image : 'assets/placeholder.webp';
+    const cmp = (x.amazon_url && /^https?:\/\//i.test(x.amazon_url)) ? x.amazon_url : '';
 
-price_old:r.price_old?Number(r.price_old):'',
+    window.currentProduct = {
+      id: x.id,
+      title: x.title,
+      price_now: x.price_now,
+      image: img,
+      condition: x.condition || "",
+      shipping_canada: !!x.shipping_canada
+    };
 
-category:r.category||'',
+    const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(x.id)}`;
 
-details:r.details||'',
-
-image:r.image||'',
-
-amazon_url:r.amazon_url||'',
-
-in_stock:r.in_stock||'',
-
-condition:r.condition||r.Condition||''
-
-}))
-
-const x=items.find(i=>i.id===id)
-
-if(!x){
-
-const b=document.getElementById('err')
-b.style.display='block'
-b.textContent='Product not found.'
-
-return
-
-}
-
-setProductSEO(x)
-
-const img=(x.image&&/^https?:\/\//i.test(x.image))?x.image:'assets/placeholder.webp'
-const cmp=(x.amazon_url&&/^https?:\/\//i.test(x.amazon_url))?x.amazon_url:''
-
-const productUrl=`https://terminatordeals.ca/product.html?id=${encodeURIComponent(x.id)}`
-
-const wa=`https://wa.me/${WHATSAPP}?text=`+encodeURIComponent(
-
+    const wa = `https://wa.me/${WHATSAPP}?text=` + encodeURIComponent(
 `Hi! I'm interested in ${x.title}
 
 Price: ${money(x.price_now)}
 Category: ${x.category}
-${x.condition?`Condition: ${x.condition}`:''}
+${x.condition ? `Condition: ${x.condition}` : ''}
+${x.shipping_canada ? `Shipping: Available across Canada` : ''}
 
-${productUrl}`)
+${productUrl}`
+    );
 
-document.getElementById('content').innerHTML=`
+    document.getElementById('content').innerHTML = `
+      <div>
+        <img class="img" src="${img}" alt="${x.title}" onerror="this.src='assets/placeholder.webp'">
+      </div>
 
-<div>
+      <div>
+        <h1>${x.title}</h1>
 
-<img class="img" src="${img}" alt="${x.title}" onerror="this.src='assets/placeholder.webp'">
+        <div class="muted" style="margin-bottom:10px">${x.category || ''}</div>
 
-</div>
+        <div class="price" style="margin-bottom:12px">
+          <span class="now">${money(x.price_now)}</span>
+          ${x.price_old ? `<span class="old">${money(x.price_old)}</span>` : ''}
+        </div>
 
-<div>
+        ${x.condition ? `<div class="muted" style="margin-bottom:12px"><strong>Condition:</strong> ${x.condition}</div>` : ''}
 
-<h1>${x.title}</h1>
+        ${x.shipping_canada ? `
+        <div class="shipping-box">
+          🚚 Shipping across Canada<br>
+          📦 Pickup in North York<br>
+          ⚡ Same-day GTA delivery
+        </div>
+        ` : `
+        <div class="shipping-box">
+          📦 Pickup in North York<br>
+          ⚡ Same-day GTA delivery
+        </div>
+        `}
 
-<div class="muted" style="margin-bottom:10px">${x.category||''}</div>
+        <p class="muted" style="margin-bottom:16px">
+          ${(x.details || '').replace(/\n/g,'<br>')}
+        </p>
 
-<div class="price" style="margin-bottom:12px">
+        <div class="actions">
+          <button class="btn secondary" onclick="addToCart(window.currentProduct)">Add to cart</button>
+          <a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+          ${cmp ? `<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
+          <a class="btn secondary" href="/cart.html">Cart</a>
+        </div>
+      </div>
+    `;
 
-<span class="now">${money(x.price_now)}</span>
+  } catch(e){
 
-${x.price_old?`<span class="old">${money(x.price_old)}</span>`:''}
+    const b = document.getElementById('err');
+    b.style.display = 'block';
+    b.textContent = `Failed to load product.\n${e.message}`;
+    console.error(e);
 
-</div>
+  }
 
-${x.condition?`<div class="muted" style="margin-bottom:12px"><strong>Condition:</strong> ${x.condition}</div>`:''}
-
-<div class="shipping-box">
-
-🚚 Shipping across Canada<br>
-📦 Pickup in North York<br>
-⚡ Same-day GTA delivery
-
-</div>
-
-<p class="muted" style="margin-bottom:16px">
-
-${(x.details||'').replace(/\n/g,'<br>')}
-
-</p>
-
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-
-<a class="btn primary" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-
-${cmp?`<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>`:''}
-
-</div>
-
-</div>
-
-`
-
-}
-
-catch(e){
-
-const b=document.getElementById('err')
-b.style.display='block'
-b.textContent=`Failed to load product.\n${e.message}`
-
-console.error(e)
-
-}
-
-})()
-
+})();
 </script>
 
 </body>
 </html>
+

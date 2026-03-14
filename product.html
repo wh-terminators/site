@@ -352,14 +352,8 @@ async function loadSheet(){
 function setProductSEO(item){
   const base = "https://terminatordeals.ca";
   const url = base + "/product.html?id=" + encodeURIComponent(item.id || "");
-  const image = item.image && /^https?:\/\//i.test(item.image)
-    ? item.image
-    : base + "/assets/placeholder.webp";
 
-  const title = `${item.title || "Product"} – Terminator Deals Toronto`;
-  const description = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
-
-  document.title = title;
+  document.title = (item.title || "Product") + " – Terminator Deals Toronto";
 
   let meta = document.querySelector('meta[name="description"]');
   if(!meta){
@@ -367,37 +361,8 @@ function setProductSEO(item){
     meta.name = "description";
     document.head.appendChild(meta);
   }
-  meta.content = description;
 
-  let canonical = document.querySelector('link[rel="canonical"]');
-  if(!canonical){
-    canonical = document.createElement("link");
-    canonical.rel = "canonical";
-    document.head.appendChild(canonical);
-  }
-  canonical.href = url;
-
-  setOrCreateMetaTag("property", "og:title", title);
-  setOrCreateMetaTag("property", "og:description", description);
-  setOrCreateMetaTag("property", "og:image", image);
-  setOrCreateMetaTag("property", "og:url", url);
-  setOrCreateMetaTag("property", "og:type", "product");
-
-  setOrCreateMetaTag("name", "twitter:card", "summary_large_image");
-  setOrCreateMetaTag("name", "twitter:title", title);
-  setOrCreateMetaTag("name", "twitter:description", description);
-  setOrCreateMetaTag("name", "twitter:image", image);
-}
-
-function setOrCreateMetaTag(attrName, attrValue, content){
-  let tag = document.querySelector(`meta[${attrName}="${attrValue}"]`);
-  if(!tag){
-    tag = document.createElement("meta");
-    tag.setAttribute(attrName, attrValue);
-    document.head.appendChild(tag);
-  }
-  tag.setAttribute("content", content);
-}
+  meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
 }
 
 (async()=>{

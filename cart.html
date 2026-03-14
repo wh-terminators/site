@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cart • Terminator Deals</title>
+  <style>
+    :root{
+      --bg:#0f1218;
+      --card:#161b22;
+      --text:#e9eef5;
+      --muted:#9fb0c3;
+      --brand:#16c172;
+      --chip:#263040;
+      --shadow:0 8px 28px rgba(0,0,0,.35);
+    }
+    [data-theme="light"]{
+      --bg:#f6f8fb;
+      --card:#fff;
+      --text:#0b1220;
+      --muted:#4b5b70;
+      --brand:#0aa46a;
+      --chip:#e9eef6;
+      --shadow:0 8px 28px rgba(10,20,40,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Arial}
+    .wrap{max-width:980px;margin:24px auto;padding:0 16px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:42px;padding:10px 14px;border-radius:12px;
+      text-decoration:none;border:none;cursor:pointer;
+      background:var(--chip);color:var(--text);font-weight:700;
+    }
+    .btn.green{background:var(--brand);color:#062114}
+    .btn.red{background:#b91c1c;color:#fff}
+    .btn.gray{background:#263040;color:#fff}
+    .list{display:grid;gap:14px}
+    .item{
+      background:var(--card);
+      border-radius:16px;
+      padding:14px;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:100px 1fr auto;
+      gap:14px;
+      align-items:center;
+    }
+    .item img{
+      width:100px;height:100px;object-fit:cover;border-radius:12px;background:#111827;
+    }
+    .name{font-size:18px;font-weight:800;line-height:1.25;margin-bottom:6px}
+    .meta{color:var(--muted);font-size:14px}
+    .price{font-size:20px;font-weight:800}
+    .qtyRow{display:flex;align-items:center;gap:8px;margin-top:10px}
+    .qtyBtn{
+      width:32px;height:32px;border:none;border-radius:8px;cursor:pointer;
+      background:#334155;color:#fff;font-size:18px;
+    }
+    .summary{
+      margin-top:18px;background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shadow);
+    }
+    .summaryRow{display:flex;justify-content:space-between;gap:12px;font-size:18px;font-weight:800}
+    .empty{
+      background:var(--card);border-radius:16px;padding:30px;text-align:center;color:var(--muted);
+      box-shadow:var(--shadow);
+    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    @media (max-width:700px){
+      .item{
+        grid-template-columns:72px 1fr;
+      }
+      .item img{
+        width:72px;height:72px;
+      }
+      .side{
+        grid-column:1 / -1;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      .name{font-size:16px}
+      .price{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="/products.html" class="btn gray">← Back to catalog</a>
+      <h1 style="margin:0">Your Cart</h1>
+    </div>
+
+    <div id="cartContent"></div>
+  </div>
+
+<script>
+const WHATSAPP = "13653784497";
+const CART_KEY = "wt_cart";
+
+function money(n){
+  return "$" + Number(n || 0).toLocaleString();
+}
+
+function getCart(){
+  try{
+    return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  }catch{
+    return [];
+  }
+}
+
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function removeItem(id){
+  const cart = getCart().filter(x => x.id !== id);
+  saveCart(cart);
+  renderCart();
+}
+
+function changeQty(id, delta){
+  const cart = getCart().map(item => {
+    if(item.id === id){
+      const nextQty = Math.max(1, Number(item.qty || 1) + delta);
+      return {...item, qty: nextQty};
+    }
+    return item;
+  });
+  saveCart(cart);
+  renderCart();
+}
+
+function clearCart(){
+  localStorage.removeItem(CART_KEY);
+  renderCart();
+}
+
+function buildWhatsAppUrl(cart){
+  const lines = ["Hi! I want these items:", ""];
+  let total = 0;
+
+  for(const item of cart){
+    const qty = Number(item.qty || 1);
+    const lineTotal = Number(item.price_now || 0) * qty;
+    total += lineTotal;
+
+    lines.push(`${qty}x ${item.title} — ${money(item.price_now)} each`);
+    if(item.condition) lines.push(`Condition: ${item.condition}`);
+    lines.push(`Product: https://terminatordeals.ca/product.html?id=${encodeURIComponent(item.id)}`);
+    lines.push("");
+  }
+
+  lines.push(`Estimated total: ${money(total)}`);
+  lines.push("Please send me pickup / delivery / shipping options.");
+
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
+function renderCart(){
+  const cart = getCart();
+  const root = document.getElementById("cartContent");
+
+  if(!cart.length){
+    root.innerHTML = `
+      <div class="empty">
+        <h2 style="margin-top:0;color:inherit;">Your cart is empty</h2>
+        <p>Add products from the catalog and they will appear here.</p>
+        <a href="/products.html" class="btn green">Browse products</a>
+      </div>
+    `;
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + Number(item.price_now || 0) * Number(item.qty || 1), 0);
+  const waUrl = buildWhatsAppUrl(cart);
+
+  root.innerHTML = `
+    <div class="list">
+      ${cart.map(item => `
+        <div class="item">
+          <img src="${item.image || 'assets/placeholder.webp'}" alt="${item.title}" onerror="this.src='assets/placeholder.webp'">
+          <div>
+            <div class="name">${item.title}</div>
+            <div class="meta">${item.condition ? `Condition: ${item.condition}` : ""}</div>
+            <div class="qtyRow">
+              <button class="qtyBtn" onclick="changeQty('${item.id}', -1)">−</button>
+              <span>${Number(item.qty || 1)}</span>
+              <button class="qtyBtn" onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+          </div>
+          <div class="side">
+            <div class="price">${money(Number(item.price_now || 0) * Number(item.qty || 1))}</div>
+            <button class="btn red" onclick="removeItem('${item.id}')">Remove</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="summary">
+      <div class="summaryRow">
+        <span>Estimated total</span>
+        <span>${money(total)}</span>
+      </div>
+
+      <div class="actions">
+        <a href="${waUrl}" target="_blank" rel="noopener" class="btn green">Send cart to WhatsApp</a>
+        <button class="btn gray" onclick="clearCart()">Clear cart</button>
+      </div>
+    </div>
+  `;
+}
+
+renderCart();
+</script>
+</body>
+</html>

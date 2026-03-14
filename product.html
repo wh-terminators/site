@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,200 +11,198 @@
 
 <style>
 :root{
---bg:#0f1218;
---card:#161b22;
---text:#e9eef5;
---muted:#9fb0c3;
---brand:#16c172;
---chip:#263040;
---chipText:#9fb0c3;
---shadow:0 8px 28px rgba(0,0,0,.35)
-}
-
-[data-theme="light"]{
---bg:#f6f8fb;
---card:#fff;
---text:#0b1220;
---muted:#4b5b70;
---brand:#0aa46a;
---chip:#e9eef6;
---chipText:#42536a;
---shadow:0 8px 28px rgba(10,20,40,.12)
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --text:#0b1220;
+  --muted:#4b5b70;
+  --brand:#16a34a;
+  --chip:#e9eef6;
+  --chipText:#42536a;
+  --shadow:0 8px 28px rgba(10,20,40,.12);
+  --ship-bg:#f3f7fc;
+  --ship-border:rgba(66,83,106,.18);
+  --ship-text:#0b1220;
 }
 
 *{box-sizing:border-box}
 
 body{
-margin:0;
-background:var(--bg);
-color:var(--text);
-font:16px/1.5 system-ui,Inter,Arial
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.5 system-ui,Inter,Arial
 }
 
 .wrap{
-max-width:980px;
-margin:24px auto;
-padding:0 16px
+  max-width:980px;
+  margin:24px auto;
+  padding:0 16px
 }
 
 header{
-display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:18px;
-flex-wrap:wrap
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+  flex-wrap:wrap
 }
 
 .logo{
-width:28px;
-height:28px;
-border-radius:8px;
-background:#24d27e;
-color:#0c1a12;
-display:grid;
-place-items:center;
-font-weight:800
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:#24d27e;
+  color:#0c1a12;
+  display:grid;
+  place-items:center;
+  font-weight:800
 }
 
 .btn{
-background:var(--card);
-border:1px solid rgba(120,140,160,.25);
-color:var(--text);
-border-radius:10px;
-padding:10px 12px;
-cursor:pointer;
-text-decoration:none;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-weight:700
+  background:#eef3f9;
+  border:1px solid #cfd8e3;
+  color:#0f172a;
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  transition:.18s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  border-color:#9fb3cc;
 }
 
 .btn.primary{
-background:var(--brand);
-border:none;
-color:#072116;
-font-weight:700
+  background:linear-gradient(180deg,#22c55e,#16a34a);
+  border:1px solid #159947;
+  color:#fff;
 }
 
 .btn.secondary{
-background:var(--chip);
-color:var(--chipText);
-border:none
+  background:#e8eef6;
+  color:#0f172a;
+  border:1px solid #c9d4e2;
 }
 
 .grid{
-display:grid;
-gap:24px
+  display:grid;
+  gap:24px
 }
 
 @media (min-width:900px){
-.grid{
-grid-template-columns:1fr 1fr
-}
+  .grid{
+    grid-template-columns:1fr 1fr
+  }
 }
 
 .img{
-width:100%;
-aspect-ratio:4/3;
-object-fit:cover;
-border-radius:14px;
-box-shadow:var(--shadow);
-background:#0b0f14
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  background:#eef2f7
 }
 
 .price{
-display:flex;
-align-items:baseline;
-gap:12px;
-font-size:20px
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  font-size:20px
 }
 
 .now{
-color:#00d084;
-font-weight:800
+  color:#00a85a;
+  font-weight:800
 }
 
 .old{
-color:var(--muted);
-text-decoration:line-through
+  color:var(--muted);
+  text-decoration:line-through
 }
 
 .muted{
-color:var(--muted)
+  color:var(--muted)
 }
 
 .error{
-background:#331f1f;
-border:1px solid #cc6666;
-color:#ffd7d7;
-border-radius:10px;
-padding:10px 12px;
-margin:12px 0;
-white-space:pre-wrap
+  background:#fff1f2;
+  border:1px solid #fda4af;
+  color:#b91c1c;
+  border-radius:10px;
+  padding:10px 12px;
+  margin:12px 0;
+  white-space:pre-wrap
 }
 
 .shipping-box{
-background:#121923;
-border:1px solid rgba(120,140,160,.2);
-border-radius:12px;
-padding:12px;
-margin:16px 0;
-font-size:14px;
-line-height:1.5
+  background:var(--ship-bg);
+  border:1px solid var(--ship-border);
+  color:var(--ship-text);
+  border-radius:12px;
+  padding:12px 14px;
+  margin:16px 0;
+  font-size:14px;
+  line-height:1.6;
+  box-shadow:0 4px 12px rgba(0,0,0,.04);
 }
 
 .actions{
-display:flex;
-gap:10px;
-flex-wrap:wrap
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap
 }
 
 /* MOBILE IMPROVEMENTS */
-
 @media (max-width:768px){
 
-.wrap{
-padding:0 12px
-}
+  .wrap{
+    padding:0 12px
+  }
 
-.grid{
-gap:16px
-}
+  .grid{
+    gap:16px
+  }
 
-.img{
-aspect-ratio:1/1
-}
+  .img{
+    aspect-ratio:1/1
+  }
 
-h1{
-font-size:22px;
-line-height:1.25;
-margin-top:12px;
+  h1{
+    font-size:22px;
+    line-height:1.25;
+    margin-top:12px;
 
-display:-webkit-box;
--webkit-line-clamp:3;
--webkit-box-orient:vertical;
-overflow:hidden
-}
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden
+  }
 
-.price{
-font-size:18px
-}
+  .price{
+    font-size:18px
+  }
 
-.muted{
-font-size:14px
-}
+  .muted{
+    font-size:14px
+  }
 
-.btn{
-height:42px;
-font-size:14px;
-border-radius:12px
-}
+  .btn{
+    height:42px;
+    font-size:14px;
+    border-radius:12px
+  }
 
-.actions .btn{
-width:100%
-}
-
+  .actions .btn{
+    width:100%
+  }
 }
 </style>
 </head>
@@ -214,10 +212,9 @@ width:100%
 <div class="wrap">
 
 <header>
-<div class="logo">WT</div>
-<a href="products.html" class="btn">← Back to catalog</a>
-<a href="/cart.html" class="btn">Cart</a>
-<button id="theme" class="btn" style="margin-left:auto">Theme</button>
+  <div class="logo">WT</div>
+  <a href="products.html" class="btn">← Back to catalog</a>
+  <a href="/cart.html" class="btn">Cart</a>
 </header>
 
 <div id="err" class="error" style="display:none"></div>
@@ -227,25 +224,12 @@ width:100%
 
 <script>
 /* CONFIG */
-const SHEET_ID = "1KzTz3QsWVZeVuxtE7Jw0uAqMBvvdQHT_Wuuv1zeWZk";
-const GID = "0";
-const SHEET_NAME = "Catalog";
 const WHATSAPP = "13653784497";
 const CART_KEY = "wt_cart";
+const PUBLISHED_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?output=csv&gid=0";
 
-/* THEME */
-const applyTheme = t => {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('theme', t);
-};
-
-(() => {
-  applyTheme(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-
-  document.getElementById('theme').onclick = () => {
-    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  };
-})();
+document.documentElement.setAttribute('data-theme', 'light');
+localStorage.setItem('theme', 'light');
 
 /* CART */
 function getCart(){
@@ -340,8 +324,6 @@ function parseCSV(text){
     });
 }
 
-const PUBLISHED_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXCtr0EyBGmVEwq7s8aADwD_B37OUu1QWTsKU5jrqulvAidhNWJrMzjOFZ2skbC9bkgWjW77uKosNC/pub?output=csv&gid=0";
-
 async function loadSheet(){
   const r = await fetch(PUBLISHED_CSV, { cache: "no-store" });
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -363,6 +345,14 @@ function setProductSEO(item){
   }
 
   meta.content = (item.details || item.title || "Liquidation deal in Toronto").slice(0,155);
+
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if(!canonical){
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.appendChild(canonical);
+  }
+  canonical.href = url;
 }
 
 (async()=>{

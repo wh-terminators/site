@@ -4,13 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YF5MVRT2CM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-YF5MVRT2CM');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YF5MVRT2CM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YF5MVRT2CM');
+  </script>
+
   <title>Terminator Deals — Hot Deals</title>
 
   <meta name="description" content="Browse liquidation deals in Toronto. Electronics, appliances, tools and Amazon return items at warehouse prices. Pickup in North York or delivery available." />
@@ -636,6 +637,12 @@ const slug = s => String(s || '')
   .replace(/^-+|-+$/g, '')
   .slice(0, 120);
 
+function safeTrack(eventName, params = {}){
+  if(typeof gtag !== "undefined"){
+    gtag('event', eventName, params);
+  }
+}
+
 function getCart(){
   try{
     return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -679,6 +686,11 @@ function addToCart(item){
 
   saveCart(cart);
   updateCartCount();
+
+  safeTrack('add_to_cart', {
+    item_name: item.title,
+    value: item.price_now
+  });
 }
 
 function addItemById(id){
@@ -784,6 +796,8 @@ ${productUrl}`
     ? item.image
     : 'assets/placeholder.webp';
 
+  const safeTitle = String(item.title || '').replace(/'/g, "\\'");
+
   return `
   <article class="card">
     <a href="${productUrl}" style="text-decoration:none;color:inherit">
@@ -814,7 +828,7 @@ ${productUrl}`
       <div class="btns">
         <a class="btn gray" href="${productUrl}">View details</a>
         <button class="btn gray" onclick="addItemById('${item.id}')">Add to cart</button>
-        <a class="btn green" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn green" href="${wa}" target="_blank" rel="noopener" onclick="safeTrack('whatsapp_click',{item_name:'${safeTitle}',value:${Number(item.price_now || 0)}})">WhatsApp</a>
         ${item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
       </div>
     </div>

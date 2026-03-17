@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YF5MVRT2CM"></script>
   <script>
@@ -11,23 +12,26 @@
     gtag('js', new Date());
     gtag('config', 'G-YF5MVRT2CM');
   </script>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '594363619844197');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=594363619844197&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '594363619844197');
+  fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=594363619844197&ev=PageView&noscript=1"/>
+  </noscript>
+  <!-- End Meta Pixel Code -->
+
   <title>Terminator Deals — Hot Deals</title>
 
   <meta name="description" content="Browse liquidation deals in Toronto. Electronics, appliances, tools and Amazon return items at warehouse prices. Pickup in North York or delivery available." />
@@ -420,7 +424,6 @@ src="https://www.facebook.com/tr?id=594363619844197&ev=PageView&noscript=1"
     .foot{color:#7b8797;font-size:12px;margin:14px 0}
     .ok{color:#2563eb}
 
-    /* Skeleton */
     .skeleton-card{
       background:#fff;
       border:1px solid #d6deea;
@@ -659,6 +662,12 @@ function safeTrack(eventName, params = {}){
   }
 }
 
+function safeFbqTrack(eventName, params = {}){
+  if(typeof fbq !== "undefined"){
+    fbq('track', eventName, params);
+  }
+}
+
 function getCart(){
   try{
     return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -707,12 +716,31 @@ function addToCart(item){
     item_name: item.title,
     value: item.price_now
   });
+
+  safeFbqTrack('AddToCart', {
+    content_name: item.title,
+    value: Number(item.price_now || 0),
+    currency: 'CAD'
+  });
 }
 
 function addItemById(id){
   const item = ITEMS.find(x => x.id === id);
   if(!item) return;
   addToCart(item);
+}
+
+function trackWhatsAppClick(item){
+  safeTrack('whatsapp_click', {
+    item_name: item.title,
+    value: item.price_now
+  });
+
+  safeFbqTrack('Contact', {
+    content_name: item.title,
+    value: Number(item.price_now || 0),
+    currency: 'CAD'
+  });
 }
 
 function csvToObjects(text){
@@ -812,8 +840,6 @@ ${productUrl}`
     ? item.image
     : 'assets/placeholder.webp';
 
-  const safeTitle = String(item.title || '').replace(/'/g, "\\'");
-
   return `
   <article class="card">
     <a href="${productUrl}" style="text-decoration:none;color:inherit">
@@ -844,7 +870,7 @@ ${productUrl}`
       <div class="btns">
         <a class="btn gray" href="${productUrl}">View details</a>
         <button class="btn gray" onclick="addItemById('${item.id}')">Add to cart</button>
-        <a class="btn green" href="${wa}" target="_blank" rel="noopener" onclick="safeTrack('whatsapp_click',{item_name:'${safeTitle}',value:${Number(item.price_now || 0)}})">WhatsApp</a>
+        <a class="btn green" href="${wa}" target="_blank" rel="noopener" onclick="trackWhatsAppClick(${JSON.stringify(item).replace(/"/g, '&quot;')})">WhatsApp</a>
         ${item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
       </div>
     </div>

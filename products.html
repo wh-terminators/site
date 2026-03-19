@@ -385,6 +385,7 @@
       text-decoration:none;
       transition:.18s;
       cursor:pointer;
+      text-align:center;
     }
 
     .btn:hover{
@@ -397,6 +398,12 @@
       background:#e8eef6;
       border-color:#c9d4e2;
       color:#0f172a;
+    }
+
+    .btn.soft{
+      background:#eaf2ff;
+      border-color:#c7d8f5;
+      color:#1e3a5f;
     }
 
     .btn.green{
@@ -821,9 +828,8 @@ function renderSkeletons(count = 8){
 }
 
 function cardHTML(item){
-  const id = item.id;
   const detailsSafe = (item.details || '').replace(/\s+/g, ' ').trim();
-  const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(id)}`;
+  const productUrl = `https://terminatordeals.ca/product.html?id=${encodeURIComponent(item.id)}`;
 
   const wa = `https://wa.me/${WHATSAPP}?text=` +
     encodeURIComponent(
@@ -868,10 +874,8 @@ ${productUrl}`
       <div class="details collapsed">${detailsSafe}</div>
 
       <div class="btns">
-        <a class="btn gray" href="${productUrl}">View details</a>
-        <button class="btn gray" onclick="addItemById('${item.id}')">Add to cart</button>
-        <a class="btn green" href="${wa}" target="_blank" rel="noopener" onclick="trackWhatsAppClick(${JSON.stringify(item).replace(/"/g, '&quot;')})">WhatsApp</a>
-        ${item.amazon_url ? `<a class="btn blue" href="${item.amazon_url}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
+        <button class="btn soft" onclick="addItemById('${item.id}')">Add to cart</button>
+        <a class="btn green" href="${wa}" target="_blank" rel="noopener" onclick="trackWhatsAppClick(${JSON.stringify(item).replace(/"/g, '&quot;')})">Buy Now on WhatsApp</a>
       </div>
     </div>
   </article>`;

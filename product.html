@@ -98,6 +98,7 @@
     justify-content:center;
     font-weight:700;
     transition:.18s;
+    text-align:center;
   }
 
   .btn:hover{
@@ -116,6 +117,12 @@
     background:#e8eef6;
     color:#0f172a;
     border:1px solid #c9d4e2;
+  }
+
+  .btn.soft{
+    background:#eaf2ff;
+    border-color:#c7d8f5;
+    color:#1e3a5f;
   }
 
   .cart-link{
@@ -556,8 +563,8 @@ ${productUrl}`
 
         <div class="actions">
           <button class="btn secondary" onclick="addToCart(window.currentProduct)">Add to cart</button>
-          <a class="btn primary" href="${wa}" target="_blank" rel="noopener" onclick="trackWhatsAppClick(window.currentProduct)">WhatsApp</a>
-          ${cmp ? `<a class="btn secondary" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
+          <a class="btn primary" href="${wa}" target="_blank" rel="noopener" onclick="trackWhatsAppClick(window.currentProduct)">Buy now on WhatsApp</a>
+          ${cmp ? `<a class="btn soft" href="${cmp}" target="_blank" rel="noopener nofollow">Compare price</a>` : ''}
           <a class="btn secondary" href="/cart.html">Cart</a>
         </div>
       </div>
